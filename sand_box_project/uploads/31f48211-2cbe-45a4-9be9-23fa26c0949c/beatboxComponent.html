@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas of Sound</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+</head>
+<body>
+    <div id="beatboxComponent">
+        <div id="ui-layer">
+            <h1>Haptix</h1>
+            <button id="startBtn">Begin Experience</button>
+            <p id="status">Waiting for audio input...</p>
+            <div id="level-indicator" style="margin-top: 10px; font-size: 14px; color: #ccc;">
+                Bass: <span id="bass-value">0</span> | Level: <span id="current-level">1</span>/16 | Vibe: <span id="vibe-level">0</span>ms
+            </div>
+            <div id="vibration-support" style="font-size: 12px; margin-top: 5px; color: #888;">
+                Checking vibration support...
+            </div>
+        </div>
+        <div id="canvas-container"></div>
+    </div>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            text-align: center;
+            background: #050505;
+            color: white;
+            overflow: hidden;
+            transition: background 0.1s ease;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            background: rgba(0, 195, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #00c3ff;
+            box-shadow: 0 0 20px rgba(0, 195, 255, 0.6);
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+        
+        #level-indicator {
+            pointer-events: none;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-family: monospace;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        #vibration-support {
+            pointer-events: none;
+            background: rgba(0,0,0,0.3);
+            padding: 3px 10px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        
+        .vibration-supported {
+            color: #4aff4a !important;
+        }
+        
+        .vibration-unsupported {
+            color: #ff4a4a !important;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+    
+    <script>
+        let audioContext, analyser, dataArray, started = false;
+        let smoothBass = 0;
+        let lastVibeTime = 0;
+        let vibrationSupported = false;
+        let lastVibrationPattern = null;
+        let vibrationEnabled = true;
+
+        // Check for vibration support
+        function checkVibrationSupport() {
+            const vibeDiv = document.getElementById('vibration-support');
+            if ('vibrate' in navigator) {
+                vibrationSupported = true;
+                vibeDiv.innerHTML = '✅ Vibration SUPPORTED - Device will vibrate!';
+                vibeDiv.className = 'vibration-supported';
+                
+                // Test vibration pattern
+                navigator.vibrate(50);
+                setTimeout(() => {
+                    navigator.vibrate(0); // Stop vibration
+                }, 100);
+            } else {
+                vibrationSupported = false;
+                vibeDiv.innerHTML = '❌ Vibration NOT supported on this device';
+                vibeDiv.className = 'vibration-unsupported';
+            }
+        }
+
+        document.getElementById("startBtn").addEventListener("click", startAudio);
+
+        async function startAudio() {
+            if (started) return;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                analyser = audioContext.createAnalyser();
+                
+                analyser.fftSize = 2048; 
+                source.connect(analyser);
+                
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                document.getElementById("status").innerText = "Sound Active";
+                document.getElementById("startBtn").style.display = "none";
+                started = true;
+                
+                // Check vibration support on start
+                checkVibrationSupport();
+            } catch (err) {
+                document.getElementById("status").innerText = "Mic access denied.";
+            }
+        }
+
+        function setup() {
+            let cnv = createCanvas(windowWidth, windowHeight);
+            cnv.parent("canvas-container");
+            colorMode(RGB);
+            
+            // Check vibration support on load
+            setTimeout(checkVibrationSupport, 1000);
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
+        function drawVisualizer() {
+            noStroke();
+            
+            let totalBars = Math.floor(dataArray.length * 0.4);
+
+            for (let i = 0; i < totalBars; i++) {
+                let val = dataArray[i];
+                let h = map(val, 0, 255, 2, height * 0.8);
+
+                let x = map(Math.pow(i, 0.8), 0, Math.pow(totalBars, 0.8), 0, width);
+                let barWidth = (width / totalBars) * 2;
+
+                let r = map(i, 0, totalBars, 0, 150);
+                let g = map(val, 0, 255, 50, 255);
+                let b = map(i, 0, totalBars, 255, 100);
+
+                fill(r, g, b, 200);
+                rect(x, height - h, barWidth, h, 20);
+                
+                fill(r, g, b, 30);
+                rect(x, height - h, barWidth, -h * 0.2, 20);
+            }
+        }
+
+        function applyVibration(intensity) {
+            if (!vibrationSupported || !vibrationEnabled || !started) return;
+            
+            // Don't vibrate too frequently (max every 100ms)
+            let now = Date.now();
+            if (now - lastVibeTime < 100) return;
+            
+            // Calculate vibration pattern based on intensity (0-100)
+            // Using patterns for different intensities
+            
+            let pattern;
+            
+            if (intensity < 10) {
+                // Too low to vibrate
+                return;
+            }
+            else if (intensity < 30) {
+                // Subtle: short single pulse
+                pattern = [30];
+            }
+            else if (intensity < 50) {
+                // Low: double pulse
+                pattern = [50, 30, 50];
+            }
+            else if (intensity < 70) {
+                // Medium: triple pulse
+                pattern = [80, 40, 80, 40, 80];
+            }
+            else if (intensity < 90) {
+                // High: long vibration with pulses
+                pattern = [150, 50, 150, 50, 150];
+            }
+            else {
+                // Extreme: continuous intense vibration
+                pattern = [300, 100, 300, 100, 300, 100, 300];
+            }
+            
+            // Apply the vibration pattern
+            navigator.vibrate(pattern);
+            lastVibeTime = now;
+            
+            // Store last pattern for display
+            lastVibrationPattern = pattern;
+            
+            // Update display with total vibration time
+            let totalTime = pattern.reduce((a, b) => a + b, 0);
+            document.getElementById('vibe-level').innerText = totalTime;
+        }
+
+        function draw() {
+            clear(); 
+            
+            if (!started || !analyser) {
+                background(10);
+                return;
+            }
+
+            analyser.getByteFrequencyData(dataArray);
+
+            // Calculate average bass (first 15 bins for more bass response)
+            let bassSum = 0;
+            for(let i = 0; i < 15; i++) {
+                bassSum += dataArray[i];
+            }
+            let averageBass = bassSum / 15;
+            
+            // Smooth the bass values to prevent jumping
+            smoothBass = lerp(smoothBass, averageBass, 0.3);
+            
+            // Enhanced scaling for more bass response
+            let normalizedBass = smoothBass / 255;
+            let enhancedBass = Math.pow(normalizedBass, 0.7) * 255;
+            
+            // Calculate vibration intensity (0-100)
+            let vibeIntensity = map(enhancedBass, 0, 255, 0, 100);
+            
+            // Apply physical vibration
+            applyVibration(vibeIntensity);
+            
+            // Handle background color
+            handleMoodEffects(enhancedBass, averageBass);
+            
+            // Draw visualizer
+            drawVisualizer();
+            
+            // Update display values
+            document.getElementById('bass-value').innerText = Math.round(averageBass);
+            let level = getColorLevel(enhancedBass);
+            document.getElementById('current-level').innerText = level;
+        }
+
+        function getColorLevel(bass) {
+            if (bass < 16) return 1;
+            else if (bass < 32) return 2;
+            else if (bass < 48) return 3;
+            else if (bass < 64) return 4;
+            else if (bass < 80) return 5;
+            else if (bass < 96) return 6;
+            else if (bass < 112) return 7;
+            else if (bass < 128) return 8;
+            else if (bass < 144) return 9;
+            else if (bass < 160) return 10;
+            else if (bass < 176) return 11;
+            else if (bass < 192) return 12;
+            else if (bass < 208) return 13;
+            else if (bass < 224) return 14;
+            else if (bass < 240) return 15;
+            else return 16;
+        }
+
+        function handleMoodEffects(scaledBass, originalBass) {
+            const body = document.body;
+            
+            const colors = [
+                "#050505", "#0a0a3a", "#1a1a5a", "#2a2a7a",
+                "#2a3a9a", "#2a4a9a", "#2a5a8a", "#2a6a7a",
+                "#3a7a6a", "#4a8a5a", "#6a9a4a", "#8aaa3a",
+                "#aaba2a", "#ca9a2a", "#ea6a2a", "#ff3a3a"
+            ];
+            
+            let colorIndex;
+            if (scaledBass < 16) colorIndex = 0;
+            else if (scaledBass < 32) colorIndex = 1;
+            else if (scaledBass < 48) colorIndex = 2;
+            else if (scaledBass < 64) colorIndex = 3;
+            else if (scaledBass < 80) colorIndex = 4;
+            else if (scaledBass < 96) colorIndex = 5;
+            else if (scaledBass < 112) colorIndex = 6;
+            else if (scaledBass < 128) colorIndex = 7;
+            else if (scaledBass < 144) colorIndex = 8;
+            else if (scaledBass < 160) colorIndex = 9;
+            else if (scaledBass < 176) colorIndex = 10;
+            else if (scaledBass < 192) colorIndex = 11;
+            else if (scaledBass < 208) colorIndex = 12;
+            else if (scaledBass < 224) colorIndex = 13;
+            else if (scaledBass < 240) colorIndex = 14;
+            else colorIndex = 15;
+            
+            body.style.backgroundColor = colors[colorIndex];
+            
+            // Update UI elements
+            document.getElementById("status").style.color = colors[colorIndex];
+            document.getElementById("status").style.textShadow = `0 0 15px ${colors[colorIndex]}`;
+            document.getElementById("level-indicator").style.borderColor = colors[colorIndex];
+            document.getElementById("current-level").style.color = colors[colorIndex];
+            
+            // Update button glow if visible
+            const startBtn = document.getElementById("startBtn");
+            if (startBtn.style.display !== "none") {
+                startBtn.style.boxShadow = `0 0 ${scaledBass/10}px ${colors[colorIndex]}`;
+            }
+        }
+
+        // Clean up vibration when page is hidden
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && vibrationSupported) {
+                navigator.vibrate(0); // Stop vibration
+            }
+        });
+
+        // Add toggle button for vibration (optional)
+        window.toggleVibration = function() {
+            vibrationEnabled = !vibrationEnabled;
+            if (!vibrationEnabled && vibrationSupported) {
+                navigator.vibrate(0); // Stop any ongoing vibration
+            }
+            document.getElementById('vibration-support').innerHTML = 
+                vibrationEnabled ? '✅ Vibration ENABLED' : '❌ Vibration DISABLED';
+        };
+    </script>
+</body>
+</html>

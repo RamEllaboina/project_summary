@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Sandbox Engine</title>
+    <meta name="description"
+        content="Secure isolated code execution sandbox supporting Python, Node.js, and Frontend HTML/JS projects via Docker containers and Puppeteer.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080c14;
+            --surface: rgba(15, 22, 36, 0.85);
+            --surface-2: rgba(22, 30, 50, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(59, 130, 246, 0.3);
+            --blue: #3b82f6;
+            --blue-light: #60a5fa;
+            --green: #10b981;
+            --green-light: #34d399;
+            --purple: #8b5cf6;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --text: #f1f5f9;
+            --text-muted: #64748b;
+            --text-dim: #94a3b8;
+            --term-bg: #030712;
+            --term-green: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 10% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 10%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 30px 20px 60px;
+        }
+
+        /* ─── Header ─────────────────────────────── */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header .badge {
+            display: inline-block;
+            padding: 5px 14px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--blue-light);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.15;
+            background: linear-gradient(135deg, #93c5fd 0%, #6ee7b7 50%, #c4b5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            margin-top: 12px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-inline: auto;
+        }
+
+        .pills {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .pill {
+            padding: 5px 14px;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            border: 1px solid;
+        }
+
+        .pill-node {
+            color: #86efac;
+            border-color: rgba(134, 239, 172, 0.3);
+            background: rgba(134, 239, 172, 0.06);
+        }
+
+        .pill-python {
+            color: #fde68a;
+            border-color: rgba(253, 230, 138, 0.3);
+            background: rgba(253, 230, 138, 0.06);
+        }
+
+        .pill-frontend {
+            color: #93c5fd;
+            border-color: rgba(147, 197, 253, 0.3);
+            background: rgba(147, 197, 253, 0.06);
+        }
+
+        /* ─── Main Layout ─────────────────────────── */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 780px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .span-full {
+            grid-column: 1 / -1;
+        }
+
+        /* ─── Card ────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--border-glow);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* ─── Upload Area ─────────────────────────── */
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 36px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .drop-zone input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-over {
+            border-color: var(--blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .drop-icon {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .drop-hint {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* ─── File List ───────────────────────────── */
+        .file-list-wrap {
+            display: none;
+            margin-top: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            max-height: 160px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .file-list-wrap::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .file-list-wrap::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        /* ─── Run Button ──────────────────────────── */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            background: linear-gradient(135deg, var(--blue) 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background: rgba(39, 50, 72, 1);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .spin {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── Project Type Badge ──────────────────── */
+        .type-badge {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 16px;
+            border: 1px solid;
+        }
+
+        .type-frontend {
+            color: #93c5fd;
+            border-color: rgba(147, 197, 253, 0.3);
+            background: rgba(147, 197, 253, 0.06);
+        }
+
+        .type-backend {
+            color: #86efac;
+            border-color: rgba(134, 239, 172, 0.3);
+            background: rgba(134, 239, 172, 0.06);
+        }
+
+        .type-fullstack {
+            color: #c4b5fd;
+            border-color: rgba(196, 181, 253, 0.3);
+            background: rgba(196, 181, 253, 0.06);
+        }
+
+        /* ─── Flow Diagram ────────────────────────── */
+        .flow-container {
+            display: none;
+        }
+
+        .flow-track {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 12px 0;
+            animation: fadeIn 0.4s ease both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .flow-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .flow-icon.success {
+            color: var(--green-light);
+            border-color: rgba(52, 211, 153, 0.5);
+            background: rgba(52, 211, 153, 0.1);
+        }
+
+        .flow-icon.error {
+            color: #fca5a5;
+            border-color: rgba(252, 165, 165, 0.5);
+            background: rgba(252, 165, 165, 0.1);
+        }
+
+        .flow-icon.warning {
+            color: #fde68a;
+            border-color: rgba(253, 230, 138, 0.5);
+            background: rgba(253, 230, 138, 0.1);
+        }
+
+        .flow-connector {
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.2));
+            margin-left: 15px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .flow-content {
+            flex: 1;
+            padding-top: 4px;
+        }
+
+        .flow-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .flow-detail {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* ─── Terminal ────────────────────────────── */
+        .terminal-wrap {
+            display: none;
+        }
+
+        .terminal {
+            background: var(--term-bg);
+            border: 1px solid #1a2540;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        }
+
+        .term-header {
+            background: #0f172a;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .tbt {
+            display: flex;
+            gap: 7px;
+        }
+
+        .tb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .tb-r {
+            background: #ef4444;
+        }
+
+        .tb-y {
+            background: #eab308;
+        }
+
+        .tb-g {
+            background: #22c55e;
+        }
+
+        .term-label {
+            margin: 0 auto;
+            font-size: 0.75rem;
+            color: #475569;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .term-body {
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 380px;
+            overflow-y: auto;
+            color: var(--term-green);
+        }
+
+        .term-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .term-body::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+
+        .term-err {
+            color: #fca5a5;
+        }
+
+        .term-meta {
+            color: #60a5fa;
+            border-bottom: 1px dashed #1e293b;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* ─── System Architecture Flow ─────────────── */
+        .architecture-container {
+            display: none;
+        }
+
+        .architecture-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 20px 0;
+        }
+
+        .arch-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            margin-bottom: 0;
+            transition: all 0.3s ease;
+        }
+
+        .arch-step:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateX(4px);
+        }
+
+        .arch-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .arch-content {
+            flex: 1;
+        }
+
+        .arch-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .arch-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .arch-connector {
+            width: 3px;
+            height: 20px;
+            background: linear-gradient(to bottom, rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.2));
+            margin: 0 0 0 46px;
+            position: relative;
+        }
+
+        .arch-connector::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -4px;
+            width: 11px;
+            height: 11px;
+            background: var(--purple);
+            border-radius: 50%;
+            border: 2px solid var(--surface);
+        }
+
+        /* ─── Execution Output ─────────────────────── */
+        .execution-output-container {
+            display: none;
+        }
+
+        .execution-output {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 780px) {
+            .execution-output {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .output-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-content {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* ─── Blink cursor ────────────────────────── */
+        .cursor::after {
+            content: '█';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="badge">🐳 Docker-Powered · Puppeteer · Secure Sandbox</div>
+        <h1>Code Sandbox Engine</h1>
+        <p>Upload any project folder — frontend HTML/JS, Node.js, or Python. We execute it safely inside an isolated
+            container and show you the full execution flow.</p>
+        <div class="pills">
+            <span class="pill pill-node">⚡ Node.js</span>
+            <span class="pill pill-python">🐍 Python</span>
+            <span class="pill pill-frontend">🌐 Frontend HTML/JS</span>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ─── Upload Card ──────────────────────── -->
+        <div class="card">
+            <div class="card-title"><span class="dot" style="color:var(--blue)"></span>Upload Project</div>
+
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="folderInput" webkitdirectory directory multiple />
+                <span class="drop-icon">📁</span>
+                <div id="dropTitle" style="font-size:1rem;font-weight:600;">Drop your project folder here</div>
+                <div class="drop-hint">or click to browse · supports frontend, Node.js, Python</div>
+            </div>
+
+            <div class="file-list-wrap" id="fileListWrap">
+                <div style="color:var(--blue-light);margin-bottom:6px;">📂 <strong id="folderName"></strong> — <span
+                        id="fileCount"></span> files</div>
+                <ul id="fileList" style="list-style:none; padding-left:6px;"></ul>
+            </div>
+
+            <div class="type-badge" id="typeBadge"></div>
+
+            <button class="btn" id="runBtn" disabled>
+                <div class="spin" id="spin"></div>
+                <span id="btnLabel">Execute in Sandbox</span>
+            </button>
+        </div>
+
+        <!-- ─── Flow Diagram Card ───────────────── -->
+        <div class="card flow-container" id="flowCard">
+            <div class="card-title"><span class="dot" style="color:var(--purple)"></span>Execution Flow</div>
+            <div class="flow-track" id="flowTrack"></div>
+        </div>
+
+        <!-- ─── System Architecture Flow Card ─────── -->
+        <div class="span-full card architecture-container" id="architectureCard">
+            <div class="card-title"><span class="dot" style="color:var(--purple)"></span>System Architecture Flow</div>
+            <div class="architecture-flow" id="architectureFlow">
+                <!-- Dynamic architecture steps will be inserted here -->
+            </div>
+        </div>
+
+        <!-- ─── Execution Output Card ───────────── -->
+        <div class="span-full card execution-output-container" id="executionCard">
+            <div class="card-title"><span class="dot" style="color:var(--orange)"></span>Execution Output</div>
+            <div class="execution-output" id="executionOutput">
+                <div class="output-section">
+                    <div class="section-title">📊 Project Details</div>
+                    <div class="section-content" id="projectDetails"></div>
+                </div>
+                <div class="output-section">
+                    <div class="section-title">🚀 Execution Logs</div>
+                    <div class="section-content" id="executionLogs"></div>
+                </div>
+                <div class="output-section">
+                    <div class="section-title">🧹 Filtering Info</div>
+                    <div class="section-content" id="filteringInfo"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Terminal Output Card ────────────── -->
+        <div class="span-full card terminal-wrap" id="termCard">
+            <div class="card-title"><span class="dot" style="color:var(--green)"></span>Terminal Output</div>
+            <div class="terminal">
+                <div class="term-header">
+                    <div class="tbt">
+                        <div class="tb tb-r"></div>
+                        <div class="tb tb-y"></div>
+                        <div class="tb tb-g"></div>
+                    </div>
+                    <div class="term-label">sandbox@docker-engine:~</div>
+                </div>
+                <div class="term-body" id="termBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const folderInput = document.getElementById('folderInput');
+        const dropZone = document.getElementById('dropZone');
+        const dropTitle = document.getElementById('dropTitle');
+        const fileListWrap = document.getElementById('fileListWrap');
+        const fileList = document.getElementById('fileList');
+        const folderName = document.getElementById('folderName');
+        const fileCountEl = document.getElementById('fileCount');
+        const typeBadge = document.getElementById('typeBadge');
+        const runBtn = document.getElementById('runBtn');
+        const spin = document.getElementById('spin');
+        const btnLabel = document.getElementById('btnLabel');
+        const flowCard = document.getElementById('flowCard');
+        const flowTrack = document.getElementById('flowTrack');
+        const termCard = document.getElementById('termCard');
+        const termBody = document.getElementById('termBody');
+        const executionCard = document.getElementById('executionCard');
+        const projectDetails = document.getElementById('projectDetails');
+        const executionLogs = document.getElementById('executionLogs');
+        const filteringInfo = document.getElementById('filteringInfo');
+        const architectureCard = document.getElementById('architectureCard');
+
+let selectedFiles = [];
+
+// ─── Drag & Drop wiring ─────────────────────────────────────
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev =>
+    dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev =>
+            dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+
+        ['dragenter', 'dragover'].forEach(ev =>
+            dropZone.addEventListener(ev, () => dropZone.classList.add('drag-over')));
+
+        ['dragleave', 'drop'].forEach(ev =>
+            dropZone.addEventListener(ev, () => dropZone.classList.remove('drag-over')));
+
+        folderInput.addEventListener('change', e => handleFiles(e.target.files));
+
+        function handleFiles(files) {
+            if (!files || files.length === 0) return;
+            selectedFiles = Array.from(files);
+
+            const rootFolder = (selectedFiles[0].webkitRelativePath || selectedFiles[0].name).split('/')[0];
+            folderName.innerText = rootFolder;
+            fileCountEl.innerText = selectedFiles.length;
+            dropTitle.innerText = rootFolder + '/';
+
+            fileList.innerHTML = '';
+            const max = 12;
+            for (let i = 0; i < Math.min(selectedFiles.length, max); i++) {
+                const li = document.createElement('li');
+                li.innerText = '  ' + (selectedFiles[i].webkitRelativePath || selectedFiles[i].name);
+                fileList.appendChild(li);
+            }
+            if (selectedFiles.length > max) {
+                const li = document.createElement('li');
+                li.style.fontStyle = 'italic';
+                li.innerText = `  ...and ${selectedFiles.length - max} more files`;
+                fileList.appendChild(li);
+            }
+
+            fileListWrap.style.display = 'block';
+            runBtn.disabled = false;
+
+            // Quick client-side type hint
+            const names = selectedFiles.map(f => f.name.toLowerCase());
+            let guessType = 'backend';
+            if (names.includes('index.html') || names.some(n => n.endsWith('.html'))) guessType = 'frontend';
+            if (names.includes('package.json') && names.includes('index.html')) guessType = 'fullstack';
+            showTypeBadge(guessType);
+        }
+
+        function showTypeBadge(type) {
+            const icons = { frontend: '🌐 Frontend (HTML/JS)', backend: '⚙️ Backend (Node/Python)', fullstack: '🔄 Fullstack' };
+            const cls = { frontend: 'type-frontend', backend: 'type-backend', fullstack: 'type-fullstack' };
+            typeBadge.className = `type-badge ${cls[type] || 'type-backend'}`;
+            typeBadge.style.display = 'flex';
+            typeBadge.innerText = icons[type] || type;
+        }
+
+        // ─── Execution ──────────────────────────────────────────────
+        runBtn.addEventListener('click', async () => {
+            if (!selectedFiles.length) return;
+
+            const formData = new FormData();
+            selectedFiles.forEach(file =>
+                formData.append('files', file, file.webkitRelativePath || file.name));
+
+            // Loading state
+            runBtn.disabled = true;
+            spin.style.display = 'block';
+            btnLabel.innerText = 'Launching Sandbox...';
+
+            // Reset output sections
+            flowCard.style.display = 'block';
+            termCard.style.display = 'block';
+            executionCard.style.display = 'block';
+            architectureCard.style.display = 'block';
+            flowTrack.innerHTML = '';
+            termBody.innerHTML = '';
+            renderPendingFlow();
+
+            try {
+                const res = await fetch('/api/run', { method: 'POST', body: formData });
+                const data = await res.json();
+
+                // Update type badge with confirmed server type
+                if (data.projectType) showTypeBadge(data.projectType);
+
+                // Render flow steps with animation delay
+                renderFlow(data.flow || []);
+
+                // Render terminal output
+                renderTerminal(data);
+
+                // Render execution output
+                renderExecutionOutput(data);
+
+                // Render architecture flow
+                renderArchitectureFlow(data);
+
+            } catch (err) {
+                termBody.innerHTML = `<span class="term-err">Network Error: ${err.message}\n\nMake sure the sandbox server is running on port 3000!</span>`;
+                flowTrack.innerHTML = '<div style="color:var(--red);font-size:0.85rem;">❌ Could not reach the Sandbox API</div>';
+            } finally {
+                spin.style.display = 'none';
+                btnLabel.innerText = 'Execute in Sandbox';
+                runBtn.disabled = false;
+            }
+        });
+
+        function renderPendingFlow() {
+            flowTrack.innerHTML = `
+                <div style="color:var(--text-muted);font-size:0.85rem;display:flex;align-items:center;gap:10px;">
+                    <div class="spin" style="display:block;border-color:rgba(148,163,184,0.2);border-top-color:#94a3b8;"></div>
+                    Executing in container...
+                </div>`;
+        }
+
+        function renderFlow(steps) {
+            flowTrack.innerHTML = '';
+            steps.forEach((s, i) => {
+                const icon = s.status === 'success' ? '✓' : s.status === 'error' ? '✕' : '!';
+
+                const wrapper = document.createElement('div');
+                wrapper.style.animationDelay = `${i * 60}ms`;
+
+                // Connector
+                if (i > 0) {
+                    const conn = document.createElement('div');
+                    conn.className = 'flow-connector';
+                    wrapper.appendChild(conn);
+                }
+
+                const step = document.createElement('div');
+                step.className = 'flow-step';
+                step.style.animationDelay = `${i * 60}ms`;
+
+                const iconEl = document.createElement('div');
+                iconEl.className = `flow-icon ${s.status}`;
+                iconEl.innerText = icon;
+
+                const content = document.createElement('div');
+                content.className = 'flow-content';
+                content.innerHTML = `<div class="flow-label">${s.step}</div><div class="flow-detail">${s.detail || ''}</div>`;
+
+                step.appendChild(iconEl);
+                step.appendChild(content);
+                wrapper.appendChild(step);
+                flowTrack.appendChild(wrapper);
+            });
+        }
+
+        function renderTerminal(data) {
+            termBody.innerHTML = '';
+
+            // Meta header
+            const meta = document.createElement('div');
+            meta.className = 'term-meta';
+            meta.innerText = [
+                `Project Type : ${(data.detected_project_type || 'unknown').toUpperCase()}`,
+                `Framework    : ${(data.framework || 'none').toUpperCase()}`,
+                `Language     : ${(data.language || 'unknown').toUpperCase()}`,
+                `Entry File   : /app/${data.entry_file || 'unknown'}`,
+                `Command      : ${data.executed_command || 'unknown'}`,
+                `Status       : ${(data.execution_status || 'unknown').toUpperCase()}`,
+                `Time         : ${data.execution_time || 0}ms`,
+                `Files        : ${data.filtering?.processedFiles || 0} processed, ${data.filtering?.skippedFiles || 0} skipped`
+            ].join('\n');
+            termBody.appendChild(meta);
+
+            // Execution output
+            const outputHeader = document.createElement('div');
+            outputHeader.style.color = '#60a5fa';
+            outputHeader.style.marginTop = '12px';
+            outputHeader.style.fontWeight = '600';
+            outputHeader.innerText = '🚀 EXECUTION OUTPUT:';
+            termBody.appendChild(outputHeader);
+
+            const logEl = document.createElement('div');
+            logEl.style.marginTop = '8px';
+            if (data.execution_status === 'error') logEl.className = 'term-err';
+            logEl.innerText = data.logs || '(no output)';
+            termBody.appendChild(logEl);
+
+            // Filtering info
+            if (data.filtering && (data.filtering.skippedFiles > 0 || data.filtering.cleanedItems > 0)) {
+                const filterHeader = document.createElement('div');
+                filterHeader.style.color = '#fde68a';
+                filterHeader.style.marginTop = '12px';
+                filterHeader.style.fontWeight = '600';
+                filterHeader.innerText = '🧹 FILTERING INFO:';
+                termBody.appendChild(filterHeader);
+
+                const filterEl = document.createElement('div');
+                filterEl.style.marginTop = '8px';
+                filterEl.style.fontSize = '0.85rem';
+                filterEl.style.color = '#94a3b8';
+                filterEl.innerText = [
+                    `Processed files: ${data.filtering.processedFiles}`,
+                    `Skipped files: ${data.filtering.skippedFiles}`,
+                    `Cleaned items: ${data.filtering.cleanedItems}`,
+                    data.filtering.removedItems.length > 0 ? `Removed: ${data.filtering.removedItems.join(', ')}` : ''
+                ].filter(Boolean).join('\n');
+                termBody.appendChild(filterEl);
+            }
+
+            // Blinking cursor
+            const cur = document.createElement('span');
+            cur.className = 'cursor';
+            termBody.appendChild(cur);
+
+            // Auto scroll to bottom
+            termBody.scrollTop = termBody.scrollHeight;
+        }
+
+        function renderExecutionOutput(data) {
+            // Project Details
+            projectDetails.innerHTML = [
+                `Type: ${(data.detected_project_type || 'unknown').toUpperCase()}`,
+                `Framework: ${(data.framework || 'none').toUpperCase()}`,
+                `Language: ${(data.language || 'unknown').toUpperCase()}`,
+                `Entry: /app/${data.entry_file || 'unknown'}`,
+                `Command: ${data.executed_command || 'unknown'}`,
+                `Status: ${(data.execution_status || 'unknown').toUpperCase()}`,
+                `Time: ${data.execution_time || 0}ms`
+            ].join('\n');
+
+            // Execution Logs
+            executionLogs.innerHTML = data.logs || '(no output)';
+            if (data.execution_status === 'error') {
+                executionLogs.style.color = '#fca5a5';
+            } else {
+                executionLogs.style.color = '#4ade80';
+            }
+
+            // Filtering Info
+            if (data.filtering) {
+                filteringInfo.innerHTML = [
+                    `Processed: ${data.filtering.processedFiles || 0} files`,
+                    `Skipped: ${data.filtering.skippedFiles || 0} files`,
+                    `Cleaned: ${data.filtering.cleanedItems || 0} items`,
+                    data.filtering.removedItems?.length > 0 ? `Removed: ${data.filtering.removedItems.join(', ')}` : ''
+                ].filter(Boolean).join('\n');
+            } else {
+                filteringInfo.innerHTML = 'No filtering data available';
+            }
+        }
+
+        function renderArchitectureFlow(data) {
+            const projectType = (data.detected_project_type || 'unknown').toLowerCase();
+            const structure = data.project_structure || {};
+            
+            const architectureFlow = document.getElementById('architectureFlow');
+            architectureFlow.innerHTML = '';
+            
+            // 1. Project Overview
+            const overviewStep = createArchitectureStep('📊', 'Project Overview', 
+                `${structure.totalFiles || 0} files in ${structure.totalFolders || 0} folders<br>
+                 Type: ${projectType.toUpperCase()}<br>
+                 Framework: ${structure.framework || 'None'}<br>
+                 Languages: ${(structure.languages || []).join(', ') || 'Unknown'}`);
+            architectureFlow.appendChild(overviewStep);
+            architectureFlow.appendChild(createConnector());
+            
+            // 2. Folder Structure
+            const folderStep = createArchitectureStep('📁', 'Folder Structure', 
+                renderFolderStructure(structure.folders || {}));
+            architectureFlow.appendChild(folderStep);
+            architectureFlow.appendChild(createConnector());
+            
+            // 3. UI Files
+            if (structure.uiFiles && structure.uiFiles.length > 0) {
+                const uiStep = createArchitectureStep('🎨', 'UI Files', 
+                    renderUIFiles(structure.uiFiles));
+                architectureFlow.appendChild(uiStep);
+                architectureFlow.appendChild(createConnector());
+            }
+            
+            // 4. File Types
+            const fileTypesStep = createArchitectureStep('📄', 'File Types', 
+                renderFileTypes(structure.fileTypes || []));
+            architectureFlow.appendChild(fileTypesStep);
+            architectureFlow.appendChild(createConnector());
+            
+            // 5. Framework Detection
+            const frameworkStep = createArchitectureStep('🔍', 'Detected Frameworks', 
+                renderFrameworks(structure.frameworks || []));
+            architectureFlow.appendChild(frameworkStep);
+            
+            // Add animations
+            const steps = architectureFlow.querySelectorAll('.arch-step');
+            steps.forEach((step, index) => {
+                step.style.animationDelay = `${index * 100}ms`;
+            });
+        }
+        
+        function createArchitectureStep(icon, title, content) {
+            const stepEl = document.createElement('div');
+            stepEl.className = 'arch-step';
+            stepEl.innerHTML = `
+                <div class="arch-icon">${icon}</div>
+                <div class="arch-content">
+                    <div class="arch-title">${title}</div>
+                    <div class="arch-desc">${content}</div>
+                </div>
+            `;
+            return stepEl;
+        }
+        
+        function createConnector() {
+            const connector = document.createElement('div');
+            connector.className = 'arch-connector';
+            return connector;
+        }
+        
+        function renderFolderStructure(folders) {
+            const folderTypes = {
+                'ui': { icon: '🎨', color: '#8b5cf6' },
+                'assets': { icon: '📦', color: '#3b82f6' },
+                'source': { icon: '⚡', color: '#10b981' },
+                'config': { icon: '⚙️', color: '#f59e0b' },
+                'build': { icon: '🏗️', color: '#ef4444' },
+                'test': { icon: '🧪', color: '#06b6d4' },
+                'docs': { icon: '📚', color: '#84cc16' },
+                'general': { icon: '📁', color: '#6b7280' }
+            };
+            
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
+            
+            Object.entries(folders).forEach(([path, folder]) => {
+                const type = folderTypes[folder.type] || folderTypes.general;
+                html += `
+                    <div style="
+                        background: ${type.color}20;
+                        border: 1px solid ${type.color}40;
+                        border-radius: 6px;
+                        padding: 4px 8px;
+                        font-size: 0.75rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        color: ${type.color};
+                    ">
+                        <span>${type.icon}</span>
+                        <span>${folder.name}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function renderUIFiles(uiFiles) {
+            let html = '<div style="display: flex; flex-direction: column; gap: 6px;">';
+            
+            uiFiles.slice(0, 5).forEach(file => {
+                const fileIcon = getFileIcon(file.extension);
+                html += `
+                    <div style="
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 6px;
+                        background: rgba(139, 92, 246, 0.1);
+                        border-radius: 4px;
+                        font-size: 0.75rem;
+                    ">
+                        <span>${fileIcon}</span>
+                        <span style="font-family: 'Fira Code', monospace;">${file.name}</span>
+                    </div>
+                `;
+            });
+            
+            if (uiFiles.length > 5) {
+                html += `<div style="color: #6b7280; font-size: 0.7rem;">...and ${uiFiles.length - 5} more UI files</div>`;
+            }
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function renderFileTypes(fileTypes) {
+            const typeIcons = {
+                '.js': '⚡', '.ts': '📘', '.jsx': '⚛️', '.tsx': '⚛️',
+                '.html': '🌐', '.htm': '🌐', '.css': '🎨', '.scss': '🎨',
+                '.json': '📋', '.md': '📝', '.py': '🐍', '.java': '☕'
+            };
+            
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 6px;">';
+            
+            fileTypes.forEach(type => {
+                const icon = typeIcons[type] || '📄';
+                html += `
+                    <span style="
+                        background: rgba(59, 130, 246, 0.1);
+                        border: 1px solid rgba(59, 130, 246, 0.3);
+                        border-radius: 4px;
+                        padding: 2px 6px;
+                        font-size: 0.7rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                    ">
+                        ${icon} ${type}
+                    </span>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function renderFrameworks(frameworks) {
+            const frameworkIcons = {
+                'React': '⚛️', 'Vue': '💚', 'Angular': '🔴', 'Next.js': '▲',
+                'Nuxt.js': '🟢', 'Express': '🚂', 'Django': '🎸', 'Flask': '🧪'
+            };
+            
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
+            
+            frameworks.forEach(fw => {
+                const icon = frameworkIcons[fw] || '🔧';
+                html += `
+                    <div style="
+                        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+                        border: 1px solid rgba(139, 92, 246, 0.3);
+                        border-radius: 6px;
+                        padding: 6px 12px;
+                        font-size: 0.75rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        font-weight: 600;
+                    ">
+                        ${icon} ${fw}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function getFileIcon(extension) {
+            const icons = {
+                '.html': '🌐', '.htm': '🌐', '.jsx': '⚛️', '.tsx': '⚛️',
+                '.vue': '💚', '.css': '🎨', '.scss': '🎨', '.sass': '🎨'
+            };
+            return icons[extension] || '📄';
+        }
+    </script>
+</body>
+
+</html>

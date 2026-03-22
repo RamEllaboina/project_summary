@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haptix</title>
+  <meta name="description"
+    content="Experience music through visuals and vibrations. Designed for Deaf and Hard-of-Hearing users.">
+  <!-- Load minimalist font awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.png" type="image/png">
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1>Haptix</h1>
+      <p class="tagline">Experience music through visuals and vibrations.</p>
+    </header>
+
+    <main>
+      <section class="action-section" aria-label="Main Actions">
+
+        <!-- Upload Audio Card -->
+        <article class="action-card" aria-labelledby="upload-heading">
+          <i class="fas fa-cloud-upload-alt card-icon" aria-hidden="true"></i>
+          <h2 id="upload-heading" class="card-title">Upload Audio</h2>
+          <p class="card-desc">Select or drop an MP3, WAV, or OGG file to start the visualization journey.</p>
+
+          <label class="drop-zone" id="drop-zone" for="audio-upload" aria-label="Drop area for audio file">
+            <i class="fas fa-file-audio" style="font-size: 2.2rem; margin-bottom: 0.8rem; opacity: 0.6;"
+              aria-hidden="true"></i>
+            <span style="font-size: 0.95rem; color: #cbd5e1;">Drag & drop your file here<br>or click to browse</span>
+            <input type="file" id="audio-upload" class="hidden-input" accept=".mp3,.wav,.ogg"
+              aria-label="Upload Audio File Button">
+          </label>
+          <div id="file-name" class="selected-file-name" aria-live="polite"></div>
+        </article>
+
+        <!-- Live Recording Card -->
+        <article class="action-card" aria-labelledby="live-heading">
+          <i class="fas fa-microphone-alt card-icon" aria-hidden="true"></i>
+          <h2 id="live-heading" class="card-title">Live Recording</h2>
+          <p class="card-desc">Use your microphone to capture real-time audio and feel the vibrations instantly.</p>
+
+          <button id="btn-live-rec" class="btn-primary" aria-label="Start Live Recording Navigation">
+            <i class="fas fa-circle" style="color: #ffb3c6; font-size: 0.8rem;"></i>
+            Start Recording
+          </button>
+        </article>
+
+      </section>
+    </main>
+
+    <footer class="modern-footer">
+      <div class="footer-container">
+
+        <!-- Branding -->
+        <div class="footer-column footer-brand">
+          <h2 class="footer-logo">Feel The Music</h2>
+          <p class="footer-mission">
+            Making music experiences accessible for Deaf and Hard-of-Hearing users by transforming sound into visual and
+            tactile feedback.
+          </p>
+          <p class="footer-accessibility-msg">
+            Our goal is to ensure that everyone can experience the energy and emotion of music.
+          </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="footer-column footer-nav">
+          <h3 class="footer-heading">Quick Links</h3>
+          <nav aria-label="Footer Navigation">
+            <ul class="footer-links">
+              <li><a href="#" class="footer-link">Home</a></li>
+              <li><a href="#upload-heading" class="footer-link">Upload Audio</a></li>
+              <li><a href="#live-heading" class="footer-link">Live Recording</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Social Links -->
+        <div class="footer-column footer-social">
+          <h3 class="footer-heading">Connect With Us</h3>
+          <div class="social-icons">
+            <a href="#" class="social-icon" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="mailto:contact@feelthemusic.com" class="social-icon" aria-label="Email"><i
+                class="fas fa-envelope"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Haptix Feel The Music</p>
+        <p>Built for Accessible Entertainment</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

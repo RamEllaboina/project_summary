@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Audio Recording - Haptix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.png" type="image/png">
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>Live Audio Recording</h1>
+            <p class="tagline">Your microphone will capture real-time sound to begin the experience.</p>
+        </header>
+
+        <main>
+            <div class="recording-container">
+                <!-- Status Indicator -->
+                <div class="status-wrapper">
+                    <i id="mic-icon" class="fas fa-microphone status-icon inactive" aria-hidden="true"></i>
+                    <h2 id="recording-status" class="status-text" aria-live="polite">Ready to Record</h2>
+                    <p id="recording-desc" class="status-desc">Click Start Recording to grant microphone access.</p>
+                </div>
+
+                <!-- Controls -->
+                <div class="recording-controls">
+                    <button id="btn-start" class="btn-success" aria-label="Start Live Recording">
+                        <i class="fas fa-circle recording-dot" aria-hidden="true"></i> Start Recording
+                    </button>
+                    <button id="btn-stop" class="btn-secondary" aria-label="Stop Live Recording" disabled>
+                        <i class="fas fa-stop" aria-hidden="true"></i> Stop Recording
+                    </button>
+                </div>
+
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Home
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modular Live Recording Logic -->
+    <script src="live.js"></script>
+</body>
+
+</html>

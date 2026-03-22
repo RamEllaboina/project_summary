@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pylint
+bandit
+radon
+pathspec
+
+pydantic-settings
+python-multipart
+# For robust subprocess calls
+sh

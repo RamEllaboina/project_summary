@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Visualization - Haptix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>Music Visualization</h1>
+            <p class="tagline">Your selected audio will be visualized here.</p>
+        </header>
+
+        <main>
+            <div style="text-align: center; margin-top: 2rem;">
+                <i class="fas fa-wave-square card-icon" style="font-size: 5rem; margin-bottom: 1.5rem;"></i>
+                <h2 id="display-filename" style="margin-bottom: 1rem; color: #fff;">Loading...</h2>
+                <p style="color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem; max-width: 500px;">
+                    This page will handle Web Audio API processing, canvas visualizer rendering, and the vibration motor
+                    feedback mapping based on the file selected.
+                </p>
+                <a href="index.html" class="btn-primary" style="display: inline-flex; width: auto;">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pendingFile = sessionStorage.getItem('pendingAudioFile');
+            if (pendingFile) {
+                document.getElementById('display-filename').textContent = `File: ${pendingFile}`;
+            } else {
+                document.getElementById('display-filename').textContent = `No file selected`;
+            }
+        });
+    </script>
+</body>
+
+</html>

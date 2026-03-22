@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journey Into My Heart</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Cinzel:wght@400;600&family=Montserrat:wght@300;400&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a0b1c;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            user-select: none;
+            /* Prevent selection for app-like feel */
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Login Overlay */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 11, 28, 0.95);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        .login-card h2 {
+            font-family: 'Dancing Script', cursive;
+            color: #ff8fa3;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffdde1;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+            /* Fix padding issue */
+        }
+
+        .input-group input:focus {
+            border-color: #ff8fa3;
+            box-shadow: 0 0 10px rgba(255, 143, 163, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8fa3);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            min-height: 1.2em;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Final Message Container */
+        .message-container {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1.5s ease-out;
+            background: rgba(40, 0, 10, 0.7);
+            box-shadow: 0 0 30px rgba(255, 0, 50, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            padding: 50px;
+            max-width: 650px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+        }
+
+        .message-container.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #ff8fa3;
+            text-shadow: 0 0 20px rgba(255, 143, 163, 0.8), 0 0 40px rgba(255, 0, 50, 0.4);
+            margin: 0 0 20px 0;
+        }
+
+        p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 20, 147, 0.8);
+            margin: 0;
+            min-height: 100px;
+            font-weight: 500;
+        }
+
+        .scroll-hint {
+            position: fixed;
+            bottom: 40px;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            animation: pulseHint 2s infinite;
+            display: none;
+            /* Hidden until login */
+        }
+
+        @keyframes pulseHint {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* Typing cursor styling */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2rem;
+            background-color: #ff8fa3;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Header Styling */
+        #fixed-header {
+            position: fixed;
+            top: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #ffdde1;
+            text-shadow:
+                0 0 10px rgba(255, 105, 180, 0.8),
+                0 0 20px rgba(255, 20, 147, 0.5),
+                0 0 30px rgba(255, 0, 0, 0.3);
+            z-index: 5;
+            pointer-events: none;
+            letter-spacing: 2px;
+            animation: glowHeader 3s infinite alternate;
+            opacity: 0;
+            /* Hidden until login */
+            transition: opacity 2s;
+        }
+
+        @keyframes glowHeader {
+            from {
+                text-shadow: 0 0 10px rgba(255, 105, 180, 0.8), 0 0 20px rgba(255, 20, 147, 0.5);
+                transform: scale(1);
+            }
+
+            to {
+                text-shadow: 0 0 20px rgba(255, 105, 180, 1), 0 0 30px rgba(255, 20, 147, 0.8), 0 0 40px rgba(255, 0, 0, 0.5);
+                transform: scale(1.05);
+            }
+        }
+    </style>
+    <!-- Import Map for Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h2>Love Lock</h2>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Who holds the key?">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Secret word">
+            </div>
+            <button class="login-btn" onclick="attemptLogin()">Enter Heart</button>
+            <div class="error-msg" id="error-msg">Incorrect credentials</div>
+        </div>
+    </div>
+
+    <div id="canvas-container"></div>
+    <div id="fixed-header">Ram 🥰❤️🩹💛 Sharanya</div>
+
+    <div id="ui-layer">
+        <div class="message-container" id="final-message">
+            <h1>My Heartbeat</h1>
+            <p id="typewriter-text"></p>
+        </div>
+        <div class="scroll-hint" id="scroll-hint">Scroll to Enter My Heart</div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source
+            src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3441a1532c.mp3?filename=cinematic-atmosphere-score-1-16474.mp3"
+            type="audio/mpeg">
+    </audio>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        // --- Configuration ---
+        const IMAGE_URLS = [
+            'myhalf1.jpg',
+            'myhalf2.jpg',
+            'myhalf3.jpeg',
+            'myhalf4.jpg',
+            'myhalf5.jpg',
+            'myhalf6.jpg'
+        ];
+
+        const LOVE_TEXT = "Every moment with you is a beautiful memory stored inside my heart. You are not just part of my life, you are the heartbeat of my soul. Forever yours. ❤️";
+
+        // Login Logic exposed to window
+        window.attemptLogin = function () {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (user === "RamEllaboina" && pass === "Sharanya") {
+                // Success
+                document.getElementById('login-overlay').style.opacity = 0;
+                setTimeout(() => {
+                    document.getElementById('login-overlay').style.display = 'none';
+                }, 1000);
+
+                // Reveal Elements
+                document.getElementById('fixed-header').style.opacity = 1;
+                document.getElementById('scroll-hint').style.display = 'block';
+
+                // Play Music (User interaction allowed now)
+                const audio = document.getElementById('bg-music');
+                audio.volume = 0.4;
+                audio.play().catch(e => console.log("Audio play failed", e));
+
+                // Start Animation Loop if not started (or just let it run visible now)
+            } else {
+                // Fail
+                errorMsg.style.opacity = 1;
+                gsap.fromTo(".login-card", { x: -10 }, { x: 10, duration: 0.1, yoyo: true, repeat: 5 });
+            }
+        };
+
+        // --- Scene Init ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x1a0b1c, 0.03);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 18);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 0.9;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // --- Controls ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enablePan = false;
+        controls.minDistance = 0.5;
+        controls.maxDistance = 25;
+        controls.zoomSpeed = 0.8;
+
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0x2a0a1a, 1.5);
+        scene.add(ambientLight);
+
+        const mainLight = new THREE.PointLight(0xff69b4, 1.5, 50);
+        mainLight.position.set(10, 10, 10);
+        scene.add(mainLight);
+
+        const internalLight = new THREE.PointLight(0xffaa33, 3, 15);
+        internalLight.position.set(0, 0, 0);
+        scene.add(internalLight);
+
+        const internalPinkLight = new THREE.PointLight(0xff0055, 2, 20);
+        internalPinkLight.position.set(0, 1, 0);
+        scene.add(internalPinkLight);
+
+        // --- The Heart ---
+        function createHeartGeometry() {
+            const x = 0, y = 0;
+            const heartShape = new THREE.Shape();
+            heartShape.moveTo(x + 5, y + 5);
+            heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+            heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+            heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+            heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+            heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+            heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
+
+            const extrudeSettings = {
+                depth: 3,
+                bevelEnabled: true,
+                bevelSegments: 5,
+                steps: 2,
+                bevelSize: 1.5,
+                bevelThickness: 1.5
+            };
+            const geo = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+            geo.center();
+            geo.rotateZ(Math.PI);
+            return geo;
+        }
+
+        const heartMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xff0a40,
+            emissive: 0x660022,
+            emissiveIntensity: 0.8,
+            attenuationColor: 0xffb6c1,
+            attenuationDistance: 1,
+            metalness: 0.3,
+            roughness: 0.1,
+            transmission: 0.1,
+            thickness: 4,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.0,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.95,
+            depthWrite: false,
+        });
+
+        const heartMesh = new THREE.Mesh(createHeartGeometry(), heartMaterial);
+        heartMesh.scale.set(0.5, 0.5, 0.5);
+        scene.add(heartMesh);
+
+        // --- Floating Particles (Stars) ---
+        const starsGeo = new THREE.BufferGeometry();
+        const starsCount = 2000;
+        const posArray = new Float32Array(starsCount * 3);
+        const scaleArray = new Float32Array(starsCount);
+
+        for (let i = 0; i < starsCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 80;
+        }
+        for (let i = 0; i < starsCount; i++) {
+            scaleArray[i] = Math.random();
+        }
+
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        starsGeo.setAttribute('aScale', new THREE.BufferAttribute(scaleArray, 1));
+
+        const starsMat = new THREE.PointsMaterial({
+            color: 0xffbae0,
+            size: 0.15,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const starField = new THREE.Points(starsGeo, starsMat);
+        scene.add(starField);
+
+        // --- Memories (Photos Inside) ---
+        const photosGroup = new THREE.Group();
+        scene.add(photosGroup);
+        const photoMeshes = [];
+
+        if (window.location.protocol === 'file:') {
+            // Optional: You could hide login and show error, but better to just show warning
+            const warning = document.createElement('div');
+            warning.style.cssText = `
+                position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: #ff4d4d;
+                padding: 15px; border: 1px solid red; border-radius: 5px; z-index: 1000; font-family: sans-serif;
+            `;
+            warning.innerHTML = `
+                <strong>⚠️ Running via Output file!</strong><br>
+                Images will NOT load due to browser security.<br>
+                Please use the local server link:<br>
+                <a href="http://localhost:8000/romantic_heart.html" style="color: #4da6ff; font-weight: bold;">http://localhost:8000/romantic_heart.html</a>
+            `;
+            document.body.appendChild(warning);
+        }
+
+        const textureLoader = new THREE.TextureLoader();
+
+        function createFallbackTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 300; canvas.height = 400;
+            const ctx = canvas.getContext('2d');
+            const grd = ctx.createLinearGradient(0, 0, 0, 400);
+            grd.addColorStop(0, "#ff9a9e");
+            grd.addColorStop(1, "#fecfef");
+            ctx.fillStyle = grd;
+            ctx.fillRect(0, 0, 300, 400);
+            ctx.fillStyle = "white";
+            ctx.font = "30px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("Memory", 150, 200);
+            const tex = new THREE.CanvasTexture(canvas);
+            return tex;
+        }
+
+        IMAGE_URLS.forEach((url, i) => {
+            const addMesh = (tex) => {
+                const imageAspect = (tex.image && tex.image.width) ? tex.image.width / tex.image.height : 0.75;
+                const h = 2.2; // Updated Size
+                const w = h * imageAspect;
+
+                const photoGeo = new THREE.PlaneGeometry(w, h);
+                const photoMat = new THREE.MeshBasicMaterial({
+                    map: tex,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0,
+                    depthWrite: false,
+                });
+                const mesh = new THREE.Mesh(photoGeo, photoMat);
+
+                mesh.userData = {
+                    initialPos: new THREE.Vector3(0, 0, 0),
+                    border: null
+                };
+
+                const edgeGeo = new THREE.EdgesGeometry(photoGeo);
+                const edgeMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+                const border = new THREE.LineSegments(edgeGeo, edgeMat);
+                mesh.add(border);
+                mesh.userData.border = border;
+
+                photosGroup.add(mesh);
+                photoMeshes.push(mesh);
+            };
+
+            textureLoader.load(url, (tex) => {
+                addMesh(tex);
+            }, undefined, (err) => {
+                console.error(`Error loading image ${url}, using fallback.`);
+                addMesh(createFallbackTexture());
+            });
+        });
+
+        // --- Burst Particles ---
+        const burstCount = 100;
+        const burstGeo = new THREE.BufferGeometry();
+        const burstPos = new Float32Array(burstCount * 3);
+        const burstVel = [];
+        for (let i = 0; i < burstCount; i++) {
+            burstPos[i * 3] = 0; burstPos[i * 3 + 1] = 0; burstPos[i * 3 + 2] = 0;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const speed = 0.05 + Math.random() * 0.1;
+            burstVel.push({
+                x: speed * Math.sin(phi) * Math.cos(theta),
+                y: speed * Math.sin(phi) * Math.sin(theta),
+                z: speed * Math.cos(phi)
+            });
+        }
+        burstGeo.setAttribute('position', new THREE.BufferAttribute(burstPos, 3));
+        const burstMat = new THREE.PointsMaterial({ color: 0xffffaa, size: 0.2, transparent: true, opacity: 0 });
+        const burstSystem = new THREE.Points(burstGeo, burstMat);
+        scene.add(burstSystem);
+
+        // --- Post Processing ---
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloomPass.threshold = 0.3;
+        bloomPass.strength = 0.5;
+        bloomPass.radius = 0.2;
+        composer.addPass(bloomPass);
+
+        // --- Logic & State ---
+        const clock = new THREE.Clock();
+        let time = 0;
+        let textRevealed = false;
+        let burstTriggered = false;
+
+        const CYCLE_COLORS = [0x2ecc71, 0xf1c40f, 0xffffff, 0xff69b4];
+        let colorIndex = 0;
+        let lastColorTime = 0;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+            const elapsedTime = clock.getElapsedTime();
+
+            controls.update();
+            const camDist = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
+
+            // Heart Pulse
+            const beat = Math.pow(Math.sin(time * 3), 63) * 0.1 + Math.sin(time * 3 + 0.2) * 0.05;
+            const currentScale = 0.5 + beat * 0.1;
+            heartMesh.scale.set(currentScale, currentScale, currentScale);
+            heartMesh.rotation.y = Math.sin(time * 0.2) * 0.1;
+
+            starField.rotation.y = time * 0.05;
+
+            // Updated Zoom Logic (Static Tunnel)
+            if (camDist < 9) {
+                // INSIDE
+                const baseColor = new THREE.Color(0xff0a40);
+                gsap.to(heartMaterial.color, { r: baseColor.r, g: baseColor.g, b: baseColor.b, duration: 0.5, overwrite: 'auto' });
+                const baseEmissive = new THREE.Color(0x660022);
+                gsap.to(heartMaterial.emissive, { r: baseEmissive.r, g: baseEmissive.g, b: baseEmissive.b, duration: 0.5, overwrite: 'auto' });
+
+                const opacity = Math.max(0, (camDist - 3) / 5);
+                heartMaterial.opacity = opacity * 0.3;
+                heartMaterial.transmission = 1 - opacity;
+                heartMaterial.emissiveIntensity = opacity * 0.8;
+
+                // Photo Tunnel Logic
+                photoMeshes.forEach((mesh, i) => {
+                    const targetZ = 7 - i * 1.0;
+                    const side = (i % 2 === 0) ? -1 : 1;
+                    const targetX = side * 1.8;
+                    const floatY = Math.sin(time * 2 + i) * 0.05;
+
+                    mesh.position.set(targetX, floatY, targetZ);
+                    mesh.lookAt(camera.position);
+
+                    let alpha = 0;
+                    const distToPhoto = camDist - targetZ;
+
+                    if (distToPhoto > -1 && distToPhoto < 4) {
+                        if (distToPhoto > 1) {
+                            alpha = (4 - distToPhoto) / 3;
+                        } else {
+                            alpha = (distToPhoto + 1) / 2;
+                        }
+                    }
+                    alpha = Math.max(0, Math.min(1, alpha));
+
+                    mesh.material.opacity = alpha * 0.6; // Reduced Opacity
+                    mesh.userData.border.material.opacity = alpha * 0.4;
+                });
+
+                document.getElementById('scroll-hint').style.opacity = Math.max(0, (camDist - 6));
+
+            } else {
+                // OUTSIDE
+                if (elapsedTime - lastColorTime > 0.7) {
+                    lastColorTime = elapsedTime;
+                    colorIndex = (colorIndex + 1) % CYCLE_COLORS.length;
+                    const nextColor = new THREE.Color(CYCLE_COLORS[colorIndex]);
+                    gsap.to(heartMaterial.color, { r: nextColor.r, g: nextColor.g, b: nextColor.b, duration: 0.5 });
+                    gsap.to(heartMaterial.emissive, { r: nextColor.r * 0.5, g: nextColor.g * 0.5, b: nextColor.b * 0.5, duration: 0.5 });
+                }
+
+                heartMaterial.opacity = 0.95;
+                heartMaterial.transmission = 0.1;
+                heartMaterial.emissiveIntensity = 0.8;
+
+                photoMeshes.forEach(m => {
+                    m.material.opacity = 0;
+                    m.userData.border.material.opacity = 0;
+                });
+                document.getElementById('scroll-hint').style.opacity = 1;
+            }
+
+            // Final Text
+            if (camDist < 2.0 && !textRevealed) {
+                revealText();
+                textRevealed = true;
+            } else if (camDist > 2.5 && textRevealed) {
+                hideText();
+                textRevealed = false;
+            }
+
+            if (textRevealed && !burstTriggered) {
+                burstTriggered = true;
+                burstMat.opacity = 1;
+            }
+            if (burstTriggered && burstMat.opacity > 0) {
+                const positions = burstGeo.attributes.position.array;
+                for (let i = 0; i < burstCount; i++) {
+                    positions[i * 3] += burstVel[i].x;
+                    positions[i * 3 + 1] += burstVel[i].y;
+                    positions[i * 3 + 2] += burstVel[i].z;
+                }
+                burstGeo.attributes.position.needsUpdate = true;
+                burstMat.opacity -= 0.01;
+            }
+
+            composer.render();
+        }
+
+        function revealText() {
+            const container = document.getElementById('final-message');
+            const textElem = document.getElementById('typewriter-text');
+            container.classList.add('visible');
+            if (textElem.innerText === "") {
+                typeWriterEffect(LOVE_TEXT, textElem);
+                // Music already playing from login
+            }
+        }
+
+        function hideText() {
+            const container = document.getElementById('final-message');
+            container.classList.remove('visible');
+            const textElem = document.getElementById('typewriter-text');
+            textElem.innerText = "";
+        }
+
+        function typeWriterEffect(text, ele, index = 0) {
+            if (index === 0) ele.innerHTML = '<span class="cursor"></span>';
+            if (index < text.length) {
+                ele.innerHTML = text.substring(0, index + 1) + '<span class="cursor"></span>';
+                setTimeout(() => typeWriterEffect(text, ele, index + 1), 40);
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start animation loop immediately, but visible content is hidden by overlay
+        animate();
+
+    </script>
+</body>
+
+</html>
