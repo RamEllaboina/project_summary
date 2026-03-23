@@ -19,8 +19,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 const uploadsDir = path.join(__dirname, 'uploads');
 fs.ensureDirSync(uploadsDir);
 
-// Original manual file upload route (drag+drop ui)
-app.use('/api/run', uploadRoute);
+// Store latest execution result
+let latestExecution = null;
+
+// Middleware to capture execution results
+app.use('/api/run', (req, res, next) => {
+    const originalSend = res.json;
+    res.json = function(data) {
+        latestExecution = data;
+        return originalSend.call(this, data);
+    };
+    next();
+}, uploadRoute);
+
+// Endpoint to get latest execution
+app.get('/api/latest-execution', (req, res) => {
+    if (latestExecution) {
+        res.json(latestExecution);
+    } else {
+        res.json({ status: 'info', message: 'No execution data available' });
+    }
+});
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', message: 'Code Sandbox is running on port 4000!' });

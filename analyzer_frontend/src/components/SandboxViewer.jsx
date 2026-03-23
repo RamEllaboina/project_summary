@@ -2,34 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Terminal, ExternalLink, Play, Code2, AlertCircle } from 'lucide-react';
+import { Terminal, ExternalLink, Play, Activity, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function SandboxViewer({ sandboxData }) {
-    const [sandboxUrl, setSandboxUrl] = useState('http://localhost:4001');
-    const [isSandboxRunning, setIsSandboxRunning] = useState(false);
-    const [sandboxStatus, setSandboxStatus] = useState('checking');
+    const [sandboxUrl] = useState('http://localhost:4001');
+    const [projectFlow, setProjectFlow] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        checkSandboxStatus();
+        fetchSandboxData();
     }, []);
 
-    const checkSandboxStatus = async () => {
+    const fetchSandboxData = async () => {
+        setLoading(true);
+        setError(null);
         try {
-            const response = await fetch(`${sandboxUrl}/health`, {
-                method: 'GET',
-                timeout: 5000,
-            });
-            
+            const response = await fetch(`${sandboxUrl}/api/latest-execution`);
             if (response.ok) {
-                setIsSandboxRunning(true);
-                setSandboxStatus('running');
+                const data = await response.json();
+                setProjectFlow(data);
             } else {
-                setIsSandboxRunning(false);
-                setSandboxStatus('stopped');
+                setError('No execution data available');
             }
         } catch (error) {
-            setIsSandboxRunning(false);
-            setSandboxStatus('stopped');
+            setError('Could not connect to sand_box_project');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -37,179 +36,159 @@ export default function SandboxViewer({ sandboxData }) {
         window.open(sandboxUrl, '_blank');
     };
 
-    const startSandbox = () => {
-        // Instructions to start sandbox
-        alert(`To start the sandbox:\n\n1. Open a new terminal\n2. Navigate to: sand_box_project\n3. Run: npm start\n4. Wait for it to start on port 4001\n\nThen refresh this page.`);
-    };
+    if (loading) {
+        return (
+            <Card>
+                <CardContent className="pt-6">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        Loading sandbox data...
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (error) {
+        return (
+            <Card>
+                <CardContent className="pt-6">
+                    <div className="flex items-center gap-3 text-orange-800">
+                        <AlertCircle className="w-5 h-5" />
+                        <div>
+                            <h4 className="font-semibold">Connection Error</h4>
+                            <p className="text-sm text-orange-700">{error}</p>
+                            <div className="flex gap-2 mt-3">
+                                <Button size="sm" onClick={fetchSandboxData}>
+                                    <RefreshCw className="w-4 h-4 mr-2" />
+                                    Retry
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={openSandbox}>
+                                    <ExternalLink className="w-4 h-4 mr-2" />
+                                    Open Sandbox
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
-        <div className="space-y-6">
-            {/* Sandbox Status */}
+        <div className="space-y-4">
+            {/* Header */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Terminal className="w-5 h-5 text-indigo-500" />
-                        Sandbox Status
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className={`w-3 h-3 rounded-full ${
-                                sandboxStatus === 'running' 
-                                    ? 'bg-green-500 animate-pulse' 
-                                    : 'bg-red-500'
-                            }`} />
-                            <span className="font-medium">
-                                Sandbox is {sandboxStatus}
-                            </span>
-                            <Badge variant={sandboxStatus === 'running' ? 'default' : 'destructive'}>
-                                {sandboxStatus === 'running' ? 'Online' : 'Offline'}
-                            </Badge>
-                        </div>
+                        <CardTitle className="flex items-center gap-2">
+                            <Activity className="w-5 h-5 text-green-500" />
+                            Sand_box_project Data
+                        </CardTitle>
                         <div className="flex gap-2">
                             <Button 
                                 variant="outline" 
                                 size="sm" 
-                                onClick={checkSandboxStatus}
+                                onClick={fetchSandboxData}
+                                disabled={loading}
                             >
-                                Check Status
+                                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                                Refresh
                             </Button>
-                            {isSandboxRunning ? (
-                                <Button size="sm" onClick={openSandbox}>
-                                    <ExternalLink className="w-4 h-4 mr-2" />
-                                    Open Sandbox
-                                </Button>
-                            ) : (
-                                <Button size="sm" onClick={startSandbox}>
-                                    <Play className="w-4 h-4 mr-2" />
-                                    Start Sandbox
-                                </Button>
-                            )}
+                            <Button size="sm" variant="outline" onClick={openSandbox}>
+                                <ExternalLink className="w-4 h-4 mr-2" />
+                                Open Sandbox
+                            </Button>
                         </div>
                     </div>
-                </CardContent>
-            </Card>
-
-            {/* Sandbox Info */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Code2 className="w-5 h-5" />
-                        About the Sandbox
-                    </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div>
-                        <h4 className="font-semibold mb-2">What is the Sandbox?</h4>
-                        <p className="text-muted-foreground">
-                            The sandbox is a secure environment where your uploaded code can be executed 
-                            and tested in isolation. It provides real-time feedback on code execution, 
-                            dependencies, and runtime behavior.
-                        </p>
-                    </div>
-                    
-                    <div>
-                        <h4 className="font-semibold mb-2">Features</h4>
-                        <ul className="text-sm text-muted-foreground space-y-1">
-                            <li>• Secure code execution in isolated environment</li>
-                            <li>• Real-time output and error reporting</li>
-                            <li>• Support for multiple programming languages</li>
-                            <li>• Dependency management and installation</li>
-                            <li>• File system access within sandbox boundaries</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="font-semibold mb-2">Connection Info</h4>
-                        <div className="text-sm text-muted-foreground space-y-1">
-                            <div><strong>URL:</strong> {sandboxUrl}</div>
-                            <div><strong>Port:</strong> 4001</div>
-                            <div><strong>Status:</strong> {sandboxStatus}</div>
-                        </div>
-                    </div>
-                </CardContent>
             </Card>
 
-            {/* Sandbox Results */}
-            {sandboxData && (
+            {/* Project Data */}
+            {projectFlow && (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <AlertCircle className="w-5 h-5" />
-                            Execution Results
-                        </CardTitle>
+                        <CardTitle>Latest Execution Results</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {sandboxData.output && (
+                            {/* Status and Basic Info */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="text-center p-4 border rounded-lg">
+                                    <div className={`w-3 h-3 rounded-full mx-auto mb-2 ${
+                                        projectFlow.execution_status === 'success' 
+                                            ? 'bg-green-500' 
+                                            : projectFlow.execution_status === 'failed'
+                                            ? 'bg-red-500'
+                                            : 'bg-yellow-500'
+                                    }`} />
+                                    <div className="font-semibold">{projectFlow.execution_status || 'Unknown'}</div>
+                                    <div className="text-sm text-muted-foreground">Status</div>
+                                </div>
+                                <div className="text-center p-4 border rounded-lg">
+                                    <div className="text-2xl font-bold text-blue-600">
+                                        {projectFlow.execution_time || '0'}s
+                                    </div>
+                                    <div className="text-sm text-muted-foreground">Execution Time</div>
+                                </div>
+                                <div className="text-center p-4 border rounded-lg">
+                                    <div className="text-2xl font-bold text-purple-600">
+                                        {projectFlow.detected_project_type || 'Unknown'}
+                                    </div>
+                                    <div className="text-sm text-muted-foreground">Project Type</div>
+                                </div>
+                            </div>
+
+                            {/* Project Details */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <div className="flex justify-between">
+                                        <span className="text-sm font-medium">Framework:</span>
+                                        <Badge variant="outline">{projectFlow.framework || 'None'}</Badge>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-sm font-medium">Language:</span>
+                                        <Badge variant="outline">{projectFlow.language || 'Unknown'}</Badge>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-sm font-medium">Entry File:</span>
+                                        <span className="text-sm text-muted-foreground">{projectFlow.entry_file || 'N/A'}</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between">
+                                        <span className="text-sm font-medium">Files Processed:</span>
+                                        <span className="text-sm text-muted-foreground">{projectFlow.filtering?.processedFiles || 0}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-sm font-medium">Files Skipped:</span>
+                                        <span className="text-sm text-muted-foreground">{projectFlow.filtering?.skippedFiles || 0}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-sm font-medium">Status:</span>
+                                        <Badge variant={projectFlow.execution_status === 'success' ? "default" : "destructive"}>
+                                            {projectFlow.execution_status || 'Unknown'}
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Executed Command */}
+                            {projectFlow.executed_command && (
                                 <div>
-                                    <h4 className="font-semibold mb-2">Output</h4>
+                                    <div className="text-sm font-medium mb-2">Executed Command:</div>
                                     <pre className="bg-muted p-3 rounded text-sm overflow-auto">
-                                        {sandboxData.output}
+                                        {projectFlow.executed_command}
                                     </pre>
                                 </div>
                             )}
-                            
-                            {sandboxData.errors && sandboxData.errors.length > 0 && (
-                                <div>
-                                    <h4 className="font-semibold mb-2 text-red-600">Errors</h4>
-                                    <div className="space-y-2">
-                                        {sandboxData.errors.map((error, index) => (
-                                            <div key={index} className="bg-red-50 border border-red-200 p-3 rounded text-sm">
-                                                {error}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                            
-                            {sandboxData.metrics && (
-                                <div>
-                                    <h4 className="font-semibold mb-2">Performance Metrics</h4>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-blue-600">
-                                                {sandboxData.metrics.executionTime || 'N/A'}
-                                            </div>
-                                            <div className="text-xs text-muted-foreground">Execution Time</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-green-600">
-                                                {sandboxData.metrics.memoryUsage || 'N/A'}
-                                            </div>
-                                            <div className="text-xs text-muted-foreground">Memory Usage</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-purple-600">
-                                                {sandboxData.metrics.dependencies || 'N/A'}
-                                            </div>
-                                            <div className="text-xs text-muted-foreground">Dependencies</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-orange-600">
-                                                {sandboxData.metrics.tests || 'N/A'}
-                                            </div>
-                                            <div className="text-xs text-muted-foreground">Tests Run</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
 
-            {!isSandboxRunning && (
-                <Card className="border-orange-200 bg-orange-50">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center gap-3 text-orange-800">
-                            <AlertCircle className="w-5 h-5" />
+                            {/* Raw Data */}
                             <div>
-                                <h4 className="font-semibold">Sandbox is Offline</h4>
-                                <p className="text-sm text-orange-700">
-                                    Start the sandbox to execute and test your code in a secure environment.
-                                </p>
+                                <div className="text-sm font-medium mb-2">Raw Data:</div>
+                                <pre className="bg-muted p-3 rounded text-xs overflow-auto max-h-64">
+                                    {JSON.stringify(projectFlow, null, 2)}
+                                </pre>
                             </div>
                         </div>
                     </CardContent>

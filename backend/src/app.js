@@ -20,7 +20,20 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api', projectRoutes);
 
-// 404 Handler
+// Health check endpoint (must be before 404 handler)
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        message: 'Backend API is running',
+        timestamp: new Date().toISOString(),
+        services: {
+            ai_engine: 'http://localhost:8002',
+            ai_detection: 'http://localhost:8003',
+            sandbox: 'http://localhost:4000'
+        }
+    });
+});
+
 // 404 Handler
 app.all(/(.*)/, (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

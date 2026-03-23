@@ -9,8 +9,8 @@ export default function Home() {
     const navigate = useNavigate();
 
     const handleSandboxClick = () => {
-        // Redirect to sandbox project running on port 4001
-        window.open('http://localhost:4001', '_blank');
+        // Navigate to the sandbox page within the analyzer_frontend
+        navigate('/sandbox');
     };
 
     return (

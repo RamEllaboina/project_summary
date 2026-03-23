@@ -63,6 +63,9 @@ exports.processSubmission = async (projectId, projectPath) => {
         let aiDetectionResult = null;
         
         try {
+            console.log(`[Job] Processing ${report.importantFiles?.length || 0} important files for AI analysis`);
+            
+            // Process files in parallel for faster chunking
             const importantFilesInput = await Promise.all(
                 (report.importantFiles || []).map(async (f) => {
                     let content = f.summary || '';
@@ -70,7 +73,8 @@ exports.processSubmission = async (projectId, projectPath) => {
                         try {
                             const fp = path.join(projectPath, f.path);
                             if (await fs.pathExists(fp)) {
-                                content = (await fs.readFile(fp, 'utf8')).substring(0, 5000);
+                                // Read only first 2000 characters for faster processing
+                                content = (await fs.readFile(fp, 'utf8')).substring(0, 2000);
                             }
                         } catch (e) {
                             console.warn(`Could not read file ${f.path} for AI`);
@@ -80,7 +84,10 @@ exports.processSubmission = async (projectId, projectPath) => {
                 })
             );
 
+            console.log(`[Job] Prepared ${importantFilesInput.length} files for AI analysis`);
+
             // Call AI Engine for comprehensive analysis
+            console.log(`[Job] Calling AI Engine for ${projectId}`);
             evaluation = await aiService.evaluateProject(projectId, {
                 ...report,
                 importantFiles: importantFilesInput,

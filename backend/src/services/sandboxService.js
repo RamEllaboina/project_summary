@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const AppError = require('../utils/AppError');
 
-const SANDBOX_URL = process.env.SANDBOX_URL || 'http://localhost:4000/api/run';
+const SANDBOX_URL = process.env.SANDBOX_URL || 'http://localhost:4001/api/run';
 
 /**
  * Execute the project in the Sandbox

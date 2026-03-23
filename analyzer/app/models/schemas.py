@@ -10,6 +10,13 @@ class ComplexityMetrics(BaseModel):
     maintainability_index: float = 0.0
     max_complexity: int = 0
     complex_functions: int = 0
+    total_files: int = 0
+    total_loc: int = 0
+    file_types: int = 0
+    folder_depth: int = 0
+    dependency_count: int = 0
+    keyword_score: int = 0
+    complexity_by_extension: Dict[str, Dict[str, Any]] = {}
 
 class Metrics(BaseModel):
     qualityScore: float = 0.0

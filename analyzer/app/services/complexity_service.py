@@ -18,6 +18,10 @@ class ComplexityService:
         total_loc = 0
         file_extensions: Set[str] = set()
         keyword_score = 0
+        
+        # Track complexity by file extension
+        complexity_by_extension = {}
+        file_details_by_extension = {}
 
         for file_path in files:
             try:
@@ -35,11 +39,25 @@ class ComplexityService:
                 # Count keyword complexity
                 keyword_score += self._compute_keyword_complexity(content)
 
+                # Initialize extension tracking
+                ext = file_path.suffix.lower() or 'no_extension'
+                if ext not in complexity_by_extension:
+                    complexity_by_extension[ext] = {
+                        'total_cc': 0,
+                        'total_mi': 0,
+                        'file_count': 0,
+                        'max_cc': 0,
+                        'total_loc': 0,
+                        'files': []
+                    }
+
                 # ── Python: use radon ────────────────────────────────────────
                 if file_path.suffix == ".py":
                     blocks = cc_visit(content)
+                    file_cc = 0
                     for block in blocks:
                         cc = block.complexity
+                        file_cc += cc
                         total_cc += cc
                         max_cc = max(max_cc, cc)
                         if cc > 10:
@@ -48,6 +66,19 @@ class ComplexityService:
                     mi = mi_visit(content, multi=True)
                     total_mi += mi
                     file_count += 1
+                    
+                    # Track by extension
+                    complexity_by_extension[ext]['total_cc'] += file_cc
+                    complexity_by_extension[ext]['total_mi'] += mi
+                    complexity_by_extension[ext]['file_count'] += 1
+                    complexity_by_extension[ext]['max_cc'] = max(complexity_by_extension[ext]['max_cc'], file_cc)
+                    complexity_by_extension[ext]['total_loc'] += file_loc
+                    complexity_by_extension[ext]['files'].append({
+                        'name': file_path.name,
+                        'cc': file_cc,
+                        'mi': mi,
+                        'loc': file_loc
+                    })
 
                 # ── JS / TS / JSX / TSX: heuristic complexity ────────────────
                 elif file_path.suffix in {".js", ".ts", ".jsx", ".tsx"}:
@@ -58,6 +89,19 @@ class ComplexityService:
                         complex_functions_count += 1
                     total_mi += mi
                     file_count += 1
+                    
+                    # Track by extension
+                    complexity_by_extension[ext]['total_cc'] += cc
+                    complexity_by_extension[ext]['total_mi'] += mi
+                    complexity_by_extension[ext]['file_count'] += 1
+                    complexity_by_extension[ext]['max_cc'] = max(complexity_by_extension[ext]['max_cc'], cc)
+                    complexity_by_extension[ext]['total_loc'] += file_loc
+                    complexity_by_extension[ext]['files'].append({
+                        'name': file_path.name,
+                        'cc': cc,
+                        'mi': mi,
+                        'loc': file_loc
+                    })
 
                 # ── HTML: heuristic complexity ────────────────────────────────
                 elif file_path.suffix in {".html", ".htm"}:
@@ -66,6 +110,19 @@ class ComplexityService:
                     max_cc = max(max_cc, cc)
                     total_mi += mi
                     file_count += 1
+                    
+                    # Track by extension
+                    complexity_by_extension[ext]['total_cc'] += cc
+                    complexity_by_extension[ext]['total_mi'] += mi
+                    complexity_by_extension[ext]['file_count'] += 1
+                    complexity_by_extension[ext]['max_cc'] = max(complexity_by_extension[ext]['max_cc'], cc)
+                    complexity_by_extension[ext]['total_loc'] += file_loc
+                    complexity_by_extension[ext]['files'].append({
+                        'name': file_path.name,
+                        'cc': cc,
+                        'mi': mi,
+                        'loc': file_loc
+                    })
 
                 # ── CSS: heuristic complexity ─────────────────────────────────
                 elif file_path.suffix == ".css":
@@ -74,6 +131,19 @@ class ComplexityService:
                     max_cc = max(max_cc, cc)
                     total_mi += mi
                     file_count += 1
+                    
+                    # Track by extension
+                    complexity_by_extension[ext]['total_cc'] += cc
+                    complexity_by_extension[ext]['total_mi'] += mi
+                    complexity_by_extension[ext]['file_count'] += 1
+                    complexity_by_extension[ext]['max_cc'] = max(complexity_by_extension[ext]['max_cc'], cc)
+                    complexity_by_extension[ext]['total_loc'] += file_loc
+                    complexity_by_extension[ext]['files'].append({
+                        'name': file_path.name,
+                        'cc': cc,
+                        'mi': mi,
+                        'loc': file_loc
+                    })
 
             except Exception:
                 # Skip binary files or files with encoding issues
@@ -85,6 +155,18 @@ class ComplexityService:
         avg_cc = total_cc / file_count if file_count > 0 else 0
         avg_mi = total_mi / file_count if file_count > 0 else 0
 
+        # Calculate average complexity by extension
+        for ext in complexity_by_extension:
+            if complexity_by_extension[ext]['file_count'] > 0:
+                complexity_by_extension[ext]['avg_cc'] = round(
+                    complexity_by_extension[ext]['total_cc'] / complexity_by_extension[ext]['file_count'], 2
+                )
+                complexity_by_extension[ext]['avg_mi'] = round(
+                    complexity_by_extension[ext]['total_mi'] / complexity_by_extension[ext]['file_count'], 2
+                )
+            # Sort files by complexity
+            complexity_by_extension[ext]['files'].sort(key=lambda x: x['cc'], reverse=True)
+
         return ComplexityMetrics(
             average_cyclomatic_complexity=round(avg_cc, 2),
             maintainability_index=round(avg_mi, 2),
@@ -95,7 +177,8 @@ class ComplexityService:
             file_types=len(file_extensions),
             folder_depth=self._calculate_folder_depth(files),
             dependency_count=dependency_count,
-            keyword_score=keyword_score
+            keyword_score=keyword_score,
+            complexity_by_extension=complexity_by_extension
         )
 
     def _calculate_folder_depth(self, files: List[Path]) -> int:

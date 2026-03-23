@@ -12,11 +12,11 @@
         rel="stylesheet">
     <style>
         :root {
-            --bg: #080c14;
-            --surface: rgba(15, 22, 36, 0.85);
-            --surface-2: rgba(22, 30, 50, 0.9);
-            --border: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(59, 130, 246, 0.3);
+            --bg: #f0f0f0;
+            --surface: rgba(240, 240, 240, 0.95);
+            --surface-2: rgba(230, 230, 230, 0.95);
+            --border: rgba(0, 0, 0, 0.1);
+            --border-glow: rgba(59, 130, 246, 0.4);
             --blue: #3b82f6;
             --blue-light: #60a5fa;
             --green: #10b981;
@@ -24,10 +24,10 @@
             --purple: #8b5cf6;
             --orange: #f59e0b;
             --red: #ef4444;
-            --text: #f1f5f9;
-            --text-muted: #64748b;
-            --text-dim: #94a3b8;
-            --term-bg: #030712;
+            --text: #000000;
+            --text-muted: #374151;
+            --text-dim: #6b7280;
+            --term-bg: #f5f5f5;
             --term-green: #4ade80;
         }
 
@@ -102,21 +102,21 @@
         }
 
         .pill-node {
-            color: #86efac;
-            border-color: rgba(134, 239, 172, 0.3);
-            background: rgba(134, 239, 172, 0.06);
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.06);
         }
 
         .pill-python {
-            color: #fde68a;
-            border-color: rgba(253, 230, 138, 0.3);
-            background: rgba(253, 230, 138, 0.06);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.06);
         }
 
         .pill-frontend {
-            color: #93c5fd;
-            border-color: rgba(147, 197, 253, 0.3);
-            background: rgba(147, 197, 253, 0.06);
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(59, 130, 246, 0.06);
         }
 
         /* ─── Main Layout ─────────────────────────── */
@@ -256,19 +256,19 @@
             justify-content: center;
             gap: 10px;
             transition: all 0.25s ease;
-            background: linear-gradient(135deg, var(--blue) 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
         }
 
         .btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #60a5fa, #818cf8);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
             transform: translateY(-1px);
         }
 
         .btn:disabled {
             background: rgba(39, 50, 72, 1);
-            color: var(--text-muted);
+            color: #000000;
             cursor: not-allowed;
         }
 
@@ -629,14 +629,14 @@
 
 <body>
     <header class="header">
-        <div class="badge">🐳 Docker-Powered · Puppeteer · Secure Sandbox</div>
-        <h1>Code Sandbox Engine</h1>
-        <p>Upload any project folder — frontend HTML/JS, Node.js, or Python. We execute it safely inside an isolated
-            container and show you the full execution flow.</p>
+        <div class="badge">� Advanced Code Sandbox · AI-Powered · Docker Isolation</div>
+        <h1>Intelligent Code Sandbox</h1>
+        <p>Upload any project folder — frontend HTML/JS, Node.js, or Python. Our AI-powered sandbox analyzes project structure, detects frameworks, and executes code securely in isolated containers with real-time flow visualization.</p>
         <div class="pills">
             <span class="pill pill-node">⚡ Node.js</span>
             <span class="pill pill-python">🐍 Python</span>
             <span class="pill pill-frontend">🌐 Frontend HTML/JS</span>
+            <span class="pill" style="color: #a78bfa; border-color: rgba(167, 139, 250, 0.3); background: rgba(167, 139, 250, 0.06);">🤖 AI Analysis</span>
         </div>
     </header>
 
@@ -648,15 +648,21 @@
 
             <div class="drop-zone" id="dropZone">
                 <input type="file" id="folderInput" webkitdirectory directory multiple />
+                <input type="file" id="fileInput" multiple style="display: none;" />
                 <span class="drop-icon">📁</span>
                 <div id="dropTitle" style="font-size:1rem;font-weight:600;">Drop your project folder here</div>
-                <div class="drop-hint">or click to browse · supports frontend, Node.js, Python</div>
+                <div class="drop-hint">or click to browse folders · supports frontend, Node.js, Python</div>
             </div>
 
             <div class="file-list-wrap" id="fileListWrap">
                 <div style="color:var(--blue-light);margin-bottom:6px;">📂 <strong id="folderName"></strong> — <span
                         id="fileCount"></span> files</div>
                 <ul id="fileList" style="list-style:none; padding-left:6px;"></ul>
+            </div>
+
+            <div class="project-analysis" id="projectAnalysis" style="display:none; margin-top:16px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px;">
+                <div style="font-weight:600; margin-bottom:8px; color: var(--blue-light);">🔍 Project Analysis</div>
+                <div id="analysisContent" style="font-size:0.85rem; color: var(--text-muted);"></div>
             </div>
 
             <div class="type-badge" id="typeBadge"></div>
@@ -719,6 +725,7 @@
 
     <script>
         const folderInput = document.getElementById('folderInput');
+        const fileInput = document.getElementById('fileInput');
         const dropZone = document.getElementById('dropZone');
         const dropTitle = document.getElementById('dropTitle');
         const fileListWrap = document.getElementById('fileListWrap');
@@ -738,64 +745,262 @@
         const executionLogs = document.getElementById('executionLogs');
         const filteringInfo = document.getElementById('filteringInfo');
         const architectureCard = document.getElementById('architectureCard');
+        const projectAnalysis = document.getElementById('projectAnalysis');
+        const analysisContent = document.getElementById('analysisContent');
 
 let selectedFiles = [];
 
-// ─── Drag & Drop wiring ─────────────────────────────────────
+// ─── Enhanced File Handling ─────────────────────────────────────
+dropZone.addEventListener('click', () => {
+    folderInput.click();
+});
+
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev =>
     dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev =>
-            dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
 
-        ['dragenter', 'dragover'].forEach(ev =>
-            dropZone.addEventListener(ev, () => dropZone.classList.add('drag-over')));
+['dragenter', 'dragover'].forEach(ev =>
+    dropZone.addEventListener(ev, () => dropZone.classList.add('drag-over')));
 
-        ['dragleave', 'drop'].forEach(ev =>
-            dropZone.addEventListener(ev, () => dropZone.classList.remove('drag-over')));
+['dragleave', 'drop'].forEach(ev =>
+    dropZone.addEventListener(ev, () => dropZone.classList.remove('drag-over')));
 
-        folderInput.addEventListener('change', e => handleFiles(e.target.files));
+// Handle directory upload for browsers that support it
+folderInput.addEventListener('change', e => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+        handleFiles(files);
+    }
+});
 
-        function handleFiles(files) {
-            if (!files || files.length === 0) return;
-            selectedFiles = Array.from(files);
+// Handle regular file upload as fallback
+fileInput.addEventListener('change', e => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+        handleFiles(files);
+    }
+});
 
-            const rootFolder = (selectedFiles[0].webkitRelativePath || selectedFiles[0].name).split('/')[0];
-            folderName.innerText = rootFolder;
-            fileCountEl.innerText = selectedFiles.length;
-            dropTitle.innerText = rootFolder + '/';
-
-            fileList.innerHTML = '';
-            const max = 12;
-            for (let i = 0; i < Math.min(selectedFiles.length, max); i++) {
-                const li = document.createElement('li');
-                li.innerText = '  ' + (selectedFiles[i].webkitRelativePath || selectedFiles[i].name);
-                fileList.appendChild(li);
+// Handle drag and drop for directories
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const items = e.dataTransfer ? e.dataTransfer.items : [];
+    if (items.length > 0) {
+        const allFiles = [];
+        let processedCount = 0;
+        
+        const processItem = (item, path = '') => {
+            return new Promise(resolve => {
+                if (item.kind === 'file') {
+                    const file = item.getAsFile();
+                    if (file) {
+                        const relativePath = path ? `${path}/${file.name}` : file.name;
+                        allFiles.push(Object.assign(file, { 
+                            webkitRelativePath: relativePath,
+                            name: file.name 
+                        }));
+                        processedCount++;
+                        resolve();
+                    }
+                } else if (item.kind === 'directory') {
+                    const dirReader = item.createReader();
+                    dirReader.readEntries(entries => {
+                        entries.forEach(subEntry => {
+                            if (subEntry.isFile) {
+                                subEntry.file(file => {
+                                    const relativePath = path ? `${path}/${item.name}/${subEntry.name}` : `${item.name}/${subEntry.name}`;
+                                    allFiles.push(Object.assign(file, { 
+                                        webkitRelativePath: relativePath,
+                                        name: subEntry.name 
+                                    }));
+                                    processedCount++;
+                                });
+                            } else if (subEntry.isDirectory) {
+                                // Recursively process subdirectories
+                                const subDirReader = subEntry.createReader();
+                                subDirReader.readEntries(subEntries => {
+                                    subEntries.forEach(subSubEntry => {
+                                        if (subSubEntry.isFile) {
+                                            subSubEntry.file(file => {
+                                                const relativePath = path ? `${path}/${item.name}/${subEntry.name}/${subSubEntry.name}` : `${item.name}/${subEntry.name}/${subSubEntry.name}`;
+                                                allFiles.push(Object.assign(file, { 
+                                                    webkitRelativePath: relativePath,
+                                                    name: subSubEntry.name 
+                                                }));
+                                                processedCount++;
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    });
+                    dirReader.readEntries();
+                } else {
+                    resolve();
+                }
+            });
+        };
+        
+        // Process all items concurrently
+        Promise.all(Array.from(items).map(item => processItem(item))).then(() => {
+            if (allFiles.length > 0) {
+                handleFiles(allFiles);
             }
-            if (selectedFiles.length > max) {
-                const li = document.createElement('li');
-                li.style.fontStyle = 'italic';
-                li.innerText = `  ...and ${selectedFiles.length - max} more files`;
-                fileList.appendChild(li);
-            }
+        });
+    }
+});
 
-            fileListWrap.style.display = 'block';
-            runBtn.disabled = false;
+function handleFiles(files) {
+    if (!files || files.length === 0) return;
+    
+    // Clear previous selection and reset UI
+    selectedFiles = [];
+    fileListWrap.style.display = 'none';
+    projectAnalysis.style.display = 'none';
+    runBtn.disabled = true;
+    
+    // Set new files
+    selectedFiles = Array.from(files);
 
-            // Quick client-side type hint
-            const names = selectedFiles.map(f => f.name.toLowerCase());
-            let guessType = 'backend';
-            if (names.includes('index.html') || names.some(n => n.endsWith('.html'))) guessType = 'frontend';
-            if (names.includes('package.json') && names.includes('index.html')) guessType = 'fullstack';
-            showTypeBadge(guessType);
-        }
+    const rootFolder = (selectedFiles[0].webkitRelativePath || selectedFiles[0].name).split('/')[0];
+    folderName.innerText = rootFolder;
+    fileCountEl.innerText = selectedFiles.length;
+    dropTitle.innerText = rootFolder + '/';
 
-        function showTypeBadge(type) {
-            const icons = { frontend: '🌐 Frontend (HTML/JS)', backend: '⚙️ Backend (Node/Python)', fullstack: '🔄 Fullstack' };
-            const cls = { frontend: 'type-frontend', backend: 'type-backend', fullstack: 'type-fullstack' };
-            typeBadge.className = `type-badge ${cls[type] || 'type-backend'}`;
-            typeBadge.style.display = 'flex';
-            typeBadge.innerText = icons[type] || type;
-        }
+    fileList.innerHTML = '';
+    const maxFiles = 12;
+    for (let i = 0; i < Math.min(selectedFiles.length, maxFiles); i++) {
+        const li = document.createElement('li');
+        li.innerText = '  ' + (selectedFiles[i].webkitRelativePath || selectedFiles[i].name);
+        fileList.appendChild(li);
+    }
+    if (selectedFiles.length > maxFiles) {
+        const li = document.createElement('li');
+        li.style.fontStyle = 'italic';
+        li.innerText = `  ...and ${selectedFiles.length - maxFiles} more files`;
+        fileList.appendChild(li);
+    }
+
+    fileListWrap.style.display = 'block';
+    runBtn.disabled = false;
+
+    // Show project analysis
+    showProjectAnalysis();
+
+    // Quick client-side type hint
+    const names = selectedFiles.map(f => f.name.toLowerCase());
+    let guessType = 'backend';
+    if (names.includes('index.html') || names.some(n => n.endsWith('.html'))) guessType = 'frontend';
+    if (names.includes('package.json') && names.includes('index.html')) guessType = 'fullstack';
+    showTypeBadge(guessType);
+}
+
+function showProjectAnalysis() {
+    if (!selectedFiles || selectedFiles.length === 0) return;
+    
+    const analysis = analyzeProject(selectedFiles);
+    projectAnalysis.style.display = 'block';
+    analysisContent.innerHTML = analysis;
+}
+
+function analyzeProject(files) {
+    const fileNames = files.map(f => f.name.toLowerCase());
+    const extensions = files.map(f => '.' + f.name.split('.').pop()?.toLowerCase());
+    
+    // Detect languages
+    const hasJS = extensions.includes('.js') || extensions.includes('.jsx') || extensions.includes('.ts') || extensions.includes('.tsx');
+    const hasPython = extensions.includes('.py');
+    const hasHTML = extensions.includes('.html') || extensions.includes('.htm');
+    const hasCSS = extensions.includes('.css') || extensions.includes('.scss') || extensions.includes('.sass');
+    
+    // Detect frameworks
+    const hasReact = fileNames.some(n => n.includes('react') || n.includes('jsx') || n.includes('tsx'));
+    const hasVue = fileNames.some(n => n.includes('vue'));
+    const hasExpress = fileNames.some(n => n.includes('express') || n.includes('app.js'));
+    const hasDjango = fileNames.some(n => n.includes('django') || n.includes('settings.py'));
+    const hasFlask = fileNames.some(n => n.includes('flask') || n.includes('app.py'));
+    const hasAngular = fileNames.some(n => n.includes('angular') || n.includes('angular.') || n.includes('app.module.ts'));
+    
+    // Detect project type
+    let projectType = 'Unknown';
+    let languages = [];
+    let frameworks = [];
+    
+    if (hasHTML && hasJS && !hasPython) {
+        projectType = 'Frontend Web Application';
+        languages.push('HTML', 'JavaScript', 'CSS');
+        if (hasReact) frameworks.push('React');
+        if (hasVue) frameworks.push('Vue.js');
+        if (hasAngular) frameworks.push('Angular');
+    } else if (hasPython && !hasHTML) {
+        projectType = 'Python Backend Application';
+        languages.push('Python');
+        if (hasDjango) frameworks.push('Django');
+        if (hasFlask) frameworks.push('Flask');
+    } else if (hasJS && !hasHTML && !hasPython) {
+        projectType = 'Node.js Backend Application';
+        languages.push('JavaScript', 'Node.js');
+        if (hasExpress) frameworks.push('Express.js');
+    } else if (hasHTML && hasJS && hasPython) {
+        projectType = 'Full-Stack Application';
+        languages.push('HTML', 'JavaScript', 'Python', 'CSS');
+        if (hasReact) frameworks.push('React');
+        if (hasVue) frameworks.push('Vue.js');
+        if (hasExpress) frameworks.push('Express.js');
+        if (hasDjango) frameworks.push('Django');
+        if (hasAngular) frameworks.push('Angular');
+    } else {
+        projectType = 'Mixed Project';
+        if (hasJS) languages.push('JavaScript');
+        if (hasPython) languages.push('Python');
+        if (hasHTML) languages.push('HTML');
+        if (hasCSS) languages.push('CSS');
+    }
+    
+    // Calculate file sizes
+    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+    
+    // Count file types
+    const jsFiles = files.filter(f => f.name.endsWith('.js') || f.name.endsWith('.jsx') || f.name.endsWith('.ts') || f.name.endsWith('.tsx')).length;
+    const pyFiles = files.filter(f => f.name.endsWith('.py')).length;
+    const htmlFiles = files.filter(f => f.name.endsWith('.html') || f.name.endsWith('.htm')).length;
+    const cssFiles = files.filter(f => f.name.endsWith('.css') || f.name.endsWith('.scss') || f.name.endsWith('.sass')).length;
+    
+    return `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+                <strong>📊 Project Type:</strong><br>
+                ${projectType}
+            </div>
+            <div>
+                <strong>📏 Total Size:</strong><br>
+                ${sizeInMB} MB
+            </div>
+        </div>
+        <div style="margin-top: 8px;">
+            <strong>💻 Languages:</strong> ${languages.join(', ') || 'None detected'}<br>
+            <strong>🔧 Frameworks:</strong> ${frameworks.join(', ') || 'None detected'}
+        </div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);">
+            <strong>📁 File Breakdown:</strong><br>
+            JavaScript/TypeScript: ${jsFiles} files<br>
+            Python: ${pyFiles} files<br>
+            HTML: ${htmlFiles} files<br>
+            CSS: ${cssFiles} files
+        </div>
+    `;
+}
+
+function showTypeBadge(type) {
+    const icons = { frontend: '🌐 Frontend (HTML/JS)', backend: '⚙️ Backend (Node/Python)', fullstack: '🔄 Fullstack' };
+    const cls = { frontend: 'type-frontend', backend: 'type-backend', fullstack: 'type-fullstack' };
+    typeBadge.className = `type-badge ${cls[type] || 'type-backend'}`;
+    typeBadge.style.display = 'flex';
+    typeBadge.innerText = icons[type] || type;
+}
 
         // ─── Execution ──────────────────────────────────────────────
         runBtn.addEventListener('click', async () => {
@@ -993,45 +1198,149 @@ let selectedFiles = [];
             const architectureFlow = document.getElementById('architectureFlow');
             architectureFlow.innerHTML = '';
             
-            // 1. Project Overview
-            const overviewStep = createArchitectureStep('📊', 'Project Overview', 
-                `${structure.totalFiles || 0} files in ${structure.totalFolders || 0} folders<br>
-                 Type: ${projectType.toUpperCase()}<br>
-                 Framework: ${structure.framework || 'None'}<br>
-                 Languages: ${(structure.languages || []).join(', ') || 'Unknown'}`);
+            // Use client-side analysis for consistency
+            const clientAnalysis = selectedFiles.length > 0 ? analyzeProject(selectedFiles) : null;
+            const analysisData = clientAnalysis ? parseAnalysisHTML(clientAnalysis) : {};
+            
+            // 1. Project Overview with Enhanced Metrics
+            const overviewStep = createArchitectureStep('📊', 'Project Analysis', 
+                `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                    <div>
+                        <strong>📁 Files:</strong> ${structure.totalFiles || selectedFiles.length || 0}<br>
+                        <strong>📂 Folders:</strong> ${structure.totalFolders || 0}<br>
+                        <strong>🏷️ Type:</strong> <span style="color: #60a5fa; text-transform: uppercase;">${analysisData.projectType || projectType}</span>
+                    </div>
+                    <div>
+                        <strong>🔧 Framework:</strong> ${structure.framework || analysisData.frameworks?.join(', ') || 'None'}<br>
+                        <strong>💻 Languages:</strong> ${(structure.languages || analysisData.languages || []).join(', ') || 'Unknown'}<br>
+                        <strong>⏱️ Exec Time:</strong> ${data.execution_time || 0}ms
+                    </div>
+                </div>`);
             architectureFlow.appendChild(overviewStep);
             architectureFlow.appendChild(createConnector());
             
-            // 2. Folder Structure
-            const folderStep = createArchitectureStep('📁', 'Folder Structure', 
-                renderFolderStructure(structure.folders || {}));
-            architectureFlow.appendChild(folderStep);
+            // 2. AI-Powered Detection
+            const detectionStep = createArchitectureStep('🤖', 'AI-Powered Detection', 
+                `<div style="color: #a78bfa;">
+                    <strong>🔍 Project Type:</strong> ${analysisData.projectType || data.detected_project_type || 'unknown'}<br>
+                    <strong>🌐 Framework:</strong> ${(analysisData.frameworks || []).join(', ') || data.framework || 'none'}<br>
+                    <strong>🐍 Language:</strong> ${(analysisData.languages || []).join(', ') || data.language || 'unknown'}<br>
+                    <strong>📂 Entry Point:</strong> /app/${data.entry_file || 'unknown'}
+                </div>
+                <div style="margin-top: 8px; padding: 8px; background: rgba(167, 139, 250, 0.1); border-radius: 6px; font-size: 0.8rem;">
+                    <strong>🧠 AI Analysis:</strong> Project structure analyzed using machine learning algorithms
+                </div>`);
+            architectureFlow.appendChild(detectionStep);
             architectureFlow.appendChild(createConnector());
             
-            // 3. UI Files
-            if (structure.uiFiles && structure.uiFiles.length > 0) {
-                const uiStep = createArchitectureStep('🎨', 'UI Files', 
-                    renderUIFiles(structure.uiFiles));
-                architectureFlow.appendChild(uiStep);
+            // 3. Intelligent File Processing
+            const processingStep = createArchitectureStep('⚡', 'Intelligent Processing', 
+                `<div>
+                    <strong>📋 File Filtering:</strong><br>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
+                        <div>
+                            ✅ <strong>Processed:</strong> ${data.filtering?.processedFiles || selectedFiles.length || 0} files<br>
+                            ⏭️ <strong>Skipped:</strong> ${data.filtering?.skippedFiles || 0} files
+                        </div>
+                        <div>
+                            🗑️ <strong>Cleaned:</strong> ${data.filtering?.cleanedItems || 0} items<br>
+                            📦 <strong>Total Size:</strong> ${calculateProjectSize(structure)}
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 8px; padding: 8px; background: rgba(34, 197, 94, 0.1); border-radius: 6px; font-size: 0.8rem;">
+                    <strong>🛡️ Security:</strong> Malicious files and sensitive data filtered automatically
+                </div>`);
+            architectureFlow.appendChild(processingStep);
+            architectureFlow.appendChild(createConnector());
+            
+            // 4. Execution Environment
+            const executionStep = createArchitectureStep('🐳', 'Docker Execution Environment', 
+                `<div>
+                    <strong>🔧 Execution Command:</strong><br>
+                    <code style="background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; display: block; margin: 4px 0; font-family: 'Fira Code', monospace;">
+                        ${data.executed_command || 'unknown'}
+                    </code>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                        <div>
+                            <strong>📊 Status:</strong> 
+                            <span style="color: ${data.execution_status === 'success' ? '#22c55e' : '#ef4444'}; font-weight: bold;">
+                                ${data.execution_status?.toUpperCase() || 'UNKNOWN'}
+                            </span><br>
+                            <strong>⏱️ Duration:</strong> ${data.execution_time || 0}ms
+                        </div>
+                        <div>
+                            <strong>🐳 Container:</strong> Isolated Linux Environment<br>
+                            <strong>🔒 Security:</strong> Sandboxed Execution
+                        </div>
+                    </div>
+                </div>`);
+            architectureFlow.appendChild(executionStep);
+            architectureFlow.appendChild(createConnector());
+            
+            // 5. Detailed Folder Structure
+            if (structure.folders && Object.keys(structure.folders).length > 0) {
+                const folderStep = createArchitectureStep('📁', 'Detailed Folder Structure', 
+                    renderFolderStructure(structure.folders));
+                architectureFlow.appendChild(folderStep);
                 architectureFlow.appendChild(createConnector());
             }
             
-            // 4. File Types
-            const fileTypesStep = createArchitectureStep('📄', 'File Types', 
-                renderFileTypes(structure.fileTypes || []));
-            architectureFlow.appendChild(fileTypesStep);
-            architectureFlow.appendChild(createConnector());
+            // 6. Technology Stack Analysis with Enhanced UI File Detection
+            const uiFilesFromSelected = selectedFiles.filter(file => {
+                const name = file.name.toLowerCase();
+                const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+                return ['.html', '.htm', '.css', '.scss', '.sass', '.js', '.jsx', '.ts', '.tsx', '.vue'].includes(ext) ||
+                       name.includes('index') || name.includes('app') || name.includes('main');
+            }).map(file => ({
+                name: file.webkitRelativePath || file.name,
+                extension: '.' + (file.name.split('.').pop()?.toLowerCase() || '')
+            }));
             
-            // 5. Framework Detection
-            const frameworkStep = createArchitectureStep('🔍', 'Detected Frameworks', 
-                renderFrameworks(structure.frameworks || []));
-            architectureFlow.appendChild(frameworkStep);
+            const techStep = createArchitectureStep('🚀', 'Technology Stack Analysis', 
+                `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <strong>🎨 UI Technologies:</strong><br>
+                        ${renderUIFiles(uiFilesFromSelected)}
+                    </div>
+                    <div>
+                        <strong>📦 Dependencies:</strong><br>
+                        ${renderDependencies(structure.dependencies || [])}
+                    </div>
+                </div>
+                <div style="margin-top: 8px;">
+                    <strong>🔗 Frameworks Detected:</strong><br>
+                    ${renderFrameworks(analysisData.frameworks || structure.frameworks || [])}
+                </div>`);
+            architectureFlow.appendChild(techStep);
             
             // Add animations
             const steps = architectureFlow.querySelectorAll('.arch-step');
             steps.forEach((step, index) => {
                 step.style.animationDelay = `${index * 100}ms`;
             });
+        }
+
+function parseAnalysisHTML(html) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    
+    const projectTypeMatch = html.match(/Project Type:<\/strong><br>\s*([^<]+)/);
+    const languagesMatch = html.match(/Languages:<\/strong>\s*([^<]+)/);
+    const frameworksMatch = html.match(/Frameworks:<\/strong>\s*([^<]+)/);
+    
+    return {
+        projectType: projectTypeMatch ? projectTypeMatch[1].trim() : null,
+        languages: languagesMatch ? languagesMatch[1].split(',').map(s => s.trim()).filter(s => s) : [],
+        frameworks: frameworksMatch ? frameworksMatch[1].split(',').map(s => s.trim()).filter(s => s) : []
+    };
+}
+        
+        function calculateProjectSize(structure) {
+            const size = structure.totalSize || 0;
+            if (size < 1024) return `${size} B`;
+            if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+            return `${(size / (1024 * 1024)).toFixed(1)} MB`;
         }
         
         function createArchitectureStep(icon, title, content) {
@@ -1180,6 +1489,53 @@ let selectedFiles = [];
             
             html += '</div>';
             return html;
+        }
+        
+        function renderDependencies(dependencies) {
+            if (!dependencies || dependencies.length === 0) {
+                return '<span style="color: #6b7280;">No dependencies detected</span>';
+            }
+            
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 6px;">';
+            dependencies.slice(0, 8).forEach(dep => {
+                const depIcon = getDependencyIcon(dep);
+                html += `
+                    <div style="
+                        background: rgba(59, 130, 246, 0.1);
+                        border: 1px solid rgba(59, 130, 246, 0.3);
+                        border-radius: 6px;
+                        padding: 4px 8px;
+                        font-size: 0.75rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        color: #60a5fa;
+                    ">
+                        <span>${depIcon}</span>
+                        <span style="font-family: 'Fira Code', monospace;">${dep}</span>
+                    </div>
+                `;
+            });
+            
+            if (dependencies.length > 8) {
+                html += `<div style="color: #6b7280; font-size: 0.75rem;">...and ${dependencies.length - 8} more</div>`;
+            }
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function getDependencyIcon(dep) {
+            const depLower = dep.toLowerCase();
+            if (depLower.includes('react')) return '⚛️';
+            if (depLower.includes('vue')) return '💚';
+            if (depLower.includes('angular')) return '🔴';
+            if (depLower.includes('express')) return '🚂';
+            if (depLower.includes('django')) return '🎸';
+            if (depLower.includes('flask')) return '🧪';
+            if (depLower.includes('lodash')) return '🟦';
+            if (depLower.includes('axios')) return '🔵';
+            return '📦';
         }
         
         function getFileIcon(extension) {

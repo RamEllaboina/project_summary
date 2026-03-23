@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Question Addition</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Question Addition Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Question Creation</h3>
+        <button onclick="testQuestionCreation()">Test Add Question</button>
+        <div id="testResult"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        
+        // Mock admin token for testing
+        const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzBkNzYxMzQzZmFkNjAwMjEzZjNhZTciLCJ1c2VybmFtZSI6InN1cGVyYWRtaW4iLCJyb2xlIjoic3VwZXJhZG1pbiIsImlhdCI6MTczOTUwNjQzNCwiZXhwIjoxNzM5NTk5NjM0fQ.example-token';
+        
+        function getAuthHeaders() {
+            return {
+                'Authorization': `Bearer ${testToken}`,
+                'Content-Type': 'application/json'
+            };
+        }
+        
+        async function testQuestionCreation() {
+            const resultDiv = document.getElementById('testResult');
+            resultDiv.innerHTML = '<p>Testing question creation...</p>';
+            
+            try {
+                // First, let's create a test quiz if needed
+                const quizResponse = await fetch(`${API_BASE}/quizzes`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        title: 'Test Quiz for Questions',
+                        subject: '670d761343fad600213f3ae7', // Mock subject ID
+                        timeLimit: 30,
+                        passingScore: 60,
+                        difficulty: 'medium'
+                    })
+                });
+                
+                let quizId = 'test-quiz-id';
+                if (quizResponse.ok) {
+                    const quizData = await quizResponse.json();
+                    if (quizData.success) {
+                        quizId = quizData.quiz._id;
+                        resultDiv.innerHTML += `<p class="success">✓ Test quiz created: ${quizId}</p>`;
+                    }
+                } else {
+                    resultDiv.innerHTML += `<p class="error">✗ Quiz creation failed, using mock ID</p>`;
+                }
+                
+                // Now test question creation
+                const questionData = {
+                    questionText: "What is 2 + 2?",
+                    options: [
+                        { text: "3", isCorrect: false },
+                        { text: "4", isCorrect: true },
+                        { text: "5", isCorrect: false },
+                        { text: "6", isCorrect: false }
+                    ],
+                    difficulty: "easy"
+                };
+                
+                const response = await fetch(`${API_BASE}/quizzes/${quizId}/questions`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(questionData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultDiv.innerHTML += `<p class="success">✓ Question created successfully!</p>`;
+                    resultDiv.innerHTML += `<p>Question ID: ${data.question._id}</p>`;
+                    resultDiv.innerHTML += `<p>Question Text: ${data.question.questionText}</p>`;
+                } else {
+                    resultDiv.innerHTML += `<p class="error">✗ Question creation failed: ${data.message || 'Unknown error'}</p>`;
+                    resultDiv.innerHTML += `<p>Status: ${response.status}</p>`;
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<p class="error">✗ Network error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
