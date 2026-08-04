@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const AppError = require('../utils/AppError');
 
-const SANDBOX_URL = process.env.SANDBOX_URL || 'http://localhost:4001/api/run';
+const SANDBOX_URL = process.env.SANDBOX_URL || 'http://localhost:4000/api/run';
 
 /**
  * Execute the project in the Sandbox
@@ -54,7 +54,7 @@ exports.runInSandbox = async (projectId, projectPath) => {
             },
             maxContentLength: Infinity,
             maxBodyLength: Infinity,
-            timeout: 300000 // 5 minutes timeout for fast execution tasks
+            timeout: 120000 // 2 minutes timeout to fail faster
         });
 
         console.log(`Sandbox execution completed for ${projectId}. Status: ${response.data.status}`);

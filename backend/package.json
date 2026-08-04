@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
-  },
+    "dev": "nodemon --ignore storage/ --ignore job_log.txt --ignore *.log --ignore reports/ --ignore projects/ src/server.js"
+  }
+,
   "keywords": [],
   "author": "",
   "license": "ISC",

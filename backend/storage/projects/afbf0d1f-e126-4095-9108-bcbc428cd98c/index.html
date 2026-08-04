@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WeatherWise | Real-time Weather App</title>
+    <!-- Google Fonts for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="weather-card">
+            <h1 class="app-title">🌤️ WeatherWise</h1>
+            <p class="subtitle">Check current conditions anywhere</p>
+
+            <!-- Search section: input + button -->
+            <div class="search-section">
+                <input type="text" id="cityInput" class="city-input" placeholder="Enter city name, e.g., London, Paris, Tokyo" autocomplete="off">
+                <button id="searchBtn" class="search-btn">🔍 Search</button>
+            </div>
+
+            <!-- Loading indicator (hidden by default) -->
+            <div id="loadingSpinner" class="loading-spinner hidden">
+                <div class="spinner"></div>
+                <span>Fetching weather data...</span>
+            </div>
+
+            <!-- Weather display area -->
+            <div id="weatherDisplay" class="weather-display hidden">
+                <div class="weather-header">
+                    <h2 id="cityName" class="city-name">--</h2>
+                    <div id="weatherIcon" class="weather-icon">🌡️</div>
+                </div>
+                <div class="weather-temp">
+                    <span id="temperature" class="temp-value">--</span>
+                    <span class="temp-unit">°C</span>
+                </div>
+                <div class="weather-condition">
+                    <span id="condition" class="condition-text">--</span>
+                </div>
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <span class="detail-label">💧 Humidity</span>
+                        <span id="humidity" class="detail-value">--%</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">🌬️ Wind Speed</span>
+                        <span id="windSpeed" class="detail-value">-- m/s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error message container (for city not found, network issues) -->
+            <div id="errorMsg" class="error-message hidden">
+                ⚠️ <span id="errorText"></span>
+            </div>
+
+            <!-- small footer note -->
+            <div class="api-note">Powered by OpenWeatherMap</div>
+        </div>
+    </div>
+
+    <!-- JavaScript (vanilla) -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

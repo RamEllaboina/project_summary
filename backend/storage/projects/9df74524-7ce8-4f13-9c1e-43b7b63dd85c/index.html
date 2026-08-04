@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MeetMind AI - Intelligent Meeting Assistant</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+    
+    <!-- ==================== HEADER ==================== -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <span>MeetMind <span class="highlight">AI</span></span>
+            </div>
+            <nav>
+                <a href="#dashboard" class="active">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="#upload">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload
+                </a>
+                <a href="#transcripts">
+                    <i class="fas fa-history"></i> Transcripts
+                </a>
+                <a href="#qa-section">
+                    <i class="fas fa-comments"></i> Ask AI
+                </a>
+                <a href="#search-section">
+                    <i class="fas fa-search"></i> Search
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN ==================== -->
+    <main>
+        
+        <!-- ==================== DASHBOARD SECTION ==================== -->
+        <section id="dashboard" class="dashboard-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-pie"></i> Meeting Dashboard</h2>
+                    <p>Analytics and insights from all your meetings</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #eff6ff; color: #2563eb;">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="totalMeetings">0</span>
+                            <span class="stat-label">Total Meetings</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #f0fdf4; color: #16a34a;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="totalHours">0</span>
+                            <span class="stat-label">Total Hours</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="totalSpeakers">0</span>
+                            <span class="stat-label">Unique Speakers</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fce4ec; color: #dc2626;">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="totalActions">0</span>
+                            <span class="stat-label">Action Items</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-calendar-week"></i> Meetings Over Time</h3>
+                        </div>
+                        <div class="chart-body" id="meetingChart">
+                            <div class="bar-chart" id="barChart"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-user-tie"></i> Top Speakers</h3>
+                        </div>
+                        <div class="chart-body" id="speakerChart">
+                            <div class="speaker-list" id="speakerList">
+                                <p class="no-data">No speaker data available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-meetings">
+                    <div class="recent-header">
+                        <h3><i class="fas fa-history"></i> Recent Meetings</h3>
+                        <button class="btn-refresh" onclick="loadDashboardData()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="recentMeetingsList" class="recent-list">
+                        <p class="no-data">No meetings found. Upload a meeting to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== UPLOAD SECTION ==================== -->
+        <section id="upload" class="upload-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> Upload Meeting</h2>
+                    <p>Supported formats: MP3, WAV, MP4, M4A, FLAC, WEBM &bull; Max 100MB</p>
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <div class="upload-icon-wrapper">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        </div>
+                        <h3>Drag &amp; Drop Your File Here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="fileInput" accept=".mp3,.wav,.mp4,.m4a,.flac,.webm" hidden />
+                        <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-folder-open"></i> Choose File
+                        </button>
+                        <div class="upload-hint">
+                            <i class="fas fa-info-circle"></i> Your files are processed locally and never stored on any server
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Mode Toggle -->
+                <div class="privacy-toggle">
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="privacyMode" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="toggle-label">
+                            <i class="fas fa-lock"></i>
+                            <span>Privacy Mode</span>
+                            <span class="privacy-badge">🔒 No data stored</span>
+                        </div>
+                    </div>
+                    <div class="privacy-info">
+                        <i class="fas fa-info-circle"></i>
+                        When enabled, meetings are processed in memory and automatically deleted after download
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div id="uploadProgress" class="upload-progress hidden">
+                    <div class="progress-header">
+                        <span id="progressStatus">Processing</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Uploading your file...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RESULTS SECTION ==================== -->
+        <section id="results" class="results-section hidden">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-alt"></i> Meeting Analysis</h2>
+                    <p>AI-generated insights from your meeting</p>
+                </div>
+
+                <div id="loadingSpinner" class="spinner-container">
+                    <div class="spinner"></div>
+                    <h3>Analyzing Your Meeting</h3>
+                    <p>This may take a few minutes depending on the length of the recording...</p>
+                </div>
+
+                <div id="resultsContent" class="hidden">
+                    <div class="results-grid">
+                        <div class="result-card summary-card">
+                            <div class="card-header">
+                                <i class="fas fa-file-alt"></i>
+                                <h3>Executive Summary</h3>
+                            </div>
+                            <div id="summaryText" class="card-body">No summary available.</div>
+                        </div>
+
+                        <div class="result-card actions-card">
+                            <div class="card-header">
+                                <i class="fas fa-check-circle"></i>
+                                <h3>Action Items</h3>
+                                <span class="badge" id="actionCount">0</span>
+                            </div>
+                            <div id="actionItems" class="card-body">No action items found.</div>
+                        </div>
+                    </div>
+
+                    <div class="results-grid">
+                        <div class="result-card decisions-card">
+                            <div class="card-header">
+                                <i class="fas fa-gavel"></i>
+                                <h3>Key Decisions</h3>
+                            </div>
+                            <div id="decisionsText" class="card-body">No decisions found.</div>
+                        </div>
+
+                        <div class="result-card deadlines-card">
+                            <div class="card-header">
+                                <i class="fas fa-calendar-alt"></i>
+                                <h3>Deadlines &amp; Dates</h3>
+                            </div>
+                            <div id="deadlinesText" class="card-body">No deadlines found.</div>
+                        </div>
+                    </div>
+
+                    <div class="result-card stats-card">
+                        <div class="card-header">
+                            <i class="fas fa-users"></i>
+                            <h3>Speaker Participation</h3>
+                        </div>
+                        <div id="speakerStats" class="card-body">No speaker data available.</div>
+                    </div>
+
+                    <div class="result-card transcript-card">
+                        <div class="card-header">
+                            <i class="fas fa-align-left"></i>
+                            <h3>Full Transcript</h3>
+                            <div class="card-actions">
+                                <button class="btn-icon" onclick="copyTranscript()" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="btn-icon" onclick="downloadTranscript()" title="Download">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="transcriptText" class="card-body transcript-body">No transcript available.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== QA SECTION ==================== -->
+        <section id="qa-section" class="qa-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-comments"></i> Ask Questions About Your Meetings</h2>
+                    <p>Get instant answers from your meeting transcripts using AI</p>
+                </div>
+
+                <div class="qa-container">
+                    <div class="qa-input-area">
+                        <div class="qa-input-wrapper">
+                            <input 
+                                type="text" 
+                                id="qaQuestion" 
+                                placeholder="Ask anything about your meetings..."
+                                onkeydown="if(event.key==='Enter') askQuestion()"
+                            />
+                            <button class="btn-ask" onclick="askQuestion()">
+                                <i class="fas fa-paper-plane"></i> Ask
+                            </button>
+                        </div>
+                        <div class="quick-questions">
+                            <span class="quick-label">Quick Questions:</span>
+                            <button class="quick-btn" onclick="askQuickQuestion('Who is responsible for the project?')">Who is responsible?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('What is the deadline?')">What is the deadline?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('What was decided?')">What was decided?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('What is the budget?')">What is the budget?</button>
+                        </div>
+                    </div>
+
+                    <div id="qaResults" class="qa-results hidden">
+                        <div class="qa-answer-container">
+                            <div class="qa-question">
+                                <span class="qa-label">❓ Question:</span>
+                                <span id="qaQuestionDisplay"></span>
+                            </div>
+                            <div class="qa-answer">
+                                <span class="qa-label">💡 Answer:</span>
+                                <span id="qaAnswerDisplay"></span>
+                            </div>
+                            <div class="qa-confidence">
+                                <span class="qa-label">📊 Confidence:</span>
+                                <span id="qaConfidenceDisplay"></span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" id="qaConfidenceFill"></div>
+                                </div>
+                            </div>
+                            <div id="qaSources" class="qa-sources">
+                                <span class="qa-label">📚 Sources:</span>
+                                <div id="qaSourcesList"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="qaLoading" class="qa-loading hidden">
+                        <div class="spinner-small"></div>
+                        <p>Searching for answer...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SEARCH SECTION ==================== -->
+        <section id="search-section" class="search-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-search"></i> Cross-Meeting Search</h2>
+                    <p>Search across all your meeting transcripts instantly</p>
+                </div>
+
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Search for keywords, topics, or names..."
+                            onkeydown="if(event.key==='Enter') performSearch()"
+                        />
+                        <button class="btn-search" onclick="performSearch()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <div class="search-filters">
+                        <span class="filter-label">Filter by:</span>
+                        <select id="searchFilter" class="filter-select">
+                            <option value="all">All Meetings</option>
+                            <option value="last7">Last 7 Days</option>
+                            <option value="last30">Last 30 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="searchResults" class="search-results hidden">
+                    <div class="search-stats">
+                        <span id="resultCount">0</span> results found
+                    </div>
+                    <div id="searchResultsList" class="search-results-list"></div>
+                </div>
+
+                <div id="searchLoading" class="search-loading hidden">
+                    <div class="spinner-small"></div>
+                    <p>Searching across all meetings...</p>
+                </div>
+
+                <div id="searchEmpty" class="search-empty hidden">
+                    <i class="fas fa-search"></i>
+                    <h3>No Results Found</h3>
+                    <p>Try different keywords or upload more meetings</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TRANSCRIPTS LIST ==================== -->
+        <section id="transcripts" class="transcripts-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Past Transcripts</h2>
+                    <p>All your processed meetings in one place</p>
+                </div>
+
+                <div id="transcriptsList" class="transcripts-grid">
+                    <div class="loading-skeleton">
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-brain"></i>
+                        <span>MeetMind <span class="highlight">AI</span></span>
+                    </div>
+                    <p>Intelligent meeting analysis powered by AI. Turn your meetings into actionable insights.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#upload">Upload Meeting</a></li>
+                        <li><a href="#transcripts">Transcripts</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#qa-section">Ask AI</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 <strong>MeetMind AI</strong>. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -53,8 +53,8 @@ const upload = multer({
     storage,
     fileFilter,
     limits: {
-        fileSize: 50 * 1024 * 1024, // 50MB per file
-        files: 500                   // support large folder uploads
+        fileSize: 100 * 1024 * 1024, // 100MB per file
+        files: Infinity                // unlimited files
     }
 });
 

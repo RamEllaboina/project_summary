@@ -28,29 +28,36 @@ exports.uploadProject = catchAsync(async (req, res, next) => {
 
         console.log(`🚀 Starting intelligent file processing for ${allFiles.length} files...`);
 
-        for (const file of allFiles) {
-            // file.originalname carries the relative path (e.g. "src/App.jsx")
-            // Strip any leading path traversal attempts
-            const safePath = path.normalize(file.originalname).replace(/^(\.\.[\\/])+/, '');
-            const destPath = path.join(projectDir, safePath);
-            
-            // Apply intelligent filtering
-            if (shouldIgnore(file.originalname, false)) {
-                console.log(`🚫 Ignoring: ${file.originalname}`);
-                filesIgnored++;
-                continue;
-            }
-            
-            // Write the file
-            await fs.outputFile(destPath, file.buffer);
-            totalFilesUploaded++;
-            
-            // Check if it's a source code file
-            if (isSourceCodeFile(file.originalname)) {
-                sourceCodeFiles++;
-                console.log(`📄 Source code: ${file.originalname}`);
-            } else {
-                console.log(`📄 Other file: ${file.originalname}`);
+        // Process files in batches to avoid memory issues
+        const BATCH_SIZE = 100;
+        for (let i = 0; i < allFiles.length; i += BATCH_SIZE) {
+            const batch = allFiles.slice(i, i + BATCH_SIZE);
+            console.log(`📦 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allFiles.length / BATCH_SIZE)} (${batch.length} files)`);
+
+            for (const file of batch) {
+                // file.originalname carries the relative path (e.g. "src/App.jsx")
+                // Strip any leading path traversal attempts
+                const safePath = path.normalize(file.originalname).replace(/^(\.\.[\\/])+/, '');
+                const destPath = path.join(projectDir, safePath);
+                
+                // Apply intelligent filtering
+                if (shouldIgnore(file.originalname, false)) {
+                    console.log(`🚫 Ignoring: ${file.originalname}`);
+                    filesIgnored++;
+                    continue;
+                }
+                
+                // Write the file
+                await fs.outputFile(destPath, file.buffer);
+                totalFilesUploaded++;
+                
+                // Check if it's a source code file
+                if (isSourceCodeFile(file.originalname)) {
+                    sourceCodeFiles++;
+                    console.log(`📄 Source code: ${file.originalname}`);
+                } else {
+                    console.log(`📄 Other file: ${file.originalname}`);
+                }
             }
         }
 
@@ -65,10 +72,11 @@ exports.uploadProject = catchAsync(async (req, res, next) => {
         });
 
         // Remove ignored files from the project directory
+        console.log(`🗑️  Removing ${filterResult.ignored.length} ignored files...`);
         for (const ignored of filterResult.ignored) {
             try {
                 await fs.remove(ignored.path);
-                console.log(`🗑️  Removed ignored file: ${ignored.path} (${ignored.reason})`);
+                console.log(`🗑️  Removed ignored file: ${ignored.path} (${ignored.reason})${ignored.reason}`);
             } catch (error) {
                 console.warn(`⚠️  Could not remove ${ignored.path}:`, error.message);
             }

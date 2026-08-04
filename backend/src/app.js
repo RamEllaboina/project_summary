@@ -14,6 +14,15 @@ app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(compression());
+
+// Disable caching to prevent 304 errors
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,7 +37,7 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString(),
         services: {
             ai_engine: 'http://localhost:8002',
-            ai_detection: 'http://localhost:8003',
+            ai_detection: 'http://localhost:8005',
             sandbox: 'http://localhost:4000'
         }
     });

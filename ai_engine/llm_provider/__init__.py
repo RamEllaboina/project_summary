@@ -1,37 +1,63 @@
-from llm_provider.base import BaseLLMProvider
-from llm_provider.openai_provider import OpenAIProvider
-from llm_provider.local_provider import LocalProvider
-from llm_provider.gemini_provider import GeminiProvider
-from llm_provider.groq_provider import GroqProvider
-from config import Config
+import os
+from .base import BaseLLMProvider
 
-def get_llm_provider() -> BaseLLMProvider:
+# Conditional imports - only import what's available
+try:
+    from .groq_provider import GroqProvider
+except ImportError:
+    GroqProvider = None
+
+try:
+    from .openai_provider import OpenAIProvider
+except ImportError:
+    OpenAIProvider = None
+
+try:
+    from .gemini_provider import GeminiProvider
+except ImportError:
+    GeminiProvider = None
+
+try:
+    from .local_provider import LocalProvider
+except ImportError:
+    LocalProvider = None
+
+def get_llm_provider():
+    """Get the configured LLM provider based on environment settings."""
+    from config import Config
+    
     provider_type = Config.LLM_PROVIDER.lower()
     
-    if provider_type == "openai":
-        return OpenAIProvider(
-            api_key=Config.OPENAI_API_KEY, 
-            model=Config.MODEL_NAME
-        )
+    if provider_type == "groq":
+        if GroqProvider is None:
+            raise ImportError("GroqProvider not available. Please install required dependencies.")
+        if not Config.GROQ_API_KEY:
+            raise ValueError("GROQ_API_KEY not set in environment variables")
+        return GroqProvider(Config.GROQ_API_KEY, Config.MODEL_NAME)
+    
+    elif provider_type == "openai":
+        if OpenAIProvider is None:
+            raise ImportError("OpenAIProvider not available. Please install required dependencies.")
+        if not Config.OPENAI_API_KEY:
+            raise ValueError("OPENAI_API_KEY not set in environment variables")
+        return OpenAIProvider(Config.OPENAI_API_KEY, Config.MODEL_NAME)
+    
     elif provider_type == "gemini":
-        return GeminiProvider(
-            api_key=Config.GEMINI_API_KEY,
-            model=Config.MODEL_NAME
-        )
-    elif provider_type == "groq":
-        return GroqProvider(
-            api_key=Config.GROQ_API_KEY,
-            model=Config.MODEL_NAME
-        )
+        if GeminiProvider is None:
+            raise ImportError("GeminiProvider not available. Please install required dependencies.")
+        if not Config.GEMINI_API_KEY:
+            raise ValueError("GEMINI_API_KEY not set in environment variables")
+        return GeminiProvider(Config.GEMINI_API_KEY, Config.MODEL_NAME)
+    
     elif provider_type == "local":
-        return LocalProvider(
-            base_url=Config.LOCAL_LLM_URL, 
-            model=Config.MODEL_NAME
-        )
+        if LocalProvider is None:
+            raise ImportError("LocalProvider not available. Please install required dependencies.")
+        return LocalProvider(Config.LOCAL_LLM_URL, Config.MODEL_NAME)
+    
     else:
-        # Fallback to local or default behavior?
-        print(f"Unknown provider '{provider_type}', falling back to LocalProvider")
-        return LocalProvider(
-            base_url=Config.LOCAL_LLM_URL,
-            model=Config.MODEL_NAME
-        )
+        raise ValueError(f"Unsupported LLM provider: {provider_type}")
+
+__all__ = [
+    'BaseLLMProvider',
+    'get_llm_provider'
+]

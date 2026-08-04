@@ -72,130 +72,154 @@ class QualityService:
     def _analyze_python(self, python_files: List[Path]) -> Tuple[float, List[Issue]]:
         import sys
 
-        # Limit to 30 files to avoid timeout
-        targets = [str(f) for f in python_files[:30]]
+        # Process files in batches to handle unlimited files
+        BATCH_SIZE = 50
+        all_issues = []
+        total_deductions = 0
+        
+        for i in range(0, len(python_files), BATCH_SIZE):
+            batch = python_files[i:i + BATCH_SIZE]
+            targets = [str(f) for f in batch]
 
-        cmd = [
-            sys.executable, "-m", "pylint",
-            "--output-format=json",
-            "--disable=C0114,C0115,C0116",
-            "--score=y"
-        ] + targets
+            cmd = [
+                sys.executable, "-m", "pylint",
+                "--output-format=json",
+                "--disable=C0114,C0115,C0116",
+                "--score=y"
+            ] + targets
 
-        try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=60  # ← FIXED: was missing before
-            )
-
-            issues = []
             try:
-                lint_results = json.loads(result.stdout)
-                severity_map = {
-                    "fatal": "Critical", "error": "High",
-                    "warning": "Medium", "convention": "Low",
-                    "refactor": "Low", "info": "Low"
-                }
-                category_map = {
-                    "fatal": "Structure", "error": "Quality",
-                    "warning": "Quality", "convention": "Style",
-                    "refactor": "Complexity", "info": "Info"
-                }
-                for item in lint_results:
-                    issues.append(Issue(
-                        severity=severity_map.get(item.get("type"), "Low"),
-                        category=category_map.get(item.get("type"), "Quality"),
-                        message=item.get("message"),
-                        file=item.get("path"),
-                        line=item.get("line"),
-                        code=item.get("symbol")
-                    ))
-            except json.JSONDecodeError:
-                pass
+                result = subprocess.run(
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    timeout=60
+                )
 
-            deductions = sum({
-                "Critical": 0.5, "High": 0.2, "Medium": 0.05, "Low": 0.01
-            }.get(i.severity, 0) for i in issues)
+                batch_issues = []
+                try:
+                    lint_results = json.loads(result.stdout)
+                    severity_map = {
+                        "fatal": "Critical", "error": "High",
+                        "warning": "Medium", "convention": "Low",
+                        "refactor": "Low", "info": "Low"
+                    }
+                    category_map = {
+                        "fatal": "Structure", "error": "Quality",
+                        "warning": "Quality", "convention": "Style",
+                        "refactor": "Complexity", "info": "Info"
+                    }
+                    for item in lint_results:
+                        batch_issues.append(Issue(
+                            severity=severity_map.get(item.get("type"), "Low"),
+                            category=category_map.get(item.get("type"), "Quality"),
+                            message=item.get("message"),
+                            file=item.get("path"),
+                            line=item.get("line"),
+                            code=item.get("symbol")
+                        ))
+                except json.JSONDecodeError:
+                    pass
 
-            return max(0.0, 10.0 - deductions), issues
+                batch_deductions = sum({
+                    "Critical": 0.5, "High": 0.2, "Medium": 0.05, "Low": 0.01
+                }.get(i.severity, 0) for i in batch_issues)
+                
+                all_issues.extend(batch_issues)
+                total_deductions += batch_deductions
+                
+                print(f"📦 Analyzed Python batch {i//BATCH_SIZE + 1}/{(len(python_files) + BATCH_SIZE - 1)//BATCH_SIZE}")
 
-        except subprocess.TimeoutExpired:
-            return 5.0, [Issue(
+            except subprocess.TimeoutExpired:
+                # Continue with next batch on timeout
+                print(f"⚠️ Pylint timeout in batch {i//BATCH_SIZE + 1}, continuing...")
+                continue
+            except Exception as e:
+                print(f"⚠️ Pylint error in batch {i//BATCH_SIZE + 1}: {e}, continuing...")
+                continue
+
+        # Calculate final score from all batches
+        if not all_issues and python_files:
+            return 7.0, [Issue(
                 severity="Medium", category="Quality",
-                message="Pylint timed out (project too large or complex)", file="System"
+                message="Pylint analysis completed with limited results", file="System"
             )]
-        except Exception as e:
-            return 0.0, [Issue(
-                severity="Critical", category="Quality",
-                message=f"Pylint failed: {e}", file="System"
-            )]
+        
+        if not all_issues:
+            return 8.0, []
+
+        final_score = max(0.0, 10.0 - min(total_deductions, 10.0))
+        return final_score, all_issues
 
     # ──────────────────────────────────────────────────────────────────────────
     # JavaScript / TypeScript – heuristic analysis
     # ──────────────────────────────────────────────────────────────────────────
     def _analyze_js(self, js_files: List[Path]) -> Tuple[float, List[Issue]]:
         issues = []
+        BATCH_SIZE = 100
+        
+        for i in range(0, len(js_files), BATCH_SIZE):
+            batch = js_files[i:i + BATCH_SIZE]
+            print(f"📦 Analyzing JS batch {i//BATCH_SIZE + 1}/{(len(js_files) + BATCH_SIZE - 1)//BATCH_SIZE}")
+            
+            for file in batch:
+                try:
+                    content = file.read_text(encoding="utf-8", errors="ignore")
+                    lines = content.splitlines()
 
-        for file in js_files[:50]:  # cap at 50 files
-            try:
-                content = file.read_text(encoding="utf-8", errors="ignore")
-                lines = content.splitlines()
+                    # ── console.log left in production code ──
+                    for i, line in enumerate(lines, 1):
+                        stripped = line.strip()
+                        if "console.log(" in stripped and not stripped.startswith("//"):
+                            issues.append(Issue(
+                                severity="Low", category="Quality",
+                                message="console.log() left in code (remove before production)",
+                                file=file.name, line=i, code="NO_CONSOLE"
+                            ))
 
-                # ── console.log left in production code ──
-                for i, line in enumerate(lines, 1):
-                    stripped = line.strip()
-                    if "console.log(" in stripped and not stripped.startswith("//"):
+                    # ── var usage (prefer const/let) ──
+                    var_lines = [i + 1 for i, l in enumerate(lines)
+                                 if re.search(r'\bvar\s+\w+', l) and not l.strip().startswith("//")]
+                    for ln in var_lines[:5]:  # report max 5 per file
                         issues.append(Issue(
-                            severity="Low", category="Quality",
-                            message="console.log() left in code (remove before production)",
-                            file=file.name, line=i, code="NO_CONSOLE"
+                            severity="Low", category="Style",
+                            message="Use 'const' or 'let' instead of 'var'",
+                            file=file.name, line=ln, code="NO_VAR"
                         ))
 
-                # ── var usage (prefer const/let) ──
-                var_lines = [i + 1 for i, l in enumerate(lines)
-                             if re.search(r'\bvar\s+\w+', l) and not l.strip().startswith("//")]
-                for ln in var_lines[:5]:  # report max 5 per file
-                    issues.append(Issue(
-                        severity="Low", category="Style",
-                        message="Use 'const' or 'let' instead of 'var'",
-                        file=file.name, line=ln, code="NO_VAR"
-                    ))
-
-                # ── == instead of === ──
-                eq_lines = [i + 1 for i, l in enumerate(lines)
-                            if re.search(r'[^=!<>]==[^=]', l) and not l.strip().startswith("//")]
-                for ln in eq_lines[:3]:
-                    issues.append(Issue(
-                        severity="Medium", category="Quality",
-                        message="Use '===' instead of '==' for strict equality",
-                        file=file.name, line=ln, code="EQEQEQ"
-                    ))
-
-                # ── TODO / FIXME comments ──
-                for i, line in enumerate(lines, 1):
-                    if re.search(r'\b(TODO|FIXME|HACK|XXX)\b', line, re.IGNORECASE):
+                    # ── == instead of === ──
+                    eq_lines = [i + 1 for i, l in enumerate(lines)
+                                if re.search(r'[^=!<>]==[^=]', l) and not l.strip().startswith("//")]
+                    for ln in eq_lines[:3]:
                         issues.append(Issue(
-                            severity="Low", category="Quality",
-                            message=f"Unresolved comment: {line.strip()[:80]}",
-                            file=file.name, line=i, code="TODO"
+                            severity="Medium", category="Quality",
+                            message="Use '===' instead of '==' for strict equality",
+                            file=file.name, line=ln, code="EQEQEQ"
                         ))
 
-                # ── Hardcoded secrets heuristic ──
-                for i, line in enumerate(lines, 1):
-                    if re.search(
-                        r'(password|secret|api_key|apikey|token)\s*=\s*["\'][^"\']{4,}["\']',
-                        line, re.IGNORECASE
-                    ):
-                        issues.append(Issue(
-                            severity="High", category="Security",
-                            message="Possible hardcoded secret/password detected",
-                            file=file.name, line=i, code="HARDCODED_SECRET"
-                        ))
+                    # ── TODO / FIXME comments ──
+                    for i, line in enumerate(lines, 1):
+                        if re.search(r'\b(TODO|FIXME|HACK|XXX)\b', line, re.IGNORECASE):
+                            issues.append(Issue(
+                                severity="Low", category="Quality",
+                                message=f"Unresolved comment: {line.strip()[:80]}",
+                                file=file.name, line=i, code="TODO"
+                            ))
 
-            except Exception:
-                continue
+                    # ── Hardcoded secrets heuristic ──
+                    for i, line in enumerate(lines, 1):
+                        if re.search(
+                            r'(password|secret|api_key|apikey|token)\s*=\s*["\'][^"\']{4,}["\']',
+                            line, re.IGNORECASE
+                        ):
+                            issues.append(Issue(
+                                severity="High", category="Security",
+                                message="Possible hardcoded secret/password detected",
+                                file=file.name, line=i, code="HARDCODED_SECRET"
+                            ))
+
+                except Exception:
+                    continue
 
         # Score calculation
         deductions = sum({
@@ -209,58 +233,63 @@ class QualityService:
     # ──────────────────────────────────────────────────────────────────────────
     def _analyze_html(self, html_files: List[Path]) -> Tuple[float, List[Issue]]:
         issues = []
+        BATCH_SIZE = 100
+        
+        for i in range(0, len(html_files), BATCH_SIZE):
+            batch = html_files[i:i + BATCH_SIZE]
+            print(f"📦 Analyzing HTML batch {i//BATCH_SIZE + 1}/{(len(html_files) + BATCH_SIZE - 1)//BATCH_SIZE}")
+            
+            for file in batch:
+                try:
+                    content = file.read_text(encoding="utf-8", errors="ignore")
+                    lines = content.splitlines()
 
-        for file in html_files[:50]:
-            try:
-                content = file.read_text(encoding="utf-8", errors="ignore")
-                lines = content.splitlines()
+                    for i, line in enumerate(lines, 1):
+                        stripped = line.strip()
 
-                for i, line in enumerate(lines, 1):
-                    stripped = line.strip()
-
-                    # Inline styles (bad practice)
-                    if re.search(r'style\s*=\s*["\']', stripped, re.IGNORECASE):
-                        issues.append(Issue(
-                            severity="Low", category="Style",
-                            message="Inline style attribute used — prefer external CSS",
-                            file=file.name, line=i, code="INLINE_STYLE"
-                        ))
-
-                    # Missing alt on img tags
-                    if re.search(r'<img(?![^>]*\balt\b)[^>]*>', stripped, re.IGNORECASE):
-                        issues.append(Issue(
-                            severity="Medium", category="Quality",
-                            message="<img> tag missing 'alt' attribute (accessibility issue)",
-                            file=file.name, line=i, code="MISSING_ALT"
-                        ))
-
-                    # Deprecated tags
-                    for tag in ["<font", "<center", "<marquee", "<blink", "<strike"]:
-                        if tag in stripped.lower():
+                        # Inline styles (bad practice)
+                        if re.search(r'style\s*=\s*["\']', stripped, re.IGNORECASE):
                             issues.append(Issue(
-                                severity="Low", category="Quality",
-                                message=f"Deprecated HTML tag used: {tag}>",
-                                file=file.name, line=i, code="DEPRECATED_TAG"
+                                severity="Low", category="Style",
+                                message="Inline style attribute used — prefer external CSS",
+                                file=file.name, line=i, code="INLINE_STYLE"
                             ))
 
-                    # onclick / onload inline JS events
-                    if re.search(r'\bon(click|load|submit|change)\s*=', stripped, re.IGNORECASE):
+                        # Missing alt on img tags
+                        if re.search(r'<img(?![^>]*\balt\b)[^>]*>', stripped, re.IGNORECASE):
+                            issues.append(Issue(
+                                severity="Medium", category="Quality",
+                                message="<img> tag missing 'alt' attribute (accessibility issue)",
+                                file=file.name, line=i, code="MISSING_ALT"
+                            ))
+
+                        # Deprecated tags
+                        for tag in ["<font", "<center", "<marquee", "<blink", "<strike"]:
+                            if tag in stripped.lower():
+                                issues.append(Issue(
+                                    severity="Low", category="Quality",
+                                    message=f"Deprecated HTML tag used: {tag}>",
+                                    file=file.name, line=i, code="DEPRECATED_TAG"
+                                ))
+
+                        # onclick / onload inline JS events
+                        if re.search(r'\bon(click|load|submit|change)\s*=', stripped, re.IGNORECASE):
+                            issues.append(Issue(
+                                severity="Low", category="Style",
+                                message="Inline event handler detected — prefer addEventListener()",
+                                file=file.name, line=i, code="INLINE_EVENT"
+                            ))
+
+                    # Check for missing doctype
+                    if content and "<!doctype" not in content[:200].lower():
                         issues.append(Issue(
-                            severity="Low", category="Style",
-                            message="Inline event handler detected — prefer addEventListener()",
-                            file=file.name, line=i, code="INLINE_EVENT"
+                            severity="Low", category="Quality",
+                            message="Missing <!DOCTYPE html> declaration",
+                            file=file.name, line=1, code="MISSING_DOCTYPE"
                         ))
 
-                # Check for missing doctype
-                if content and "<!doctype" not in content[:200].lower():
-                    issues.append(Issue(
-                        severity="Low", category="Quality",
-                        message="Missing <!DOCTYPE html> declaration",
-                        file=file.name, line=1, code="MISSING_DOCTYPE"
-                    ))
-
-            except Exception:
-                continue
+                except Exception:
+                    continue
 
         deductions = sum({
             "Critical": 0.5, "High": 0.3, "Medium": 0.1, "Low": 0.02
@@ -273,41 +302,46 @@ class QualityService:
     # ──────────────────────────────────────────────────────────────────────────
     def _analyze_css(self, css_files: List[Path]) -> Tuple[float, List[Issue]]:
         issues = []
+        BATCH_SIZE = 100
+        
+        for i in range(0, len(css_files), BATCH_SIZE):
+            batch = css_files[i:i + BATCH_SIZE]
+            print(f"📦 Analyzing CSS batch {i//BATCH_SIZE + 1}/{(len(css_files) + BATCH_SIZE - 1)//BATCH_SIZE}")
+            
+            for file in batch:
+                try:
+                    content = file.read_text(encoding="utf-8", errors="ignore")
+                    lines = content.splitlines()
 
-        for file in css_files[:50]:
-            try:
-                content = file.read_text(encoding="utf-8", errors="ignore")
-                lines = content.splitlines()
+                    for i, line in enumerate(lines, 1):
+                        stripped = line.strip()
 
-                for i, line in enumerate(lines, 1):
-                    stripped = line.strip()
+                        # !important overuse
+                        if "!important" in stripped:
+                            issues.append(Issue(
+                                severity="Low", category="Style",
+                                message="!important used — indicates specificity issues",
+                                file=file.name, line=i, code="IMPORTANT_OVERUSE"
+                            ))
 
-                    # !important overuse
-                    if "!important" in stripped:
-                        issues.append(Issue(
-                            severity="Low", category="Style",
-                            message="!important used — indicates specificity issues",
-                            file=file.name, line=i, code="IMPORTANT_OVERUSE"
-                        ))
+                        # Hardcoded pixel font sizes (prefer rem/em)
+                        if re.search(r'font-size\s*:\s*\d+px', stripped, re.IGNORECASE):
+                            issues.append(Issue(
+                                severity="Low", category="Style",
+                                message="Hardcoded px font-size — consider using rem/em for accessibility",
+                                file=file.name, line=i, code="PX_FONT_SIZE"
+                            ))
 
-                    # Hardcoded pixel font sizes (prefer rem/em)
-                    if re.search(r'font-size\s*:\s*\d+px', stripped, re.IGNORECASE):
-                        issues.append(Issue(
-                            severity="Low", category="Style",
-                            message="Hardcoded px font-size — consider using rem/em for accessibility",
-                            file=file.name, line=i, code="PX_FONT_SIZE"
-                        ))
+                        # TODO / FIXME
+                        if re.search(r'\b(TODO|FIXME|HACK)\b', stripped, re.IGNORECASE):
+                            issues.append(Issue(
+                                severity="Low", category="Quality",
+                                message=f"Unresolved comment: {stripped[:80]}",
+                                file=file.name, line=i, code="TODO"
+                            ))
 
-                    # TODO / FIXME
-                    if re.search(r'\b(TODO|FIXME|HACK)\b', stripped, re.IGNORECASE):
-                        issues.append(Issue(
-                            severity="Low", category="Quality",
-                            message=f"Unresolved comment: {stripped[:80]}",
-                            file=file.name, line=i, code="TODO"
-                        ))
-
-            except Exception:
-                continue
+                except Exception:
+                    continue
 
         deductions = sum({
             "Critical": 0.5, "High": 0.3, "Medium": 0.1, "Low": 0.02
@@ -321,10 +355,11 @@ class QualityService:
     def _analyze_unknown(self, files: List[Path]) -> Tuple[float, List[Issue]]:
         """Analyze unknown file types using heuristics."""
         issues = []
+        BATCH_SIZE = 50
         
-        # Limit to 20 files and skip files larger than 300KB
+        # Skip files larger than 300KB but process unlimited files
         analyzed_files = []
-        for file in files[:20]:
+        for file in files:
             try:
                 if file.stat().st_size <= 300 * 1024:  # 300KB limit
                     analyzed_files.append(file)

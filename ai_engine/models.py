@@ -45,8 +45,11 @@ class AIDetection(BaseModel):
 class Innovation(BaseModel):
     level: str = Field(..., pattern="^(low|medium|high)$")
     score: int = Field(..., ge=1, le=10)
+    projectDescription: str = ""
     assessment: str
     novelFeatures: List[str]
+    marketImpact: str = ""
+    uniqueness: str = ""
 
 class Strengths(BaseModel):
     technical: List[str] = []

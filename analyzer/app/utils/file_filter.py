@@ -77,7 +77,12 @@ IGNORED_EXTENSIONS: Set[str] = {
     '.dat',
     '.db',
     '.sqlite',
-    '.sqlite3'
+    '.sqlite3',
+    '.d.ts',
+    '.d.tsx',
+    '.d.jsx',
+    '.d.mts',
+    '.d.cts'
 }
 
 # Allowed source code extensions

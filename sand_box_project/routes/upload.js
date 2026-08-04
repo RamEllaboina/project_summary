@@ -64,7 +64,8 @@ router.post('/', upload.array('files'), async (req, res) => {
         // ── 5. Generate Execution Flow ─────────────────────────────────
         const flow = flowGenerator.generate(executionResult.projectType, executionResult.language, executionResult);
 
-        return res.json({
+        // Build response with enhanced execution data
+        const response = {
             status: executionResult.success ? 'success' : 'error',
             detected_project_type: executionResult.projectType,
             framework: executionResult.framework,
@@ -82,11 +83,61 @@ router.post('/', upload.array('files'), async (req, res) => {
                 removedItems: cleanupResult.removedItems
             },
             project_structure: projectStructure
-        });
+        };
+
+        // Add enhanced execution data for successful static projects
+        if (executionResult.success && executionResult.mappedPort) {
+            response.url = executionResult.url;
+            response.port = executionResult.mappedPort;
+            response.container_id = executionResult.containerId;
+            response.test_results = executionResult.testResults;
+            response.message = `🚀 Application is running live on http://localhost:${executionResult.mappedPort}!`;
+        }
+
+        return res.json(response);
 
     } catch (err) {
         console.error('Sandbox execution error:', err);
         return res.status(500).json({ status: 'error', message: err.message });
+    }
+});
+
+// Add endpoint to get running containers and their ports
+router.get('/containers', async (req, res) => {
+    try {
+        const { exec } = require('child_process');
+        const util = require('util');
+        const execPromise = util.promisify(exec);
+        
+        // Get running sandbox containers with port info
+        const { stdout: runningContainers } = await execPromise(
+            `docker ps --filter "name=sandbox-" --format "{{.Names}}:{{.Ports}}"`
+        );
+        
+        const containers = [];
+        if (runningContainers.trim()) {
+            const lines = runningContainers.trim().split('\n');
+            for (const line of lines) {
+                const [name, ports] = line.split(':');
+                const portMatch = ports.match(/:(\d+)->/);
+                if (portMatch) {
+                    containers.push({
+                        name,
+                        port: portMatch[1],
+                        url: `http://localhost:${portMatch[1]}`
+                    });
+                }
+            }
+        }
+        
+        res.json({
+            containers,
+            count: containers.length,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        res.json({ error: error.message, containers: [] });
     }
 });
 

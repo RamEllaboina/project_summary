@@ -9,7 +9,7 @@ import { useAnalysis } from '@/context/AnalysisContext';
 import { api } from '@/services/api';
 import JSZip from 'jszip';
 
-const MAX_FILES = 50; // Simulation limit
+const MAX_FILES = Infinity; // No limit - support unlimited files
 
 // Intelligent filtering configuration
 const IGNORED_DIRECTORIES = [
@@ -76,7 +76,7 @@ const isSourceCodeFile = (fileName) => {
 };
 
 export default function ProjectDropzone({ onUploadComplete }) {
-    const { setFiles, setProjectMetadata } = useAnalysis();
+    const { setFiles, setProjectMetadata, setCurrentProjectId } = useAnalysis();
     const [scanning, setScanning] = useState(false);
     const [scanProgress, setScanProgress] = useState(0);
     const [scanStatus, setScanStatus] = useState("Ready to upload");
@@ -85,6 +85,8 @@ export default function ProjectDropzone({ onUploadComplete }) {
     const [ignoredReasons, setIgnoredReasons] = useState({});
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [error, setError] = useState(null);
+    const [uploadComplete, setUploadComplete] = useState(false);
+    const [projectId, setProjectId] = useState(null);
 
     const onDrop = useCallback(async (acceptedFiles) => {
         if (acceptedFiles.length === 0) return;
@@ -94,6 +96,8 @@ export default function ProjectDropzone({ onUploadComplete }) {
         setError(null);
         setIgnoredCount(0);
         setIgnoredReasons({});
+        setUploadComplete(false);
+        setProjectId(null);
         setScanStatus("Analyzing files...");
 
         try {
@@ -119,24 +123,38 @@ export default function ProjectDropzone({ onUploadComplete }) {
                 let ignoredCount = 0;
                 const reasons = {};
 
-                // Apply intelligent filtering
-                acceptedFiles.forEach(file => {
-                    const path = file.path || file.webkitRelativePath || file.name;
-                    const filterResult = shouldIgnoreFile(path, file.name);
+                // Process files in chunks to avoid UI freezing
+                const CHUNK_SIZE = 100;
+                for (let i = 0; i < acceptedFiles.length; i += CHUNK_SIZE) {
+                    const chunk = acceptedFiles.slice(i, i + CHUNK_SIZE);
                     
-                    if (filterResult.ignored) {
-                        ignoredCount++;
-                        reasons[filterResult.reason] = (reasons[filterResult.reason] || 0) + 1;
-                        return;
-                    }
+                    // Apply intelligent filtering
+                    chunk.forEach(file => {
+                        const path = file.path || file.webkitRelativePath || file.name;
+                        const filterResult = shouldIgnoreFile(path, file.name);
+                        
+                        if (filterResult.ignored) {
+                            ignoredCount++;
+                            reasons[filterResult.reason] = (reasons[filterResult.reason] || 0) + 1;
+                            return;
+                        }
 
-                    // Add to filtered files array for individual upload
-                    filteredFiles.push(file);
+                        // Add to filtered files array for individual upload
+                        filteredFiles.push(file);
+                        
+                        // Also add to zip for backup
+                        zip.file(path, file);
+                        fileCount++;
+                    });
                     
-                    // Also add to zip for backup
-                    zip.file(path, file);
-                    fileCount++;
-                });
+                    // Update progress for each chunk
+                    const progress = 5 + (i / acceptedFiles.length) * 10;
+                    setScanProgress(progress);
+                    setScanStatus(`Analyzing files... ${Math.min(i + CHUNK_SIZE, acceptedFiles.length)}/${acceptedFiles.length}`);
+                    
+                    // Allow UI to update
+                    await new Promise(resolve => setTimeout(resolve, 0));
+                }
 
                 setIgnoredCount(ignoredCount);
                 setIgnoredReasons(reasons);
@@ -161,36 +179,80 @@ export default function ProjectDropzone({ onUploadComplete }) {
             setScanStatus("Uploading project...");
             setScanProgress(30);
 
-            const response = await api.uploadProject(filesToUpload);
+            // Upload with progress tracking for large file sets
+            const response = await api.uploadProject(filesToUpload, (progress) => {
+                setScanProgress(30 + progress * 0.7); // 30-100% range
+                setScanStatus(`Uploading... ${Math.round(progress)}%`);
+            });
 
+            console.log('📦 Upload response received:', response);
+
+            // Extract project ID from response
+            const projectIdFromResponse = response.projectId || response.data?.projectId;
+            
+            if (!projectIdFromResponse) {
+                throw new Error('No project ID returned from server');
+            }
+
+            setProjectId(projectIdFromResponse);
+            setCurrentProjectId(projectIdFromResponse);
+            
             setScanProgress(100);
             setScanStatus("Upload complete!");
+            setUploadComplete(true);
+
+            // Detect stack from file extensions
+            const extensions = new Set();
+            filteredFiles.forEach(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (ext) extensions.add(ext);
+            });
+            
+            let stack = "Unknown";
+            if (extensions.has('js') || extensions.has('jsx') || extensions.has('ts') || extensions.has('tsx')) {
+                stack = "JavaScript/TypeScript";
+                if (extensions.has('html')) stack += " + HTML";
+                if (extensions.has('css') || extensions.has('scss')) stack += " + CSS";
+            } else if (extensions.has('py')) {
+                stack = "Python";
+            } else if (extensions.has('java')) {
+                stack = "Java";
+            } else if (extensions.has('html')) {
+                stack = "HTML/CSS";
+            }
+            
+            setDetectedStack(stack);
 
             setProjectMetadata({
                 name: zipFileToUpload.name,
                 filesCount: filteredFiles.length || 1,
-                stack: "Detecting...",
-                projectId: response.projectId
+                stack: stack,
+                projectId: projectIdFromResponse
             });
 
-            if (onUploadComplete) onUploadComplete(response.projectId);
+            // Call the onUploadComplete callback with the project ID
+            if (onUploadComplete) {
+                console.log('📤 Calling onUploadComplete with projectId:', projectIdFromResponse);
+                onUploadComplete(projectIdFromResponse);
+            }
 
         } catch (err) {
             console.error("Upload failed", err);
             setError(err.message || "Upload failed. Please ensure the backend is running.");
             setScanning(false);
             setScanProgress(0);
+            setUploadComplete(false);
+        } finally {
+            setScanning(false);
         }
 
-    }, [setFiles, setProjectMetadata, onUploadComplete]);
+    }, [setFiles, setProjectMetadata, setCurrentProjectId, onUploadComplete]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         multiple: true,
         noClick: false,
         noKeyboard: false,
-        // Don't restrict by file types to allow folder selection
-        // Browser will handle filtering based on webkitdirectory attribute
     });
 
     return (
@@ -213,7 +275,7 @@ export default function ProjectDropzone({ onUploadComplete }) {
                 />
 
                 <AnimatePresence mode="wait">
-                    {!scanning && uploadedFiles.length === 0 ? (
+                    {!scanning && !uploadComplete && uploadedFiles.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -249,13 +311,27 @@ export default function ProjectDropzone({ onUploadComplete }) {
                         >
                             <div className="flex items-center justify-between text-sm font-medium">
                                 <span className="flex items-center gap-2">
-                                    {scanning ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                                    {scanning ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : 
+                                     uploadComplete ? <CheckCircle2 className="w-4 h-4 text-green-500" /> :
+                                     <CheckCircle2 className="w-4 h-4 text-green-500" />}
                                     {scanStatus}
                                 </span>
                                 <span>{Math.round(scanProgress)}%</span>
                             </div>
 
                             <Progress value={scanProgress} className="h-2" />
+
+                            {/* Show Project ID when upload is complete */}
+                            {uploadComplete && projectId && (
+                                <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                                    <p className="text-xs text-green-700 dark:text-green-300">
+                                        ✅ Project uploaded successfully!
+                                    </p>
+                                    <p className="text-xs text-green-600 dark:text-green-400 font-mono mt-1">
+                                        ID: {projectId.substring(0, 8)}...{projectId.substring(projectId.length - 4)}
+                                    </p>
+                                </div>
+                            )}
 
                             <div className="grid grid-cols-2 gap-4 mt-4 text-left">
                                 {ignoredCount > 0 && (
@@ -287,20 +363,53 @@ export default function ProjectDropzone({ onUploadComplete }) {
                                 )}
                             </div>
 
-                            {!scanning && uploadedFiles.length > 0 && (
+                            {!scanning && uploadedFiles.length > 0 && !uploadComplete && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     className="pt-4"
                                 >
                                     <p className="text-sm text-muted-foreground mb-4">
-                                        Ready to analyze {uploadedFiles.length} core files.
+                                        Processing {uploadedFiles.length} core files...
+                                    </p>
+                                </motion.div>
+                            )}
+
+                            {uploadComplete && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="pt-2"
+                                >
+                                    <p className="text-sm text-green-600 dark:text-green-400">
+                                        ✅ Ready to analyze {uploadedFiles.length} files
                                     </p>
                                 </motion.div>
                             )}
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                {/* Error Display */}
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg"
+                    >
+                        <div className="flex items-center gap-2 text-destructive">
+                            <AlertCircle className="w-4 h-4" />
+                            <span className="font-medium">Upload Error</span>
+                        </div>
+                        <p className="text-sm text-destructive/80 mt-1">{error}</p>
+                        <button
+                            onClick={() => setError(null)}
+                            className="mt-2 text-xs text-destructive/60 hover:text-destructive underline"
+                        >
+                            Dismiss
+                        </button>
+                    </motion.div>
+                )}
             </div>
 
         </div>

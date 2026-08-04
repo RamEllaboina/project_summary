@@ -11,7 +11,7 @@ exports.evaluateProject = async (projectId, analysisReport) => {
         // analysisReport contains → full payload prepared in processJob.js
         // including projectId, language, metrics, importantFiles, readme
         const response = await axios.post(AI_ENGINE_URL, analysisReport, {
-            timeout: 60000 // 1 minute timeout (reduced from 2 minutes)
+            timeout: 30000 // 30 seconds timeout to fail faster
         });
 
         if (response.data) {
@@ -58,7 +58,12 @@ exports.evaluateProject = async (projectId, analysisReport) => {
             throw new Error('Invalid response format from AI Engine');
         }
     } catch (error) {
-        console.error('AI Engine service error:', error.message);
+        console.error('[AI Engine] Service error:', error.message);
+        if (error.code === 'ECONNREFUSED') {
+            console.error('[AI Engine] Connection refused - service may not be running at', AI_ENGINE_URL);
+        } else if (error.code === 'ECONNABORTED') {
+            console.error('[AI Engine] Request timed out after 30 seconds');
+        }
         
         // Return a fallback response instead of throwing to avoid complete failure
         console.log('[AI Engine] Returning fallback response');

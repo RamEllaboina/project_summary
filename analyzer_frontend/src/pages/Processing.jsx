@@ -6,7 +6,7 @@ import { Loader2, CheckCircle, BrainCircuit, Code, Search, FileText } from 'luci
 import { useNavigate } from 'react-router-dom';
 import { useAnalysis } from '@/context/AnalysisContext';
 import { api } from '@/services/api';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Assuming shadcn alert exists, or simple div
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const steps = [
     { id: 1, label: "Uploading Files",              icon: CheckCircle,  duration: 2000 },
@@ -31,51 +31,115 @@ export default function Processing() {
     const [currentStep, setCurrentStep] = useState(0);
     const [progress, setProgress] = useState(0);
     const [messageIndex, setMessageIndex] = useState(0);
-
     const [error, setError] = useState(null);
+    const [attemptCount, setAttemptCount] = useState(0);
     const { setAnalysisResults, currentProjectId } = useAnalysis();
 
     useEffect(() => {
         if (!currentProjectId) {
+            console.log('❌ No project ID, redirecting to upload');
             navigate('/upload');
             return;
         }
 
+        console.log(`🔍 Starting status polling for project: ${currentProjectId}`);
+
         let pollingInterval;
+        let timeoutId;
 
         const checkStatus = async () => {
             try {
+                setAttemptCount(prev => prev + 1);
+                console.log(`📊 Status check #${attemptCount + 1} for ${currentProjectId}`);
+                
                 const statusData = await api.getProjectStatus(currentProjectId);
+                console.log('📦 Full status response:', statusData);
 
-                // Statuses defined in Project.js schema enum:
-                // 'uploaded' → 'cleaning' → 'analyzing' → 'generating' → 'completed' | 'failed'
-                const currentStatus = statusData.data.status;
+                // Handle different response formats
+                const currentStatus = statusData.status || statusData.data?.status;
+                const progressData = statusData.progress || statusData.data?.progress || {};
+                
+                console.log(`📌 Current status: ${currentStatus}`);
+                console.log(`📌 Progress:`, progressData);
 
-                if (currentStatus === 'failed') {
-                    setError('Analysis Failed. Please try again.');
+                // Update progress if available
+                if (progressData.percentage) {
+                    setProgress(progressData.percentage);
+                }
+
+                if (progressData.currentStep) {
+                    const stepMap = {
+                        'uploaded': 0,
+                        'cleaning': 1,
+                        'analyzing': 2,
+                        'ai_evaluation': 3,
+                        'generating': 3,
+                        'sandbox': 4,
+                        'completed': 5,
+                        'failed': -1
+                    };
+                    const stepIndex = stepMap[currentStatus] || 0;
+                    setCurrentStep(stepIndex);
+                }
+
+                // Check for completion
+                if (currentStatus === 'completed') {
+                    console.log('✅ Analysis completed! Fetching report...');
                     clearInterval(pollingInterval);
+                    clearTimeout(timeoutId);
+                    
+                    try {
+                        const reportData = await api.getProjectReport(currentProjectId);
+                        console.log('📄 Raw report response:', reportData);
+                        
+                        // Handle different response formats
+                        let report = null;
+                        
+                        if (reportData && typeof reportData === 'object') {
+                            // Check if report is in data.report, report, or directly in data
+                            if (reportData.data && reportData.data.report) {
+                                report = reportData.data.report;
+                            } else if (reportData.report) {
+                                report = reportData.report;
+                            } else if (reportData.data && typeof reportData.data === 'object') {
+                                report = reportData.data;
+                            } else {
+                                report = reportData;
+                            }
+                        }
+                        
+                        console.log('📄 Extracted report:', report);
+                        
+                        if (report && typeof report === 'object') {
+                            setAnalysisResults(report);
+                            console.log('✅ Report set in context, navigating to /report');
+                            navigate('/report');
+                        } else {
+                            console.error('❌ Invalid report format:', report);
+                            setError('Failed to get report data - invalid format');
+                        }
+                    } catch (reportError) {
+                        console.error('❌ Error fetching report:', reportError);
+                        setError(`Failed to fetch report: ${reportError.message}`);
+                    }
                     return;
                 }
 
-                // Map backend statuses to UI step index
-                if      (currentStatus === 'uploaded')   setCurrentStep(0);
-                else if (currentStatus === 'cleaning')   setCurrentStep(1);
-                else if (currentStatus === 'analyzing')  setCurrentStep(2);
-                else if (currentStatus === 'generating') setCurrentStep(3);
-                else if (currentStatus === 'sandbox')    setCurrentStep(4);
-                else if (currentStatus === 'completed') {
-                    setCurrentStep(5);
-                    const reportData = await api.getProjectReport(currentProjectId);
-                    if (reportData.status === 'success') {
-                        setAnalysisResults(reportData.data.report);
-                        clearInterval(pollingInterval);
-                        navigate('/report');
-                    }
+                if (currentStatus === 'failed') {
+                    console.error('❌ Analysis failed:', statusData.error);
+                    setError(statusData.error?.message || 'Analysis failed. Please try again.');
+                    clearInterval(pollingInterval);
+                    clearTimeout(timeoutId);
+                    return;
                 }
 
+                // Update message based on current step
+                const stepIndex = Math.min(currentStep, messages.length - 1);
+                setMessageIndex(stepIndex);
+
             } catch (err) {
-                console.error("Polling error", err);
-                // Don't stop polling on transient errors, but log them
+                console.error('❌ Polling error:', err);
+                // Don't stop polling on transient errors
             }
         };
 
@@ -83,10 +147,57 @@ export default function Processing() {
         pollingInterval = setInterval(checkStatus, 2000);
         checkStatus(); // Initial check
 
+        // Force redirect after 120 seconds if still not completed
+        timeoutId = setTimeout(() => {
+            console.log('⏰ Timeout - forcing navigation to report');
+            // Try to get report anyway
+            api.getProjectReport(currentProjectId)
+                .then(reportData => {
+                    console.log('📄 Timeout report fetch:', reportData);
+                    
+                    let report = null;
+                    if (reportData && typeof reportData === 'object') {
+                        if (reportData.data && reportData.data.report) {
+                            report = reportData.data.report;
+                        } else if (reportData.report) {
+                            report = reportData.report;
+                        } else if (reportData.data && typeof reportData.data === 'object') {
+                            report = reportData.data;
+                        } else {
+                            report = reportData;
+                        }
+                    }
+                    
+                    if (report && typeof report === 'object') {
+                        setAnalysisResults(report);
+                        navigate('/report');
+                    } else {
+                        setError('Analysis is taking longer than expected. Please try again.');
+                    }
+                })
+                .catch((err) => {
+                    console.error('⏰ Timeout error:', err);
+                    setError('Analysis is taking longer than expected. Please try again.');
+                });
+        }, 120000);
+
         return () => {
             clearInterval(pollingInterval);
+            clearTimeout(timeoutId);
         };
     }, [navigate, setAnalysisResults, currentProjectId]);
+
+    // Show error if any
+    if (error) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center p-6">
+                <Alert variant="destructive" className="max-w-md">
+                    <AlertTitle>Analysis Failed</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 md:p-12 relative overflow-hidden">
@@ -127,8 +238,11 @@ export default function Processing() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                         >
-                            {messages[messageIndex]}
+                            {messages[messageIndex] || "Processing your project..."}
                         </motion.span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                        Project ID: {currentProjectId?.substring(0, 8)}...
                     </p>
                 </div>
 
@@ -164,6 +278,11 @@ export default function Processing() {
                             </motion.div>
                         )
                     })}
+                </div>
+
+                {/* Debug info - Remove in production */}
+                <div className="text-xs text-muted-foreground mt-4 opacity-50">
+                    Attempt: {attemptCount} | Step: {currentStep + 1}/{steps.length}
                 </div>
 
             </motion.div>

@@ -8,7 +8,7 @@ class FolderScanner:
     """Scan uploaded folders for AI detection"""
     
     def __init__(self):
-        self.ai_detection_service = get_ai_detection_service()
+        self.ai_detection_service = None  # Lazy initialization
     
     async def scan_folder(self, folder_path: str, project_id: str = None) -> Dict[str, Any]:
         """
@@ -41,6 +41,10 @@ class FolderScanner:
             except Exception as e:
                 print(f"⚠️  Could not read {file_path}: {str(e)}")
                 continue
+        
+        # Initialize AI detection service if not already done
+        if self.ai_detection_service is None:
+            self.ai_detection_service = get_ai_detection_service()
         
         # Create evaluation input
         evaluation_input = EvaluationInput(
@@ -80,16 +84,34 @@ class FolderScanner:
             '.dart', '.swift', '.kt', '.scala'
         }
         
+        # Extensions to ignore (type definition files, etc.)
+        ignored_extensions = {
+            '.d.ts', '.d.tsx', '.d.jsx', '.d.mts', '.d.cts'
+        }
+        
+        # Directories to ignore
+        ignored_dirs = {
+            'node_modules', '__pycache__', '.git', 'dist', 'build',
+            '.next', 'out', 'target', 'coverage', '.vscode', '.idea',
+            'vendor', '.nyc_output', '.pytest_cache', '.mypy_cache',
+            '.tox', 'site-packages', 'bower_components', '.npm', '.cache',
+            'tmp', 'temp', 'venv', '.venv'
+        }
+        
         code_files = []
         
         for root, dirs, files in os.walk(folder_path):
-            # Skip hidden directories and common ignore directories
-            dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['node_modules', '__pycache__', '.git', 'dist', 'build']]
+            # Skip ignored directories
+            dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ignored_dirs]
             
             for file in files:
                 if not file.startswith('.'):
                     file_path = os.path.join(root, file)
                     file_ext = os.path.splitext(file)[1].lower()
+                    
+                    # Skip type definition files
+                    if file_ext in ignored_extensions:
+                        continue
                     
                     if file_ext in code_extensions:
                         code_files.append(file_path)
@@ -138,56 +160,3 @@ class FolderScanner:
         """Get current timestamp"""
         import time
         return int(time.time())
-
-# FastAPI endpoint for folder scanning
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
-
-app = FastAPI(title="AI Detection Folder Scanner")
-
-# CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-scanner = FolderScanner()
-
-@app.get("/scan-folder")
-async def scan_folder_endpoint(folder_path: str):
-    """Scan a folder for AI detection"""
-    try:
-        result = await scanner.scan_folder(folder_path)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/scan-folder")
-async def scan_folder_post(data: dict):
-    """Scan a folder for AI detection (POST)"""
-    folder_path = data.get("folderPath")
-    project_id = data.get("projectId")
-    
-    if not folder_path:
-        raise HTTPException(status_code=400, detail="folderPath is required")
-    
-    try:
-        result = await scanner.scan_folder(folder_path, project_id)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/health")
-async def health():
-    """Health check"""
-    return {"status": "healthy", "service": "folder-scanner"}
-
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.getenv("FOLDER_SCANNER_PORT", "8004"))
-    print(f"🚀 Starting AI Detection Folder Scanner on port {port}")
-    uvicorn.run(app, host="0.0.0.0", port=port)

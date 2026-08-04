@@ -120,7 +120,7 @@ async def get_config():
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("AI_DETECTION_PORT", "8003"))
+    port = Config.API_PORT  # Use Config.API_PORT instead of hardcoded
     print(f"🚀 Starting AI Detection Microservice on port {port}")
     print(f"📋 Using {'secondary' if Config.GROQ_API_KEY_2 else 'primary'} API key")
     uvicorn.run(app, host="0.0.0.0", port=port)

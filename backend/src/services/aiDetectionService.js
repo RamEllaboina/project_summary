@@ -1,7 +1,7 @@
 const axios = require('axios');
 const AppError = require('../utils/AppError');
 
-const AI_DETECTION_URL = process.env.AI_DETECTION_URL || 'http://localhost:8003/detect';
+const AI_DETECTION_URL = process.env.AI_DETECTION_URL || 'http://localhost:8005/detect';
 
 exports.detectAIGeneration = async (projectId, analysisReport) => {
     try {
@@ -21,7 +21,7 @@ exports.detectAIGeneration = async (projectId, analysisReport) => {
         };
 
         const response = await axios.post(AI_DETECTION_URL, detectionPayload, {
-            timeout: 30000 // 30 seconds timeout (reduced from 1 minute)
+            timeout: 15000 // 15 seconds timeout to fail faster
         });
 
         if (response.data) {
@@ -54,7 +54,12 @@ exports.detectAIGeneration = async (projectId, analysisReport) => {
             throw new Error('Invalid response format from AI Detection Service');
         }
     } catch (error) {
-        console.error('AI Detection service error:', error.message);
+        console.error('[AI Detection] Service error:', error.message);
+        if (error.code === 'ECONNREFUSED') {
+            console.error('[AI Detection] Connection refused - service may not be running at', AI_DETECTION_URL);
+        } else if (error.code === 'ECONNABORTED') {
+            console.error('[AI Detection] Request timed out after 15 seconds');
+        }
         
         // Return a fallback response instead of throwing to avoid complete failure
         console.log('[AI Detection] Returning fallback response');

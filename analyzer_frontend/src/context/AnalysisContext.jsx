@@ -11,9 +11,11 @@ export const AnalysisProvider = ({ children }) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [currentProjectId, setCurrentProjectId] = useState(null);
+    const [error, setError] = useState(null);
 
     const startAnalysis = () => {
         setIsProcessing(true);
+        setError(null);
         // Simulation logic will be in Processing component or a service
     };
 
@@ -23,6 +25,8 @@ export const AnalysisProvider = ({ children }) => {
         setAnalysisResults(null);
         setIsProcessing(false);
         setCurrentStep(0);
+        setError(null);
+        setCurrentProjectId(null);
     };
 
     return (
@@ -42,6 +46,8 @@ export const AnalysisProvider = ({ children }) => {
                 setCurrentProjectId,
                 startAnalysis,
                 resetAnalysis,
+                error,
+                setError,
             }}
         >
             {children}

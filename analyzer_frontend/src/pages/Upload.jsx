@@ -10,18 +10,29 @@ import { useAnalysis } from '@/context/AnalysisContext';
 
 export default function UploadPage() {
     const navigate = useNavigate();
-    const { files, projectMetadata, setCurrentProjectId } = useAnalysis();
+    const { files, projectMetadata, setCurrentProjectId, resetAnalysis } = useAnalysis();
     const [canProceed, setCanProceed] = useState(false);
+    const [uploadedProjectId, setUploadedProjectId] = useState(null);
 
     const handleUploadComplete = (projectId) => {
+        console.log('📦 Upload complete, projectId:', projectId);
         setCanProceed(true);
+        setUploadedProjectId(projectId);
         if (projectId) {
             setCurrentProjectId(projectId);
+            console.log('✅ Current project ID set to:', projectId);
         }
     };
 
     const handleStartAnalysis = () => {
-        navigate('/processing');
+        console.log('🚀 Starting analysis for project:', uploadedProjectId);
+        // Make sure the project ID is set before navigating
+        if (uploadedProjectId) {
+            setCurrentProjectId(uploadedProjectId);
+            navigate('/processing');
+        } else {
+            console.error('❌ No project ID available!');
+        }
     };
 
     return (

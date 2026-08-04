@@ -55,10 +55,6 @@ async def ai_detection(input_data: EvaluationInput):
         print(f"AI Detection Internal Server Error: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to analyze AI generation: {str(e)}")
 
-@app.get("/health")
-def health_check():
-    return {"status": "ok", "provider": Config.LLM_PROVIDER}
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=Config.API_PORT)

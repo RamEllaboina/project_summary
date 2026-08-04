@@ -5,9 +5,6 @@ import Home from './pages/Home';
 import UploadPage from './pages/Upload';
 import Processing from './pages/Processing';
 import Report from './pages/Report';
-import Sandbox from './pages/Sandbox';
-import InnovationShowcase from './components/InnovationShowcase';
-import DynamicInnovationShowcase from './components/DynamicInnovationShowcase';
 
 // Simple Layout wrapper if needed
 const Layout = ({ children }) => (
@@ -26,9 +23,6 @@ function App() {
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/processing" element={<Processing />} />
             <Route path="/report" element={<Report />} />
-            <Route path="/sandbox" element={<Sandbox />} />
-            <Route path="/innovation" element={<InnovationShowcase />} />
-            <Route path="/dynamic-innovation" element={<DynamicInnovationShowcase />} />
           </Routes>
         </Layout>
       </Router>

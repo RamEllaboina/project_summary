@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feel The Music - Accessible Entertainment for Deaf and Hard-of-Hearing Users</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <section id="welcomeScreen" class="welcome-screen active">
+            <div class="welcome-content">
+                <h1 class="title">Feel The Music</h1>
+                <p class="subtitle">Experience music through visuals and vibration.</p>
+                <div class="welcome-options">
+                    <button id="uploadBtn" class="option-btn upload-btn">
+                        <span class="btn-icon">📁</span>
+                        <span class="btn-text">Upload Audio File</span>
+                    </button>
+                    <button id="liveAudioBtn" class="option-btn live-btn">
+                        <span class="btn-icon">🎤</span>
+                        <span class="btn-text">Live Audio Listener</span>
+                    </button>
+                </div>
+                <input type="file" id="audioFileInput" accept=".mp3,.wav,.ogg,.m4a,.flac,.aac,.wma" style="display: none;">
+            </div>
+            
+            <!-- Footer Section (Only on Welcome/Home Page) -->
+            <footer class="footer">
+                <div class="footer-container">
+                    <div class="footer-content">
+                        <!-- Project Info Section -->
+                        <div class="footer-section">
+                            <h3 class="footer-title">Feel The Music</h3>
+                            <p class="footer-description">
+                                An accessible music experience for Deaf and Hard-of-Hearing users, converting sound into visuals and vibrations.
+                            </p>
+                        </div>
+
+                        <!-- Navigation Links Section -->
+                        <div class="footer-section">
+                            <h4 class="footer-subtitle">Navigation</h4>
+                            <nav class="footer-nav">
+                                <a href="#" class="footer-link" data-section="home">Home</a>
+                                <a href="#" class="footer-link" data-section="upload">Upload Audio</a>
+                                <a href="#" class="footer-link" data-section="live">Live Listener</a>
+                            </nav>
+                        </div>
+
+                        <!-- Team Section -->
+                        <div class="footer-section">
+                            <h4 class="footer-subtitle">Team</h4>
+                            <p class="footer-text">Built by Team Harmony</p>
+                        </div>
+
+                        <!-- GitHub Section -->
+                        <div class="footer-section">
+                            <h4 class="footer-subtitle">Contribute</h4>
+                            <a href="https://github.com" target="_blank" class="github-link">
+                                <span class="github-icon">📦</span>
+                                <span>View Project on GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+
+        <!-- Main Application -->
+        <main id="mainApp" class="main-app">
+            <header class="app-header">
+                <div class="header-content">
+                    <h1 class="app-title">Feel The Music</h1>
+                    <div class="header-buttons">
+                        <button id="historyBtn" class="history-btn">📜 History</button>
+                        <button id="backToWelcome" class="back-btn">← Back</button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="app-content">
+                <!-- Controls Section -->
+                <section class="controls-section">
+                    <div class="audio-controls">
+                        <div id="uploadControls" class="control-group" style="display: none;">
+                            <audio id="audioPlayer" controls class="audio-player"></audio>
+                            <div class="player-info">
+                                <span id="fileName" class="file-name">No file selected</span>
+                            </div>
+                        </div>
+                        
+                        <div id="liveControls" class="control-group" style="display: none;">
+                            <button id="toggleLiveAudio" class="live-toggle-btn">Start Live Audio</button>
+                            <div class="live-status">
+                                <span id="liveStatusDot" class="status-dot"></span>
+                                <span id="liveStatusText" class="status-text">Microphone Off</span>
+                            </div>
+                        </div>
+                        
+                        <div class="visualization-controls">
+                            <button id="toggleVisualization" class="viz-toggle-btn" disabled>Start Visualization</button>
+                            <div class="viz-status">
+                                <span id="vizStatusDot" class="status-dot"></span>
+                                <span id="vizStatusText" class="status-text">Select audio source first</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Visualizer Section -->
+                <section class="visualizer-section">
+                    <div id="visualizerContainer" class="visualizer-container">
+                        <!-- p5.js canvas will be inserted here -->
+                    </div>
+                    <div class="beat-flash"></div>
+                    <div id="demoIndicator" class="demo-indicator">
+                        <span>🎵 Demo Mode</span>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- History Panel -->
+        <aside id="historyPanel" class="history-panel">
+            <div class="history-header">
+                <h3>Audio History</h3>
+                <button id="closeHistory" class="close-btn">×</button>
+            </div>
+            <div class="history-content">
+                <div id="historyList" class="history-list">
+                    <!-- History items will be added here dynamically -->
+                </div>
+                <div id="emptyHistory" class="empty-history">
+                    <p>No audio files processed yet</p>
+                    <small>Upload and visualize audio files to see them here</small>
+                </div>
+                <div class="history-actions">
+                    <button id="clearHistory" class="clear-btn">Clear History</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p id="loadingText">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/audioController.js"></script>
+    <script src="js/visualizer.js"></script>
+    <script src="js/historyManager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
