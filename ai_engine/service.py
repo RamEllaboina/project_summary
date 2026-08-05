@@ -84,14 +84,8 @@ class AIAnalysisService:
         logger.info(f"Estimated tokens: {estimated_tokens} for project {input_data.projectId}")
 
         try:
-            if estimated_tokens <= 3000:
-                # Normal processing for small projects
-                logger.info(f"Using normal processing mode (≤3000 tokens)")
-                response_data = await self._process_single_chunk(input_data)
-            else:
-                # Chunk-based processing for large projects
-                logger.info(f"Using chunk-based processing mode (>3000 tokens)")
-                response_data = await self._process_chunks(input_data)
+            logger.info("Using single-pass processing (GraphRAG enabled)")
+            response_data = await self._process_single_chunk(input_data)
 
             # Ensure response is dict
             response_data = self._safe_parse_response(response_data)
@@ -277,6 +271,17 @@ class AIAnalysisService:
             else:
                 data['summary'] = self._generate_summary(data)
 
+        # Fix hallucinated nested dicts for string fields
+        for field in ['architecture', 'complexity', 'security', 'realWorldReadiness']:
+            if field in data and isinstance(data[field], dict):
+                data[field] = json.dumps(data[field])
+            elif field in data and isinstance(data[field], list):
+                data[field] = ", ".join(str(i) for i in data[field])
+            elif field not in data or data[field] is None:
+                data[field] = "Assessment unavailable."
+            else:
+                data[field] = str(data[field])
+
         # Fix innovation - ensure it's a dict with proper fields
         if 'innovation' in data and isinstance(data['innovation'], dict):
             # Ensure projectDescription is human-readable
@@ -329,6 +334,8 @@ class AIAnalysisService:
             for category in ['technical', 'architectural', 'performance']:
                 if category in data['strengths'] and isinstance(data['strengths'][category], list):
                     data['strengths'][category] = [str(s) for s in data['strengths'][category] if s and len(str(s)) > 3][:3]
+                else:
+                    data['strengths'][category] = []
         else:
             data['strengths'] = {
                 'technical': [],
@@ -341,6 +348,8 @@ class AIAnalysisService:
             for category in ['technical', 'architectural', 'performance']:
                 if category in data['weaknesses'] and isinstance(data['weaknesses'][category], list):
                     data['weaknesses'][category] = [str(w) for w in data['weaknesses'][category] if w and len(str(w)) > 3][:3]
+                else:
+                    data['weaknesses'][category] = []
         else:
             data['weaknesses'] = {
                 'technical': [],
@@ -353,6 +362,8 @@ class AIAnalysisService:
             for category in ['technical', 'architectural', 'performance']:
                 if category in data['suggestions'] and isinstance(data['suggestions'][category], list):
                     data['suggestions'][category] = [str(s) for s in data['suggestions'][category] if s and len(str(s)) > 3][:3]
+                else:
+                    data['suggestions'][category] = []
         else:
             data['suggestions'] = {
                 'technical': [],
@@ -422,20 +433,23 @@ class AIAnalysisService:
     # TOKEN ESTIMATION & CHUNKING
     # ===============================
     def _estimate_tokens(self, input_data: EvaluationInput) -> int:
-        """Estimate total token count for the input data."""
+        """Estimate total token count for the actual payload sent to the LLM."""
         total_chars = 0
         
         if input_data.importantFiles:
-            for file in input_data.importantFiles:
+            for file in input_data.importantFiles[:3]:  # Match prompt's limit: [:3]
+                file_chars = 0
                 if hasattr(file, 'content') and file.content:
-                    total_chars += len(file.content)
+                    file_chars = len(file.content[:1000]) # Match prompt's truncation
+                elif isinstance(file, dict) and file.get("content"):
+                    file_chars = len(file["content"][:1000])
+                    
+                total_chars += file_chars
+                
                 if hasattr(file, 'summary') and file.summary:
                     total_chars += len(file.summary)
-                if isinstance(file, dict):
-                    if file.get("content"):
-                        total_chars += len(file["content"])
-                    if file.get("summary"):
-                        total_chars += len(file["summary"])
+                elif isinstance(file, dict) and file.get("summary"):
+                    total_chars += len(file["summary"])
         
         if input_data.readme:
             total_chars += len(input_data.readme)
@@ -736,6 +750,11 @@ class AIAnalysisService:
                     ai_levels.append(ai_detection["level"])
                 if ai_detection.get("score"):
                     ai_scores.append(ai_detection["score"])
+                    
+            # Collect Project Flow
+            if "projectFlow" not in aggregated or not aggregated["projectFlow"]:
+                if result.get("projectFlow") and isinstance(result["projectFlow"], dict):
+                    aggregated["projectFlow"] = result["projectFlow"]
         
         # Aggregate summary
         if summaries:

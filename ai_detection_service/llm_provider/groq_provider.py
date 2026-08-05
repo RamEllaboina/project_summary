@@ -5,15 +5,29 @@ from .base import BaseLLMProvider
 
 class GroqProvider(BaseLLMProvider):
     def __init__(self, api_key: str, model: str):
-        self.client = openai.OpenAI(
-            api_key=api_key,
-            base_url="https://api.groq.com/openai/v1"
-        )
+        # Support comma-separated API keys for rotation/load balancing
+        raw_keys = [k.strip() for k in api_key.split(',') if k.strip()]
+        if not raw_keys:
+            raise ValueError("No API keys provided for Groq")
+            
+        self.clients = [
+            openai.OpenAI(
+                api_key=key,
+                base_url="https://api.groq.com/openai/v1"
+            ) for key in raw_keys
+        ]
         self.model = model
+        self.current_idx = 0
+
+    def _get_next_client(self):
+        client = self.clients[self.current_idx]
+        self.current_idx = (self.current_idx + 1) % len(self.clients)
+        return client
 
     async def evaluate_project(self, prompt: str) -> Dict[str, Any]:
         try:
-            response = self.client.chat.completions.create(
+            client = self._get_next_client()
+            response = client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": "You are a senior software architect evaluating a project. Always respond with valid JSON only."},

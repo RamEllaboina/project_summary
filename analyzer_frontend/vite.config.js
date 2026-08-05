@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename)
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  
+
   return {
     plugins: [react()],
     server: {
@@ -17,6 +17,8 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_API_BASE_URL || "http://localhost:3000",
           changeOrigin: true,
           secure: false,
+          timeout: 600000,
+          proxyTimeout: 600000,
           configure: (proxy, options) => {
             proxy.on('error', (err, req, res) => {
               console.log('proxy error', err);

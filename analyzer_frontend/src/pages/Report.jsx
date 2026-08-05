@@ -21,6 +21,7 @@ import Footer from '@/components/Footer';
 import { useAnalysis } from '@/context/AnalysisContext';
 
 import SandboxViewer from '@/components/SandboxViewer';
+import { ProjectFlow } from '@/components/ProjectFlow';
 
 
 
@@ -60,7 +61,7 @@ export default function Report() {
 
     const aiEvaluation = data.aiEvaluation || {};
 
-    
+
 
     // Calculate AI probability from score (0-10 scale to 0-100 percentage)
 
@@ -68,7 +69,7 @@ export default function Report() {
 
     const aiLevel = aiDetection?.level || 'low';
 
-    
+
 
     let aiProbability = 0;
 
@@ -96,9 +97,9 @@ export default function Report() {
 
         : data.metrics?.qualityScore
 
-        ? Math.round((data.metrics.qualityScore + data.metrics.structureScore + data.metrics.securityScore) / 3)
+            ? Math.round((data.metrics.qualityScore + data.metrics.structureScore + data.metrics.securityScore) / 3)
 
-        : 0;
+            : 0;
 
 
 
@@ -377,23 +378,15 @@ export default function Report() {
             {/* Main Analysis Tabs */}
 
             <Tabs defaultValue="overview" className="w-full">
-
-                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-7 md:grid-cols-4 mb-8">
-
+                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-8 md:grid-cols-4 mb-8">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
-
+                    <TabsTrigger value="flow">Project Flow</TabsTrigger>
                     <TabsTrigger value="architecture">Complexity</TabsTrigger>
-
                     <TabsTrigger value="quality">Quality</TabsTrigger>
-
                     <TabsTrigger value="security">Security</TabsTrigger>
-
                     <TabsTrigger value="ai">AI Detection</TabsTrigger>
-
                     <TabsTrigger value="impact">Innovation</TabsTrigger>
-
                     <TabsTrigger value="sandbox">Sandbox</TabsTrigger>
-
                 </TabsList>
 
 
@@ -574,7 +567,9 @@ export default function Report() {
 
                     </TabsContent>
 
-
+                    <TabsContent value="flow">
+                        <ProjectFlow flowData={aiEvaluation?.projectFlow} />
+                    </TabsContent>
 
                     <TabsContent value="architecture">
 
@@ -638,7 +633,7 @@ export default function Report() {
 
                                         </h4>
 
-                                        
+
 
                                         {/* Extension Summary Cards */}
 
@@ -646,139 +641,135 @@ export default function Report() {
 
                                             {Object.entries(data.metrics.complexity.complexity_by_extension)
 
-                                                .sort(([,a], [,b]) => b.avg_cc - a.avg_cc)
+                                                .sort(([, a], [, b]) => b.avg_cc - a.avg_cc)
 
                                                 .map(([ext, data]) => (
 
-                                                <div key={ext} className="border rounded-lg p-4">
+                                                    <div key={ext} className="border rounded-lg p-4">
 
-                                                    <div className="flex items-center justify-between mb-3">
+                                                        <div className="flex items-center justify-between mb-3">
 
-                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-2">
 
-                                                            <div className={`w-3 h-3 rounded-full ${
+                                                                <div className={`w-3 h-3 rounded-full ${ext === '.js' ? 'bg-yellow-500' :
 
-                                                                ext === '.js' ? 'bg-yellow-500' :
+                                                                    ext === '.py' ? 'bg-blue-500' :
 
-                                                                ext === '.py' ? 'bg-blue-500' :
+                                                                        ext === '.html' ? 'bg-orange-500' :
 
-                                                                ext === '.html' ? 'bg-orange-500' :
+                                                                            ext === '.css' ? 'bg-purple-500' :
 
-                                                                ext === '.css' ? 'bg-purple-500' :
+                                                                                ext === '.jsx' ? 'bg-cyan-500' :
 
-                                                                ext === '.jsx' ? 'bg-cyan-500' :
+                                                                                    ext === '.ts' ? 'bg-indigo-500' :
 
-                                                                ext === '.ts' ? 'bg-indigo-500' :
+                                                                                        'bg-gray-500'
 
-                                                                'bg-gray-500'
+                                                                    }`}></div>
 
-                                                            }`}></div>
+                                                                <span className="font-medium text-lg">
 
-                                                            <span className="font-medium text-lg">
+                                                                    {ext === 'no_extension' ? 'No Extension' : ext}
 
-                                                                {ext === 'no_extension' ? 'No Extension' : ext}
+                                                                </span>
 
-                                                            </span>
+                                                            </div>
+
+                                                            <Badge variant={
+
+                                                                data.avg_cc > 15 ? 'destructive' :
+
+                                                                    data.avg_cc > 10 ? 'destructive' :
+
+                                                                        data.avg_cc > 5 ? 'default' : 'secondary'
+
+                                                            }>
+
+                                                                {data.avg_cc > 15 ? 'Very High' :
+
+                                                                    data.avg_cc > 10 ? 'High' :
+
+                                                                        data.avg_cc > 5 ? 'Medium' : 'Low'}
+
+                                                            </Badge>
 
                                                         </div>
 
-                                                        <Badge variant={
 
-                                                            data.avg_cc > 15 ? 'destructive' :
 
-                                                            data.avg_cc > 10 ? 'destructive' :
+                                                        <div className="grid grid-cols-2 gap-3 text-sm">
 
-                                                            data.avg_cc > 5 ? 'default' : 'secondary'
+                                                            <div>
 
-                                                        }>
+                                                                <div className="text-muted-foreground">Files</div>
 
-                                                            {data.avg_cc > 15 ? 'Very High' :
+                                                                <div className="font-semibold">{data.file_count}</div>
 
-                                                             data.avg_cc > 10 ? 'High' :
+                                                            </div>
 
-                                                             data.avg_cc > 5 ? 'Medium' : 'Low'}
+                                                            <div>
 
-                                                        </Badge>
+                                                                <div className="text-muted-foreground">Avg Complexity</div>
+
+                                                                <div className="font-semibold">{data.avg_cc}</div>
+
+                                                            </div>
+
+                                                            <div>
+
+                                                                <div className="text-muted-foreground">Max Complexity</div>
+
+                                                                <div className="font-semibold">{data.max_cc}</div>
+
+                                                            </div>
+
+                                                            <div>
+
+                                                                <div className="text-muted-foreground">Maintainability</div>
+
+                                                                <div className="font-semibold">{data.avg_mi}</div>
+
+                                                            </div>
+
+                                                        </div>
+
+
+
+                                                        {/* Progress Bar for Complexity */}
+
+                                                        <div className="mt-3">
+
+                                                            <div className="flex justify-between text-xs text-muted-foreground mb-1">
+
+                                                                <span>Complexity Level</span>
+
+                                                                <span>{Math.min(100, (data.avg_cc / 20) * 100).toFixed(0)}%</span>
+
+                                                            </div>
+
+                                                            <div className="w-full bg-gray-200 rounded-full h-2">
+
+                                                                <div
+
+                                                                    className={`h-2 rounded-full ${data.avg_cc > 15 ? 'bg-red-500' :
+
+                                                                        data.avg_cc > 10 ? 'bg-orange-500' :
+
+                                                                            data.avg_cc > 5 ? 'bg-yellow-500' : 'bg-green-500'
+
+                                                                        }`}
+
+                                                                    style={{ width: `${Math.min(100, (data.avg_cc / 20) * 100)}%` }}
+
+                                                                ></div>
+
+                                                            </div>
+
+                                                        </div>
 
                                                     </div>
 
-                                                    
-
-                                                    <div className="grid grid-cols-2 gap-3 text-sm">
-
-                                                        <div>
-
-                                                            <div className="text-muted-foreground">Files</div>
-
-                                                            <div className="font-semibold">{data.file_count}</div>
-
-                                                        </div>
-
-                                                        <div>
-
-                                                            <div className="text-muted-foreground">Avg Complexity</div>
-
-                                                            <div className="font-semibold">{data.avg_cc}</div>
-
-                                                        </div>
-
-                                                        <div>
-
-                                                            <div className="text-muted-foreground">Max Complexity</div>
-
-                                                            <div className="font-semibold">{data.max_cc}</div>
-
-                                                        </div>
-
-                                                        <div>
-
-                                                            <div className="text-muted-foreground">Maintainability</div>
-
-                                                            <div className="font-semibold">{data.avg_mi}</div>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                    
-
-                                                    {/* Progress Bar for Complexity */}
-
-                                                    <div className="mt-3">
-
-                                                        <div className="flex justify-between text-xs text-muted-foreground mb-1">
-
-                                                            <span>Complexity Level</span>
-
-                                                            <span>{Math.min(100, (data.avg_cc / 20) * 100).toFixed(0)}%</span>
-
-                                                        </div>
-
-                                                        <div className="w-full bg-gray-200 rounded-full h-2">
-
-                                                            <div 
-
-                                                                className={`h-2 rounded-full ${
-
-                                                                    data.avg_cc > 15 ? 'bg-red-500' :
-
-                                                                    data.avg_cc > 10 ? 'bg-orange-500' :
-
-                                                                    data.avg_cc > 5 ? 'bg-yellow-500' : 'bg-green-500'
-
-                                                                }`}
-
-                                                                style={{ width: `${Math.min(100, (data.avg_cc / 20) * 100)}%` }}
-
-                                                            ></div>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-                                            ))}
+                                                ))}
 
                                         </div>
 
@@ -794,7 +785,7 @@ export default function Report() {
 
                                                 {Object.entries(data.metrics.complexity.complexity_by_extension)
 
-                                                    .filter(([,extData]) => extData.files && extData.files.length > 0)
+                                                    .filter(([, extData]) => extData.files && extData.files.length > 0)
 
                                                     .map(([ext, extData]) => (
 
@@ -802,23 +793,21 @@ export default function Report() {
 
                                                             <div className="font-medium mb-2 flex items-center gap-2">
 
-                                                                <span className={`px-2 py-1 rounded text-xs text-white ${
-
-                                                                    ext === '.js' ? 'bg-yellow-500' :
+                                                                <span className={`px-2 py-1 rounded text-xs text-white ${ext === '.js' ? 'bg-yellow-500' :
 
                                                                     ext === '.py' ? 'bg-blue-500' :
 
-                                                                    ext === '.html' ? 'bg-orange-500' :
+                                                                        ext === '.html' ? 'bg-orange-500' :
 
-                                                                    ext === '.css' ? 'bg-purple-500' :
+                                                                            ext === '.css' ? 'bg-purple-500' :
 
-                                                                    ext === '.jsx' ? 'bg-cyan-500' :
+                                                                                ext === '.jsx' ? 'bg-cyan-500' :
 
-                                                                    ext === '.ts' ? 'bg-indigo-500' :
+                                                                                    ext === '.ts' ? 'bg-indigo-500' :
 
-                                                                    'bg-gray-500'
+                                                                                        'bg-gray-500'
 
-                                                                }`}>
+                                                                    }`}>
 
                                                                     {ext === 'no_extension' ? 'No Extension' : ext}
 
@@ -832,7 +821,7 @@ export default function Report() {
 
                                                             </div>
 
-                                                            
+
 
                                                             <div className="space-y-2">
 
@@ -856,15 +845,13 @@ export default function Report() {
 
                                                                                 <span className="text-muted-foreground">CC:</span>
 
-                                                                                <span className={`font-semibold ${
-
-                                                                                    file.cc > 15 ? 'text-red-600' :
+                                                                                <span className={`font-semibold ${file.cc > 15 ? 'text-red-600' :
 
                                                                                     file.cc > 10 ? 'text-orange-600' :
 
-                                                                                    file.cc > 5 ? 'text-yellow-600' : 'text-green-600'
+                                                                                        file.cc > 5 ? 'text-yellow-600' : 'text-green-600'
 
-                                                                                }`}>
+                                                                                    }`}>
 
                                                                                     {file.cc}
 
@@ -876,15 +863,13 @@ export default function Report() {
 
                                                                                 <span className="text-muted-foreground">MI:</span>
 
-                                                                                <span className={`font-semibold ${
-
-                                                                                    file.mi < 50 ? 'text-red-600' :
+                                                                                <span className={`font-semibold ${file.mi < 50 ? 'text-red-600' :
 
                                                                                     file.mi < 70 ? 'text-orange-600' :
 
-                                                                                    file.mi < 85 ? 'text-yellow-600' : 'text-green-600'
+                                                                                        file.mi < 85 ? 'text-yellow-600' : 'text-green-600'
 
-                                                                                }`}>
+                                                                                    }`}>
 
                                                                                     {file.mi}
 
@@ -1086,7 +1071,7 @@ export default function Report() {
 
                                 </div>
 
-                                
+
 
                                 {/* AI Detection Details */}
 
@@ -1102,7 +1087,7 @@ export default function Report() {
 
                                 )}
 
-                                
+
 
                                 {/* AI Signals */}
 
@@ -1134,7 +1119,7 @@ export default function Report() {
 
                                         )}
 
-                                        
+
 
                                         {aiDetection.signals.naming_issues && (
 
@@ -1251,19 +1236,19 @@ export default function Report() {
                                     {/* Production Readiness with Progress Bar */}
                                     <div className="p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
                                         <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-3">Production Readiness</h4>
-                                        
+
                                         {/* Production Readiness Level */}
                                         <div className="mb-3">
                                             <div className="flex items-center justify-between mb-1">
                                                 <span className="text-sm font-medium text-amber-700 dark:text-amber-400">Readiness Level</span>
                                                 <span className="text-sm text-amber-600 dark:text-amber-500">
-                                                    {aiEvaluation?.innovation?.level === 'high' ? 'High' : 
-                                                     aiEvaluation?.innovation?.level === 'medium' ? 'Medium' : 'Low'}
+                                                    {aiEvaluation?.innovation?.level === 'high' ? 'High' :
+                                                        aiEvaluation?.innovation?.level === 'medium' ? 'Medium' : 'Low'}
                                                 </span>
                                             </div>
-                                            <Progress 
-                                                value={aiEvaluation?.innovation?.level === 'high' ? 85 : 
-                                                       aiEvaluation?.innovation?.level === 'medium' ? 60 : 30} 
+                                            <Progress
+                                                value={aiEvaluation?.innovation?.level === 'high' ? 85 :
+                                                    aiEvaluation?.innovation?.level === 'medium' ? 60 : 30}
                                                 className="h-2"
                                             />
                                         </div>
@@ -1277,8 +1262,8 @@ export default function Report() {
                                         <div className="grid grid-cols-2 gap-3 mt-3">
                                             <div className="text-center p-2 bg-amber-100 dark:bg-amber-900/30 rounded">
                                                 <div className="text-lg font-bold text-amber-800 dark:text-amber-300">
-                                                    {aiEvaluation?.innovation?.level === 'high' ? '85%' : 
-                                                     aiEvaluation?.innovation?.level === 'medium' ? '60%' : '30%'}
+                                                    {aiEvaluation?.innovation?.level === 'high' ? '85%' :
+                                                        aiEvaluation?.innovation?.level === 'medium' ? '60%' : '30%'}
                                                 </div>
                                                 <div className="text-xs text-amber-600 dark:text-amber-400">Ready</div>
                                             </div>
@@ -1313,9 +1298,9 @@ export default function Report() {
 
 
 
-        {/* Footer - Only on Report page */}
-        <Footer />
-        </div>
+            {/* Footer - Only on Report page */}
+            <Footer />
+        </div >
 
     );
 

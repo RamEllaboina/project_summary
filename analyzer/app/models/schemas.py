@@ -23,6 +23,7 @@ class Metrics(BaseModel):
     structureScore: float = 0.0
     securityScore: float = 0.0
     complexity: ComplexityMetrics
+    graphrag: Dict[str, Any] = {}
 
 class Issue(BaseModel):
     severity: str  # Critical, High, Medium, Low

@@ -54,16 +54,17 @@ const upload = multer({
     fileFilter,
     limits: {
         fileSize: 100 * 1024 * 1024, // 100MB per file
+        fieldSize: 100 * 1024 * 1024, // 100MB for fields (like paths)
         files: Infinity                // unlimited files
     }
 });
 
 // Export variants
-const uploadSingle   = upload.single('project');
-const uploadMultiple = upload.array('project', 500);
-const uploadAny      = upload.any();
+const uploadSingle = upload.single('project');
+const uploadMultiple = upload.array('project', 100000);
+const uploadAny = upload.any();
 
 module.exports = upload;
-module.exports.single   = uploadSingle;
+module.exports.single = uploadSingle;
 module.exports.multiple = uploadMultiple;
-module.exports.any      = uploadAny;
+module.exports.any = uploadAny;

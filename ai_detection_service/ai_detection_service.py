@@ -54,7 +54,7 @@ class AIDetectionService:
         """Prepare code content for AI analysis."""
         content_parts = []
         
-        for i, file in enumerate(files[:10]):  # Limit to first 10 files for token management
+        for i, file in enumerate(files[:3]):  # Limit to first 3 files for strict token management
             # Handle both ImportantFile objects and dictionaries
             if hasattr(file, 'path') and hasattr(file, 'content'):
                 file_path = file.path
@@ -67,9 +67,9 @@ class AIDetectionService:
                 file_path = f"file_{i}"
                 file_content = str(file)
             
-            # Truncate very large files
-            if len(file_content) > 2000:
-                file_content = file_content[:2000] + "\n... [truncated for analysis]"
+            # Truncate large files to save tokens
+            if len(file_content) > 1000:
+                file_content = file_content[:1000] + "\n... [truncated for analysis]"
             
             content_parts.append(f"File {i+1}: {file_path}\n```\n{file_content}\n```\n")
         

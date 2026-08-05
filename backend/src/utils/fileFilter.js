@@ -124,27 +124,27 @@ const ALLOWED_EXTENSIONS = new Set([
 function shouldIgnore(filePath, isDirectory = false) {
     const fileName = path.basename(filePath);
     const parsedPath = path.parse(filePath);
-    
+
     // Check if it's an ignored directory
     if (isDirectory && IGNORED_DIRECTORIES.has(fileName)) {
         return true;
     }
-    
+
     // Check if it's an ignored file extension
     if (!isDirectory && IGNORED_EXTENSIONS.has(parsedPath.ext.toLowerCase())) {
         return true;
     }
-    
+
     // Check hidden files/directories (starting with .)
     if (fileName.startsWith('.') && !fileName.startsWith('.env') && fileName !== '.gitignore') {
         return true;
     }
-    
+
     // Check for lock files
     if (fileName.includes('package-lock') || fileName.includes('yarn.lock') || fileName.includes('pipfile.lock')) {
         return true;
     }
-    
+
     return false;
 }
 
@@ -171,18 +171,18 @@ async function filterFiles(dirPath, options = {}) {
         includeNonSourceCode = false,
         logIgnored = false
     } = options;
-    
+
     const result = [];
     const ignored = [];
-    
+
     try {
         const items = await fs.readdir(dirPath);
-        
-        for (const item of items) {
+
+        await Promise.all(items.map(async (item) => {
             const itemPath = path.join(dirPath, item);
             const stats = await fs.stat(itemPath);
             const isDirectory = stats.isDirectory();
-            
+
             // Check if should ignore
             if (shouldIgnore(itemPath, isDirectory)) {
                 if (logIgnored) {
@@ -191,9 +191,9 @@ async function filterFiles(dirPath, options = {}) {
                         reason: isDirectory ? 'ignored_directory' : 'ignored_file'
                     });
                 }
-                continue;
+                return;
             }
-            
+
             if (isDirectory) {
                 // Recursively scan subdirectories (with depth limit)
                 if (currentDepth < maxDepth) {
@@ -217,11 +217,11 @@ async function filterFiles(dirPath, options = {}) {
                     }
                 }
             }
-        }
+        }));
     } catch (error) {
         console.error(`Error scanning directory ${dirPath}:`, error);
     }
-    
+
     return { files: result, ignored };
 }
 
@@ -256,7 +256,7 @@ async function readFileContent(filePath, maxSize = 1024 * 1024) {
             console.warn(`File too large, skipping: ${filePath} (${stats.size} bytes)`);
             return null;
         }
-        
+
         return await fs.readFile(filePath, 'utf8');
     } catch (error) {
         console.error(`Error reading file ${filePath}:`, error);
@@ -271,14 +271,14 @@ async function readFileContent(filePath, maxSize = 1024 * 1024) {
  */
 async function parseIgnoreFile(ignoreFilePath) {
     const patterns = new Set();
-    
+
     try {
         if (await fs.pathExists(ignoreFilePath)) {
             const content = await fs.readFile(ignoreFilePath, 'utf8');
             const lines = content.split('\n')
                 .map(line => line.trim())
                 .filter(line => line && !line.startsWith('#'));
-            
+
             lines.forEach(line => {
                 patterns.add(line);
             });
@@ -286,7 +286,7 @@ async function parseIgnoreFile(ignoreFilePath) {
     } catch (error) {
         console.error(`Error reading ignore file ${ignoreFilePath}:`, error);
     }
-    
+
     return patterns;
 }
 

@@ -13,6 +13,17 @@ exports.uploadProject = catchAsync(async (req, res, next) => {
         return next(new AppError('Please upload files or a zip file', 400));
     }
 
+    // --- Clean up old projects to save space ---
+    try {
+        await fs.emptyDir('storage/projects');
+        await fs.emptyDir('storage/uploads');
+        await Project.deleteMany({});
+        console.log('🧹 Cleaned up old projects to save space.');
+    } catch (err) {
+        console.warn('⚠️ Could not clean up old projects:', err.message);
+    }
+    // -------------------------------------------
+
     const projectId = uuidv4();
     // Write files directly into a structured project directory (no intermediate zip needed)
     const projectDir = path.join('storage', 'projects', projectId);
@@ -34,23 +45,23 @@ exports.uploadProject = catchAsync(async (req, res, next) => {
             const batch = allFiles.slice(i, i + BATCH_SIZE);
             console.log(`📦 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allFiles.length / BATCH_SIZE)} (${batch.length} files)`);
 
-            for (const file of batch) {
+            await Promise.all(batch.map(async (file) => {
                 // file.originalname carries the relative path (e.g. "src/App.jsx")
                 // Strip any leading path traversal attempts
                 const safePath = path.normalize(file.originalname).replace(/^(\.\.[\\/])+/, '');
                 const destPath = path.join(projectDir, safePath);
-                
+
                 // Apply intelligent filtering
                 if (shouldIgnore(file.originalname, false)) {
                     console.log(`🚫 Ignoring: ${file.originalname}`);
                     filesIgnored++;
-                    continue;
+                    return;
                 }
-                
+
                 // Write the file
                 await fs.outputFile(destPath, file.buffer);
                 totalFilesUploaded++;
-                
+
                 // Check if it's a source code file
                 if (isSourceCodeFile(file.originalname)) {
                     sourceCodeFiles++;
@@ -58,7 +69,7 @@ exports.uploadProject = catchAsync(async (req, res, next) => {
                 } else {
                     console.log(`📄 Other file: ${file.originalname}`);
                 }
-            }
+            }));
         }
 
         originalName = allFiles[0].originalname.split('/')[0] || 'uploaded-project';
@@ -135,7 +146,7 @@ exports.uploadProject = catchAsync(async (req, res, next) => {
 
     } catch (error) {
         // Clean up on error
-        await fs.remove(projectDir).catch(() => {});
+        await fs.remove(projectDir).catch(() => { });
         throw error;
     }
 });

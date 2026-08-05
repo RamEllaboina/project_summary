@@ -16,8 +16,8 @@ class GeminiProvider(BaseLLMProvider):
 
     async def evaluate_project(self, prompt: str) -> Dict[str, Any]:
         try:
-            # Use the new google-genai API
-            response = await self.client.models.generate_content(
+            # Use the new google-genai API proper async client
+            response = await self.client.aio.models.generate_content(
                 model=self.model,
                 contents=prompt,
                 config=types.GenerateContentConfig(

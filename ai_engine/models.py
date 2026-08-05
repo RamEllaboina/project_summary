@@ -79,6 +79,57 @@ class AIDetection(BaseModel):
     reasoning: str
     signals: Dict[str, Any] = {}  # Allow both strings and arrays
 
+class WorkflowStep(BaseModel):
+    step: int
+    file: str
+    action: str
+    output: str
+
+class UserFlowEvent(BaseModel):
+    file: str
+    process: str
+    response: str
+
+class UserFlowAction(BaseModel):
+    action: str
+    file: str
+    process: str
+    response: str
+
+class UserFlow(BaseModel):
+    onVisit: UserFlowEvent
+    onAction: UserFlowAction
+
+class ApiEndpoint(BaseModel):
+    method: str
+    endpoint: str
+    purpose: str
+    file: str
+
+class DbCollection(BaseModel):
+    name: str
+    fields: List[str]
+    purpose: str
+
+class DatabaseSchema(BaseModel):
+    collections: List[DbCollection]
+
+class TechStack(BaseModel):
+    frontend: List[str]
+    backend: List[str]
+    database: str
+    tools: List[str]
+
+class ProjectFlow(BaseModel):
+    projectName: str = ""
+    whatItDoes: str = ""
+    completeWorkflow: List[WorkflowStep] = []
+    userFlow: UserFlow
+    dataFlow: str = ""
+    apiEndpoints: List[ApiEndpoint] = []
+    databaseSchema: DatabaseSchema
+    techStack: TechStack
+
 class EvaluationOutput(BaseModel):
     projectId: str
     summary: str = ""  # Add summary field
@@ -92,6 +143,7 @@ class EvaluationOutput(BaseModel):
     strengths: Strengths
     weaknesses: Weaknesses
     suggestions: Suggestions
+    projectFlow: Optional[ProjectFlow] = None
 
     model_config = {
         "json_schema_extra": {
@@ -102,32 +154,41 @@ class EvaluationOutput(BaseModel):
                     "architecture": "Simple client-side JavaScript application with modular design",
                     "complexity": "Low complexity with basic arithmetic operations and event handling",
                     "security": "Basic security with input validation and XSS prevention",
-                    "aiDetection": "Low probability of AI-generated code - shows human learning patterns",
-                    "innovation": "Medium innovation with intuitive UI and history features",
+                    "aiDetection": {
+                        "level": "low",
+                        "score": 2.5,
+                        "confidence": 0.9,
+                        "reasoning": "Code shows natural human patterns with organic structure.",
+                        "signals": {
+                            "ai_phrases": [],
+                            "naming_issues": [],
+                            "structure_patterns": []
+                        }
+                    },
+                    "innovation": {
+                        "level": "medium",
+                        "score": 6,
+                        "projectDescription": "Web-based calculator application",
+                        "assessment": "Medium innovation with intuitive UI and history features",
+                        "novelFeatures": ["History tracking", "Interactive UI"],
+                        "marketImpact": "Educational tool for students",
+                        "uniqueness": "Focuses on providing step-by-step history"
+                    },
                     "realWorldReadiness": "Moderately ready for educational use, needs production hardening",
                     "strengths": {
-                        "points": [
-                            "Clean, modular code structure",
-                            "Good user interface design",
-                            "Proper input validation",
-                            "Efficient event handling"
-                        ]
+                        "technical": ["Clean, modular code structure"],
+                        "architectural": ["Good user interface design"],
+                        "performance": ["Efficient event handling"]
                     },
                     "weaknesses": {
-                        "points": [
-                            "Limited error handling",
-                            "No server-side validation",
-                            "Basic styling could be enhanced",
-                            "No unit tests included"
-                        ]
+                        "technical": ["No server-side validation"],
+                        "architectural": ["Basic styling could be enhanced"],
+                        "performance": ["No unit tests included"]
                     },
                     "suggestions": {
-                        "points": [
-                            "Add comprehensive unit tests",
-                            "Implement server-side validation",
-                            "Add accessibility features",
-                            "Consider framework migration for scalability"
-                        ]
+                        "technical": ["Implement server-side validation"],
+                        "architectural": ["Add accessibility features"],
+                        "performance": ["Consider framework migration for scalability"]
                     }
                 }
             ]
