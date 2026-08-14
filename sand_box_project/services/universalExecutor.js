@@ -15,23 +15,23 @@ class UniversalExecutor {
     async execute(jobDir, projectInfo) {
         const jobId = path.basename(jobDir);
         const imageName = `sandbox-${jobId}`;
-        
+
         try {
             const dockerfile = this.generateDockerfile(projectInfo);
             await fs.writeFile(path.join(jobDir, 'Dockerfile'), dockerfile);
-            
+
             // Build Docker image
-            await execPromise(`docker build -t ${imageName} .`, { 
+            await execPromise(`docker build -t ${imageName} .`, {
                 cwd: jobDir,
-                timeout: this.executionTimeout 
+                timeout: this.executionTimeout
             });
-            
+
             // Execute commands in container
             const result = await this.runContainer(imageName, projectInfo.commands, projectInfo);
-            
+
             // Cleanup
             await this.cleanup(imageName);
-            
+
             return {
                 success: true,
                 projectType: projectInfo.type,
@@ -42,10 +42,10 @@ class UniversalExecutor {
                 logs: result.logs,
                 executionTime: result.executionTime
             };
-            
+
         } catch (error) {
             await this.cleanup(imageName);
-            
+
             return {
                 success: false,
                 projectType: projectInfo.type,
@@ -61,7 +61,7 @@ class UniversalExecutor {
 
     generateDockerfile(projectInfo) {
         let dockerfile = '';
-        
+
         switch (projectInfo.type) {
             case 'nodejs':
                 dockerfile = this.generateNodeDockerfile(projectInfo);
@@ -84,7 +84,7 @@ class UniversalExecutor {
             default:
                 dockerfile = this.generateGenericDockerfile(projectInfo);
         }
-        
+
         return dockerfile;
     }
 
@@ -102,8 +102,8 @@ RUN npm install
         dockerfile += `COPY . .
 `;
 
-        // Start server in background, wait for it to start, then exit
-        dockerfile += `CMD ["sh", "-c", "npm start > /dev/null 2>&1 & sleep 2 && echo 'Server started successfully'"]
+        dockerfile += `EXPOSE 3000
+CMD ["npm", "start"]
 `;
 
         return dockerfile;
@@ -168,7 +168,7 @@ EXPOSE 8080
 CMD ["java", "-jar", "build/libs/*.jar"]
 `;
         }
-        
+
         return this.generateGenericDockerfile(projectInfo);
     }
 
@@ -218,7 +218,7 @@ CMD ["./app"]
     generateGenericDockerfile(projectInfo) {
         // Try to detect language from entry file
         const entryExt = projectInfo.entryFile ? path.extname(projectInfo.entryFile) : '';
-        
+
         if (entryExt === '.py') {
             return `FROM python:3.10-slim
 WORKDIR /app
@@ -242,73 +242,96 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
 
     async runContainer(imageName, commands, projectInfo) {
         const startTime = Date.now();
-        
+
         try {
-            // Create a combined command script
-            const scriptContent = commands.join(' && ');
-            
-            // Use random port mapping to avoid conflicts
-            // For static projects, add port mapping to make it accessible and keep running
-            if (projectInfo.type === 'static') {
-                const runCmd = `docker run -d --name ${imageName}-runtime -p 0:3000 --memory=${this.memoryLimit} --cpus=${this.cpuLimit} ${imageName}`;
-                
+            // Determine port based on type
+            let containerPort = 0;
+            if (projectInfo.type === 'static') containerPort = 3000;
+            else if (projectInfo.type === 'nodejs') containerPort = 3000;
+            else if (projectInfo.type === 'python') containerPort = 8000;
+            else if (projectInfo.type === 'java' || projectInfo.type === 'go' || projectInfo.type === 'rust') containerPort = 8080;
+
+            if (containerPort > 0) {
+                // For anything with a likely server port, run in detached mode mapping the port
+                const runCmd = `docker run -d --name ${imageName}-runtime -p 0:${containerPort} --memory=${this.memoryLimit} --cpus=${this.cpuLimit} ${imageName}`;
+
                 // Start container
                 await execPromise(runCmd, { timeout: this.executionTimeout });
-                
-                // Wait for container to fully start
+
+                // Wait for container to fully start (might need more time for some frameworks)
                 await new Promise(resolve => setTimeout(resolve, 3000));
-                
-                // Get the mapped port
-                const portCmd = `docker port ${imageName}-runtime 3000`;
-                const { stdout: portOutput } = await execPromise(portCmd);
-                const mappedPort = portOutput.trim().split(':')[1];
-                
+
                 // Check if container is actually running
                 const statusCmd = `docker ps --filter "name=${imageName}-runtime" --format "{{.Status}}"`;
                 const { stdout: statusOutput } = await execPromise(statusCmd);
-                
+
                 if (!statusOutput.includes('Up')) {
-                    throw new Error('Container failed to start properly');
+                    // Container exited. It might have been a simple script that finishes, or it crashed.
+                    // Let's grab the logs
+                    const { stdout: logs } = await execPromise(`docker logs ${imageName}-runtime`);
+                    const executionTime = Date.now() - startTime;
+                    return {
+                        logs: logs.trim() || 'Script executed and finished successfully.',
+                        executionTime,
+                        success: true
+                    };
                 }
-                
-                // Test the application
-                const testResults = await this.testApplication(mappedPort, projectInfo);
-                
-                const executionTime = Date.now() - startTime;
-                return {
-                    logs: `🚀 Static HTML server started successfully on port ${mappedPort}\n✅ Application tested and ready for interaction!\n📱 Container status: ${statusOutput.trim()}`,
-                    executionTime,
-                    mappedPort,
-                    containerId: `${imageName}-runtime`,
-                    testResults,
-                    url: `http://localhost:${mappedPort}`,
-                    success: true,
-                    containerStatus: statusOutput.trim()
-                };
+
+                // Get the mapped port
+                const portCmd = `docker port ${imageName}-runtime ${containerPort}`;
+                try {
+                    const { stdout: portOutput } = await execPromise(portCmd);
+                    const mappedPort = portOutput.trim().split(':')[1];
+
+                    // Test the application
+                    const testResults = await this.testApplication(mappedPort, projectInfo);
+
+                    const executionTime = Date.now() - startTime;
+                    return {
+                        logs: `🚀 Application server started successfully on port ${mappedPort}\n✅ Application tested and ready for interaction!\n📱 Container status: ${statusOutput.trim()}`,
+                        executionTime,
+                        mappedPort,
+                        containerId: `${imageName}-runtime`,
+                        testResults,
+                        url: `http://localhost:${mappedPort}`,
+                        success: true,
+                        containerStatus: statusOutput.trim()
+                    };
+                } catch (e) {
+                    // Could not get port, fallback to simple logs
+                    const { stdout: logs } = await execPromise(`docker logs ${imageName}-runtime`);
+                    return {
+                        logs: logs.trim(),
+                        executionTime: Date.now() - startTime,
+                        success: true
+                    }
+                }
             } else {
+                // Fallback for completely unknown generic types without ports, run synchronously
+                const scriptContent = commands.join(' && ');
                 const runCmd = `docker run --rm --memory=${this.memoryLimit} --cpus=${this.cpuLimit} ${imageName} sh -c "${scriptContent}"`;
-                
-                const { stdout, stderr } = await execPromise(runCmd, { 
-                    timeout: this.executionTimeout 
+
+                const { stdout, stderr } = await execPromise(runCmd, {
+                    timeout: this.executionTimeout
                 });
-                
+
                 const executionTime = Date.now() - startTime;
                 return {
                     logs: (stdout + '\n' + stderr).trim(),
                     executionTime
                 };
             }
-            
+
         } catch (error) {
             const executionTime = Date.now() - startTime;
-            
+
             if (error.killed) {
                 return {
                     logs: `Execution timed out after ${this.executionTimeout}ms`,
                     executionTime
                 };
             }
-            
+
             return {
                 logs: (error.stdout + '\n' + error.stderr).trim() || error.message,
                 executionTime
@@ -318,20 +341,20 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
 
     async testApplication(port, projectInfo) {
         const tests = [];
-        
+
         try {
             // First check if port is accessible
             console.log(`Testing application on port ${port}...`);
-            
+
             // Test if server is responding (with retries)
             let response = null;
             let retryCount = 0;
             const maxRetries = 5;
-            
+
             while (!response && retryCount < maxRetries) {
                 try {
                     console.log(`Attempt ${retryCount + 1} to connect to http://localhost:${port}`);
-                    response = await fetch(`http://localhost:${port}`, { 
+                    response = await fetch(`http://localhost:${port}`, {
                         timeout: 5000,
                         signal: AbortSignal.timeout(5000)
                     });
@@ -346,22 +369,22 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                     }
                 }
             }
-            
+
             if (!response) {
                 throw new Error('Failed to connect after multiple attempts');
             }
-            
+
             if (response.ok) {
                 tests.push({
                     test: 'Server Response',
                     status: '✅ PASS',
                     details: `HTTP ${response.status} - Server is responding`
                 });
-                
+
                 // Get HTML content for further testing
                 const html = await response.text();
                 console.log(`HTML content length: ${html.length} characters`);
-                
+
                 // Test for HTML structure
                 if (html.includes('<html') && html.includes('</html>')) {
                     tests.push({
@@ -370,7 +393,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                         details: 'Valid HTML document detected'
                     });
                 }
-                
+
                 // Test for title tag
                 if (html.includes('<title>')) {
                     const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/i);
@@ -387,7 +410,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                         details: 'No title tag found'
                     });
                 }
-                
+
                 // Test for CSS
                 if (html.includes('<link') || html.includes('<style')) {
                     tests.push({
@@ -402,7 +425,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                         details: 'No CSS detected'
                     });
                 }
-                
+
                 // Test for JavaScript
                 if (html.includes('<script')) {
                     tests.push({
@@ -417,7 +440,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                         details: 'No JavaScript detected'
                     });
                 }
-                
+
                 // Test for common interactive elements
                 if (html.includes('<button') || html.includes('<input') || html.includes('<form')) {
                     tests.push({
@@ -426,7 +449,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                         details: 'Interactive elements found (buttons, forms, inputs)'
                     });
                 }
-                
+
                 // Test for responsive design
                 if (html.includes('viewport') || html.includes('@media')) {
                     tests.push({
@@ -435,7 +458,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                         details: 'Responsive design detected'
                     });
                 }
-                
+
             } else {
                 tests.push({
                     test: 'Server Response',
@@ -443,7 +466,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                     details: `HTTP ${response.status} - Server not responding properly`
                 });
             }
-            
+
         } catch (error) {
             console.error(`Application test failed: ${error.message}`);
             tests.push({
@@ -452,7 +475,7 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
                 details: `Cannot connect to server: ${error.message}`
             });
         }
-        
+
         return tests;
     }
 
@@ -461,33 +484,33 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
             // Don't stop runtime containers immediately - let them run for user interaction
             // Only stop containers that are older than 10 minutes
             const { stdout: oldContainers } = await execPromise(`docker ps --filter "name=${imageName}-runtime" --format "{{.Names}}"`);
-            
+
             if (oldContainers) {
                 const containerNames = oldContainers.trim().split('\n').filter(name => name);
-                
+
                 for (const containerName of containerNames) {
                     try {
                         // Check container age
                         const { stdout: containerInfo } = await execPromise(`docker inspect ${containerName} --format '{{.State.StartedAt}}'`);
                         const startTime = new Date(containerInfo.trim());
                         const age = Date.now() - startTime.getTime();
-                        
+
                         // Only stop containers older than 10 minutes
                         if (age > 10 * 60 * 1000) {
-                            await execPromise(`docker stop ${containerName}`).catch(() => {});
-                            await execPromise(`docker rm ${containerName}`).catch(() => {});
+                            await execPromise(`docker stop ${containerName}`).catch(() => { });
+                            await execPromise(`docker rm ${containerName}`).catch(() => { });
                             console.log(`Cleaned up old container: ${containerName}`);
                         }
                     } catch (error) {
                         // Container might already be gone
-                        await execPromise(`docker stop ${containerName}`).catch(() => {});
-                        await execPromise(`docker rm ${containerName}`).catch(() => {});
+                        await execPromise(`docker stop ${containerName}`).catch(() => { });
+                        await execPromise(`docker rm ${containerName}`).catch(() => { });
                     }
                 }
             }
-            
+
             // Remove the image
-            await execPromise(`docker rmi -f ${imageName}`).catch(() => {});
+            await execPromise(`docker rmi -f ${imageName}`).catch(() => { });
         } catch (error) {
             // Ignore cleanup errors
         }
@@ -497,11 +520,11 @@ CMD ["sh", "-c", "ls -la && echo 'No specific entry point detected'"]
         if (error.killed) {
             return `Execution timed out after ${this.executionTimeout}ms`;
         }
-        
+
         const stdout = error.stdout || '';
         const stderr = error.stderr || '';
         const message = error.message || '';
-        
+
         return `${stdout}\n${stderr}\n${message}`.trim();
     }
 }

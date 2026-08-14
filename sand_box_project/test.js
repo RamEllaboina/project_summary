@@ -14,7 +14,7 @@ async function testUpload() {
 
     try {
         console.log('Sending project to Sandbox...');
-        const response = await axios.post('http://localhost:3000/api/run', formData, {
+        const response = await axios.post('http://localhost:4002/api/run', formData, {
             headers: {
                 ...formData.getHeaders()
             }

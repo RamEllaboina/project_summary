@@ -629,3 +629,9 @@
 2026-08-05T18:10:28.386Z: Analyzer done. Calling AI Engine for e459089c-fe2d-483d-a021-69595e8f854c
 2026-08-05T18:10:52.568Z: Calling Sandbox for e459089c-fe2d-483d-a021-69595e8f854c
 2026-08-05T18:10:52.595Z: Job COMPLETED successfully for e459089c-fe2d-483d-a021-69595e8f854c
+2026-08-09T17:08:02.115Z: Starting processing job for project: 91307856-eb5d-46e1-bc8c-14cd6039b46d
+2026-08-09T17:08:02.159Z: Cleaning project at storage\projects\91307856-eb5d-46e1-bc8c-14cd6039b46d
+2026-08-09T17:08:02.172Z: Calling analyzer for 91307856-eb5d-46e1-bc8c-14cd6039b46d at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\91307856-eb5d-46e1-bc8c-14cd6039b46d
+2026-08-09T17:08:02.518Z: Analyzer done. Calling AI Engine for 91307856-eb5d-46e1-bc8c-14cd6039b46d
+2026-08-09T17:08:22.131Z: Calling Sandbox for 91307856-eb5d-46e1-bc8c-14cd6039b46d
+2026-08-09T17:08:22.164Z: Job COMPLETED successfully for 91307856-eb5d-46e1-bc8c-14cd6039b46d
