@@ -2,61 +2,122 @@
 
 ## 📋 Project Overview
 
-The AI Code Analyzer is a comprehensive multi-service system that analyzes software projects using both static analysis and AI-powered semantic evaluation. It provides detailed insights into code quality, security, complexity, innovation level, and AI generation probability.
+The system combines static analysis, AI-based code evaluation, AI-generated code detection, and secure sandbox execution into a unified code intelligence platform.
 
-### Key Features
-
-- **Static Code Analysis**: Automated code quality, security, and complexity analysis
-- **AI-Powered Evaluation**: LLM-based semantic analysis for innovation and impact assessment
-- **AI Detection**: Specialized service to detect AI-generated code patterns
-- **Multi-Language Support**: Python, JavaScript/Node.js, and web projects
-- **Real-time Processing**: Background job processing with status tracking
-- **Interactive Reports**: Beautiful frontend with visualizations and insights
+### Workflow
+Code Input → FastAPI Processing → Static Analysis → AI Quality Evaluation → AI Code Detection → Secure Execution → Result Aggregation → Unified Report
 
 ---
 
 ## 🏗️ System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Frontend (React)                         │
-│                    Port: 5173 (Vite Dev Server)                  │
-│  - Drag & Drop Upload  - Processing Status  - Report Display    │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │ HTTP/REST API
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      Backend (Node.js/Express)                   │
-│                         Port: 3000                                │
-│  - Project Upload  - Job Orchestration  - Report Aggregation    │
-└──────┬───────────────────────────────────────────────────────────┘
-       │                    │                    │
-       │                    │                    │
-       ▼                    ▼                    ▼
-┌──────────────┐   ┌──────────────┐   ┌──────────────────┐
-│   Analyzer   │   │  AI Engine   │   │ AI Detection     │
-│   Service    │   │   Service    │   │ Service          │
-│   Port: 8000 │   │  Port: 8002  │   │  Port: 8005      │
-│              │   │              │   │                  │
-│ - Static     │   │ - Semantic   │   │ - AI Pattern     │
-│   Analysis   │   │   Evaluation │   │   Detection      │
-│ - Quality    │   │ - Innovation │   │ - Code           │
-│   Metrics    │   │   Scoring    │   │   Analysis       │
-│ - Security   │   │ - Impact     │   │ - Probability    │
-│   Checks     │   │   Assessment │   │   Calculation    │
-└──────────────┘   └──────────────┘   └──────────────────┘
-       │                    │                    │
-       └────────────────────┴────────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │   MongoDB        │
-                    │   Port: 27017    │
-                    │                  │
-                    │ - Project Data   │
-                    │ - Job Status    │
-                    │ - Reports       │
-                    └──────────────────┘
+```text
+USER
+│
+├── Upload Code
+├── Paste Code
+└── Provide Prompt
+│
+▼
+FRONTEND
+│
+├── Web Interface / VS Code UI
+├── React / TypeScript
+└── Code Upload & Input
+│
+▼
+FASTAPI BACKEND
+│
+├── Request Handling
+├── Authentication
+├── Orchestration Service
+└── Response Aggregation
+│
+▼
+CORE ANALYSIS ENGINE
+│
+├── 1. STATIC CODE ANALYSIS
+│   ├── Linting
+│   ├── SAST
+│   ├── Vulnerability Detection
+│   └── Code Structure Analysis
+│
+├── 2. AI CODE QUALITY EVALUATION
+│   ├── Code Review
+│   ├── Maintainability
+│   ├── Readability
+│   ├── Efficiency
+│   └── Quality Scoring
+│
+├── 3. AI-GENERATED CODE DETECTION
+│   ├── Statistical Features
+│   ├── AST / Code Features
+│   ├── ML / LLM Classification
+│   └── AI Generation Probability
+│
+└── 4. SECURE SANDBOX EXECUTION
+    ├── Execute Submitted Code
+    ├── Capture Output
+    ├── Capture Errors
+    └── Apply Resource Restrictions
+
+
+SUPPORTING COMPONENTS
+
+AI / ML MODELS
+│
+├── Code Quality Model
+├── AI Detection Model
+├── Vulnerability Detection Model
+└── Ensemble / Hybrid Model
+
+
+DATA STORAGE
+│
+├── Database
+├── Analysis Results
+├── Logs
+└── Reports
+
+
+SECURE SANDBOX ENVIRONMENT
+│
+├── Docker Container
+├── Namespaces
+├── cgroups
+├── Seccomp-BPF
+├── Network Isolation
+└── CPU / Memory / Time Limits
+
+
+EXTERNAL SERVICES
+│
+├── LLM API
+├── CVE / CWE Database
+└── Code Datasets
+
+
+RESULT AGGREGATION
+│
+└── Combines:
+    ├── Static Analysis Results
+    ├── AI Quality Results
+    ├── AI Detection Results
+    └── Sandbox Execution Results
+│
+▼
+OUTPUT / UNIFIED REPORT
+│
+├── Overall Score
+├── Code Quality Score
+├── Security Vulnerabilities
+├── AI Detection Probability
+├── Complexity Analysis
+├── Strengths
+├── Weaknesses
+├── AI Summary
+├── Suggestions & Explanation
+└── Execution Output / Errors
 ```
 
 ---
@@ -394,57 +455,51 @@ bvrit_hack/
 
 ## 🔄 End-to-End Workflow
 
-### Step 1: User Upload (Frontend)
-1. User drags and drops a project folder or selects via upload dialog
-2. Frontend recursively reads all files in the folder
-3. Filters out `node_modules`, `.git`, and build artifacts
-4. Bundles files into a single `.zip` using JSZip
-5. Sends `POST /api/upload` with the zip file
-6. Receives `projectId` and navigates to Processing page
+### DASHBOARD MAPPING
 
-### Step 2: Ingestion & Preprocessing (Backend)
-1. Backend saves zip file to `storage/uploads/`
-2. Creates MongoDB entry with status `uploaded`
-3. Background job (`processJob.js`) is triggered
-4. Extracts zip to `storage/extracted/<projectId>`
-5. Detects nested root directories and adjusts path
-6. Cleans noise directories
-7. Updates DB status to `cleaning` → `analyzing`
+| Architecture Component | Dashboard Output |
+| :--- | :--- |
+| Static Analysis | Security Health |
+| Complexity Analysis | Complexity |
+| AI Quality Evaluation | Code Quality / Overall Score |
+| AI Code Detection | AI Generation Probability |
+| Secure Sandbox | Sandbox / Execution Result |
+| Result Aggregation | Overall Score |
+| AI Analysis | AI Summary |
+| Analysis Engine | Strengths & Weaknesses |
 
-### Step 3: Static Analysis (Analyzer Service)
-1. Backend calls `POST http://localhost:8000/api/v1/analyze`
-2. Analyzer scans directory structure using `pathspec`
-3. Calculates complexity using `radon`
-4. Checks security vulnerabilities using `bandit`
-5. Analyzes code quality using `pylint`
-6. Extracts important files for context
-7. Returns JSON with metrics, issues, and file summaries
+### 1. User Upload (Frontend)
+1. User provides Source Code using Web Interface / VS Code UI (React/TypeScript).
+2. Frontend sends request to the FastAPI Backend.
 
-### Step 4: AI Evaluation (AI Engine Service)
-1. Backend receives static analysis report
-2. Updates DB status to `ai_evaluation`
-3. Calls `POST http://localhost:8002/evaluate`
-4. Sends analysis metrics, important files, and README content
-5. Constructs prompt for LLM (Gemini/OpenAI)
-6. LLM evaluates innovation, AI probability, impact
-7. Parses response into structured JSON
-8. Returns semantic evaluation results
+### 2. Ingestion & Preprocessing (FastAPI Backend)
+1. Backend validates request.
+2. Authenticates and prepares orchestration.
 
-### Step 5: AI Detection (AI Detection Service)
-1. Backend calls `POST http://localhost:8005/detect`
-2. AI Detection Service scans code for AI patterns
-3. Analyzes naming conventions, structure, comments
-4. Calculates AI generation probability
-5. Returns detailed detection report with signals
+### 3. Static Code Analysis (Core Engine)
+1. Analyzes Code Structure Analysis.
+2. Performs Linting and Security Vulnerability Detection (SAST).
+3. Evaluates cyclomatic complexity.
 
-### Step 6: Report Generation & Display
-1. Backend merges all reports into single JSON
-2. Saves to `storage/reports/<projectId>.json`
-3. Updates DB status to `completed`
-4. Frontend polls `GET /api/status/<projectId>` every 2 seconds
-5. When status is `completed`, fetches report via `GET /api/report/<projectId>`
-6. Redirects to `/report` page
-7. Displays scores, charts, and AI insights
+### 4. AI Code Quality Evaluation
+1. Scores maintainability, readability, efficiency.
+2. Integrates AI-based code review metric scoring.
+
+### 5. AI-Generated Code Detection
+1. Applies statistical feature mapping.
+2. Generates ML/LLM classification scoring.
+3. Provides AI generation probability.
+
+### 6. Secure Sandbox Execution
+1. Evaluates code dynamically using secure isolation (Docker, cgroups, constraints).
+2. Captures executions outputs and errors.
+
+### 7. Result Aggregation
+1. Aggregates and correlates data models.
+2. Generates cohesive unified report.
+
+### 8. Display Dashboard
+1. Provides visually separated views to the frontend reflecting overall scores, quality, and sandboxed metrics.
 
 ---
 

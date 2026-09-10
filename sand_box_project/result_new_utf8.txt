@@ -1,0 +1,310 @@
+﻿node : Upload failed: 
+AxiosError [AggregateError]
+At line:1 char:1
++ node test-complex-upload.js > 
+result_new.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : N 
+   otSpecified: (Upload failed  
+  : ...AggregateError]:String   
+ ) [], RemoteException
+    + FullyQualifiedErrorId : N 
+   ativeCommandError
+ 
+    at AxiosError.from (C:\Users
+\RAM\OneDrive\Documents\Desktop\
+bvrit_hack\sand_box_project\node
+_modules\axios\dist\node\axios.c
+js:962:24)
+    at RedirectableRequest.handl
+eRequestError (C:\Users\RAM\OneD
+rive\Documents\Desktop\bvrit_hac
+k\sand_box_project\node_modules\
+axios\dist\node\axios.cjs:3794:2
+9)
+    at RedirectableRequest.emit 
+(node:events:531:35)
+    at eventHandlers.<computed> 
+(C:\Users\RAM\OneDrive\Documents
+\Desktop\bvrit_hack\sand_box_pro
+ject\node_modules\follow-redirec
+ts\index.js:49:24)
+    at ClientRequest.emit 
+(node:events:519:28)
+    at emitErrorEvent 
+(node:_http_client:105:11)
+    at 
+Socket.socketErrorListener 
+(node:_http_client:518:5)
+    at Socket.emit 
+(node:events:519:28)
+    at emitErrorNT (node:interna
+l/streams/destroy:170:8)
+    at emitErrorCloseNT (node:in
+ternal/streams/destroy:129:3)
+    at Axios.request (C:\Users\R
+AM\OneDrive\Documents\Desktop\bv
+rit_hack\sand_box_project\node_m
+odules\axios\dist\node\axios.cjs
+:5110:41)
+    at process.processTicksAndRe
+jections (node:internal/process/
+task_queues:105:5)
+    at async 
+uploadComplexProject (C:\Users\R
+AM\OneDrive\Documents\Desktop\bv
+rit_hack\sand_box_project\test-c
+omplex-upload.js:30:26) {
+  isAxiosError: true,
+  code: 'ECONNREFUSED',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: 
+false,
+      legacyInterceptorReqResOrd
+ering: true
+    },
+    adapter: [ 'xhr', 'http', 
+'fetch' ],
+    transformRequest: [ 
+[Function: transformRequest] ],
+    transformResponse: [ 
+[Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 
+'XSRF-TOKEN',
+    xsrfHeaderName: 
+'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: 
+[Function], Blob: [class Blob] 
+},
+    validateStatus: [Function: 
+validateStatus],
+    headers: Object 
+[AxiosHeaders] {
+      Accept: 
+'application/json, text/plain, 
+*/*',
+      'Content-Type': 
+'multipart/form-data; boundary=-
+-------------------------79e4da9
+4ff5691272c724f5f',
+      'User-Agent': 
+'axios/1.13.6',
+      'Content-Length': '3359',
+      'Accept-Encoding': 'gzip, 
+compress, deflate, br'
+    },
+    method: 'post',
+    url: 
+'http://localhost:4002/api/run',
+    data: FormData {
+      _overheadLength: 940,
+      _valueLength: 0,
+      _valuesToMeasure: [Array],
+      writable: true,
+      readable: true,
+      dataSize: 0,
+      maxDataSize: 2097152,
+      pauseStreams: true,
+      _released: true,
+      _streams: [Array],
+      _currentStream: 
+[DelayedStream],
+      _insideLoop: false,
+      _pendingNext: false,
+      _boundary: '--------------
+------------79e4da94ff5691272c72
+4f5f',
+      _events: [Object: null 
+prototype],
+      _eventsCount: 4
+    },
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> Writable {
+    _events: {
+      close: undefined,
+      error: [Function: 
+handleRequestError],
+      prefinish: undefined,
+      finish: undefined,
+      drain: undefined,
+      response: [Function: 
+handleResponse],
+      socket: [Array],
+      abort: undefined
+    },
+    _writableState: 
+WritableState {
+      highWaterMark: 16384,
+      length: 0,
+      corked: 0,
+      onwrite: [Function: bound 
+onwrite],
+      writelen: 0,
+      bufferedIndex: 0,
+      pendingcb: 0,
+      [Symbol(kState)]: 
+17580812,
+      [Symbol(kBufferedValue)]: 
+null
+    },
+    _maxListeners: undefined,
+    _options: {
+      maxRedirects: 21,
+      maxBodyLength: Infinity,
+      protocol: 'http:',
+      path: '/api/run',
+      method: 'POST',
+      headers: [Object: null 
+prototype],
+      agents: [Object],
+      auth: undefined,
+      family: undefined,
+      beforeRedirect: 
+[Function: 
+dispatchBeforeRedirect],
+      beforeRedirects: [Object],
+      http2Options: undefined,
+      hostname: 'localhost',
+      port: '4002',
+      agent: undefined,
+      nativeProtocols: [Object],
+      pathname: '/api/run'
+    },
+    _ended: false,
+    _ending: false,
+    _redirectCount: 0,
+    _redirects: [],
+    _requestBodyLength: 472,
+    _requestBodyBuffers: [ 
+[Object], [Object], [Object], 
+[Object] ],
+    _eventsCount: 3,
+    _onNativeResponse: 
+[Function (anonymous)],
+    _currentRequest: 
+ClientRequest {
+      _events: [Object: null 
+prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: false,
+      chunkedEncoding: false,
+      shouldKeepAlive: true,
+      
+maxRequestsOnConnectionReached: 
+false,
+      _defaultKeepAlive: true,
+      
+useChunkedEncodingByDefault: 
+true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: 
+false,
+      _contentLength: 3359,
+      _hasBody: true,
+      _trailer: '',
+      finished: false,
+      _headerSent: true,
+      _closed: false,
+      _header: 'POST /api/run 
+HTTP/1.1\r\n' +
+        'Accept: 
+application/json, text/plain, 
+*/*\r\n' +
+        'Content-Type: 
+multipart/form-data; boundary=--
+------------------------79e4da94
+ff5691272c724f5f\r\n' +
+        'User-Agent: 
+axios/1.13.6\r\n' +
+        'Content-Length: 
+3359\r\n' +
+        'Accept-Encoding: gzip, 
+compress, deflate, br\r\n' +
+        'Host: 
+localhost:4002\r\n' +
+        'Connection: 
+keep-alive\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: 
+[Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: 
+undefined,
+      joinDuplicateHeaders: 
+undefined,
+      path: '/api/run',
+      _ended: false,
+      res: null,
+      aborted: false,
+      timeoutCb: [Function: 
+emitRequestTimeout],
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'localhost',
+      protocol: 'http:',
+      _redirectable: [Circular 
+*1],
+      [Symbol(shapeMode)]: 
+false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 
+0,
+      [Symbol(kNeedDrain)]: 
+false,
+      [Symbol(corked)]: 0,
+      [Symbol(kChunkedBuffer)]: 
+[],
+      [Symbol(kChunkedLength)]: 
+0,
+      [Symbol(kSocket)]: 
+[Socket],
+      [Symbol(kOutHeaders)]: 
+[Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 
+16384,
+      [Symbol(kRejectNonStandard
+BodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: 
+null
+    },
+    _currentUrl: 
+'http://localhost:4002/api/run',
+    _timeout: null,
+    [Symbol(shapeMode)]: true,
+    [Symbol(kCapture)]: false
+  },
+  cause: AggregateError 
+[ECONNREFUSED]: 
+      at 
+internalConnectMultiple 
+(node:net:1134:18)
+      at afterConnectMultiple 
+(node:net:1715:7) {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], 
+[Error] ]
+  }
+}

@@ -1,0 +1,3093 @@
+{
+  "projectId": "019ebf2c-c79a-473a-ada0-128e4de26449",
+  "language": "JavaScript",
+  "projectType": "Full-Stack (Node.js)",
+  "metrics": {
+    "qualityScore": 8.64,
+    "structureScore": 8,
+    "securityScore": 4.31,
+    "complexity": {
+      "average_cyclomatic_complexity": 38.44,
+      "maintainability_index": 80.58,
+      "max_complexity": 172,
+      "complex_functions": 7,
+      "total_files": 16,
+      "total_loc": 7927,
+      "file_types": 4,
+      "folder_depth": 13,
+      "dependency_count": 0,
+      "keyword_score": 552,
+      "complexity_by_extension": {
+        ".html": {
+          "total_cc": 39,
+          "total_mi": 420.36,
+          "file_count": 5,
+          "max_cc": 18,
+          "total_loc": 2708,
+          "files": [
+            {
+              "name": "register.html",
+              "cc": 18,
+              "mi": 88.6,
+              "loc": 380
+            },
+            {
+              "name": "admin.html",
+              "cc": 12,
+              "mi": 67.79,
+              "loc": 1123
+            },
+            {
+              "name": "admin-login.html",
+              "cc": 5,
+              "mi": 90.55,
+              "loc": 315
+            },
+            {
+              "name": "login.html",
+              "cc": 3,
+              "mi": 90.97,
+              "loc": 301
+            },
+            {
+              "name": "index.html",
+              "cc": 1,
+              "mi": 82.45,
+              "loc": 589
+            }
+          ],
+          "avg_cc": 7.8,
+          "avg_mi": 84.07
+        },
+        ".css": {
+          "total_cc": 184,
+          "total_mi": 135.58,
+          "file_count": 2,
+          "max_cc": 126,
+          "total_loc": 1208,
+          "files": [
+            {
+              "name": "modern-ui.css",
+              "cc": 126,
+              "mi": 56.32,
+              "loc": 807
+            },
+            {
+              "name": "style.css",
+              "cc": 58,
+              "mi": 79.26,
+              "loc": 401
+            }
+          ],
+          "avg_cc": 92,
+          "avg_mi": 67.79
+        },
+        ".js": {
+          "total_cc": 392,
+          "total_mi": 733.3599999999999,
+          "file_count": 9,
+          "max_cc": 172,
+          "total_loc": 3996,
+          "files": [
+            {
+              "name": "admin.js",
+              "cc": 172,
+              "mi": 34.15,
+              "loc": 1491
+            },
+            {
+              "name": "quiz.js",
+              "cc": 52,
+              "mi": 75.66,
+              "loc": 540
+            },
+            {
+              "name": "chatbot.js",
+              "cc": 48,
+              "mi": 58.07,
+              "loc": 906
+            },
+            {
+              "name": "register.js",
+              "cc": 43,
+              "mi": 89.64,
+              "loc": 283
+            },
+            {
+              "name": "admin-panel.js",
+              "cc": 32,
+              "mi": 90.33,
+              "loc": 261
+            },
+            {
+              "name": "user-auth.js",
+              "cc": 21,
+              "mi": 93.64,
+              "loc": 213
+            },
+            {
+              "name": "admin-auth.js",
+              "cc": 16,
+              "mi": 95.18,
+              "loc": 178
+            },
+            {
+              "name": "config.js",
+              "cc": 4,
+              "mi": 100,
+              "loc": 24
+            },
+            {
+              "name": "test-quiz-data.js",
+              "cc": 4,
+              "mi": 96.69,
+              "loc": 100
+            }
+          ],
+          "avg_cc": 43.56,
+          "avg_mi": 81.48
+        },
+        ".json": {
+          "total_cc": 0,
+          "total_mi": 0,
+          "file_count": 0,
+          "max_cc": 0,
+          "total_loc": 0,
+          "files": []
+        }
+      }
+    },
+    "graphrag": {}
+  },
+  "issues": [
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "admin.js",
+      "line": 437,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "admin.js",
+      "line": 455,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "admin.js",
+      "line": 463,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "admin.js",
+      "line": 1025,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "admin.js",
+      "line": 1026,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "admin.js",
+      "line": 1035,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "chatbot.js",
+      "line": 1050,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "chatbot.js",
+      "line": 1055,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "config.js",
+      "line": 26,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "config.js",
+      "line": 27,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "quiz.js",
+      "line": 44,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "test-quiz-data.js",
+      "line": 91,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "test-quiz-data.js",
+      "line": 92,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Quality",
+      "message": "console.log() left in code (remove before production)",
+      "file": "test-quiz-data.js",
+      "line": 103,
+      "code": "NO_CONSOLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin-login.html",
+      "line": 343,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin-login.html",
+      "line": 346,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin-login.html",
+      "line": 347,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 553,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 556,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 559,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 562,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 565,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 568,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 571,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 571,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 574,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 579,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 606,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 613,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 620,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 627,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 637,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 642,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 651,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 653,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 676,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 679,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 682,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 682,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 688,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 711,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 713,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 717,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 717,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 736,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 738,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 760,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 780,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 783,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 785,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 788,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 790,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 793,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 795,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 798,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 803,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 813,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 816,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 820,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 821,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 836,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 848,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 850,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 874,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 903,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 906,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 907,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 913,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 914,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 915,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 921,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 922,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 923,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 924,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 930,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 931,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 932,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 933,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 940,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 941,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 942,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 944,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 948,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 956,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 957,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 974,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 983,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 992,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 994,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1013,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1014,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1018,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1023,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1024,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1027,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1028,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1036,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1037,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1038,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1039,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1040,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1043,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1045,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1047,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1056,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1058,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1128,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1130,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1143,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1144,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1147,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1148,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1159,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1161,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1163,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1166,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1167,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1167,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1170,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1170,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1182,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1184,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1200,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1202,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1224,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1225,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "admin.html",
+      "line": 1227,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "admin.html",
+      "line": 1228,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 520,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 523,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 526,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 527,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 546,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 547,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 551,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 552,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 560,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 561,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 562,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 565,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 566,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 570,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 571,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 571,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 574,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 575,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 583,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 584,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 584,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 599,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 601,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 601,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 603,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 607,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 608,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 614,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 618,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 619,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 620,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 629,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 630,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 632,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 633,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 634,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 641,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 642,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 643,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 644,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 644,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 647,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 649,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 650,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 653,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 654,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 658,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 662,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline style attribute used — prefer external CSS",
+      "file": "index.html",
+      "line": 663,
+      "code": "INLINE_STYLE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "index.html",
+      "line": 663,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "login.html",
+      "line": 324,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Inline event handler detected — prefer addEventListener()",
+      "file": "register.html",
+      "line": 398,
+      "code": "INLINE_EVENT"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 95,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 167,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 212,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 249,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 286,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 324,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 360,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 394,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 405,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 439,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 494,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 502,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 565,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 638,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 648,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 658,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 682,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 719,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 730,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 742,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 749,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "!important used — indicates specificity issues",
+      "file": "modern-ui.css",
+      "line": 827,
+      "code": "IMPORTANT_OVERUSE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 881,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 892,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 896,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 902,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 906,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "modern-ui.css",
+      "line": 910,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 29,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 62,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 142,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 153,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 160,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 188,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 237,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 287,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 347,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "!important used — indicates specificity issues",
+      "file": "style.css",
+      "line": 357,
+      "code": "IMPORTANT_OVERUSE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 358,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "!important used — indicates specificity issues",
+      "file": "style.css",
+      "line": 361,
+      "code": "IMPORTANT_OVERUSE"
+    },
+    {
+      "severity": "Low",
+      "category": "Style",
+      "message": "Hardcoded px font-size — consider using rem/em for accessibility",
+      "file": "style.css",
+      "line": 444,
+      "code": "PX_FONT_SIZE"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin-auth.js",
+      "line": 24,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin-auth.js",
+      "line": 51,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin-auth.js",
+      "line": 60,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin-auth.js",
+      "line": 140,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 93,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 102,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 150,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 174,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 219,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 223,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 285,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 293,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 297,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 300,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 323,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 327,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 510,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 518,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 534,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 546,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 583,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 595,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 683,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 734,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 817,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 832,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 833,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 849,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 866,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 884,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 968,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 972,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1077,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1138,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1142,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1202,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1331,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1355,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1456,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1470,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1474,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1488,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1490,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1506,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1534,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1538,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1580,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1584,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1601,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "admin.js",
+      "line": 1683,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "chatbot.js",
+      "line": 645,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "chatbot.js",
+      "line": 653,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "chatbot.js",
+      "line": 775,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "chatbot.js",
+      "line": 1001,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 74,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 82,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 99,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 110,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 113,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 124,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 139,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 153,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 158,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 160,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 167,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 215,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 239,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 271,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 316,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 442,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 445,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 467,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 518,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 536,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "quiz.js",
+      "line": 582,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "register.js",
+      "line": 57,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "register.js",
+      "line": 102,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "register.js",
+      "line": 111,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "register.js",
+      "line": 116,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "register.js",
+      "line": 188,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "register.js",
+      "line": 198,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "register.js",
+      "line": 216,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "user-auth.js",
+      "line": 25,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "user-auth.js",
+      "line": 56,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "user-auth.js",
+      "line": 65,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "High",
+      "category": "Security",
+      "message": "innerHTML assignment - XSS risk",
+      "file": "user-auth.js",
+      "line": 154,
+      "code": "XSS_RISKS"
+    },
+    {
+      "severity": "Medium",
+      "category": "Security",
+      "message": "Content Security Policy (CSP) header not found",
+      "file": "admin-login.html",
+      "line": 1,
+      "code": "MISSING_CSP"
+    },
+    {
+      "severity": "Medium",
+      "category": "Security",
+      "message": "Content Security Policy (CSP) header not found",
+      "file": "admin.html",
+      "line": 1,
+      "code": "MISSING_CSP"
+    },
+    {
+      "severity": "Medium",
+      "category": "Security",
+      "message": "Content Security Policy (CSP) header not found",
+      "file": "index.html",
+      "line": 1,
+      "code": "MISSING_CSP"
+    },
+    {
+      "severity": "Medium",
+      "category": "Security",
+      "message": "Content Security Policy (CSP) header not found",
+      "file": "login.html",
+      "line": 1,
+      "code": "MISSING_CSP"
+    },
+    {
+      "severity": "Medium",
+      "category": "Security",
+      "message": "Content Security Policy (CSP) header not found",
+      "file": "register.html",
+      "line": 1,
+      "code": "MISSING_CSP"
+    },
+    {
+      "severity": "Medium",
+      "category": "Structure",
+      "message": "File exceeds 800 lines (God Class risk)",
+      "file": "admin.html",
+      "line": 1239,
+      "code": "SIZE_LIMIT"
+    },
+    {
+      "severity": "Medium",
+      "category": "Structure",
+      "message": "File exceeds 800 lines (God Class risk)",
+      "file": "modern-ui.css",
+      "line": 924,
+      "code": "SIZE_LIMIT"
+    },
+    {
+      "severity": "Medium",
+      "category": "Structure",
+      "message": "File exceeds 800 lines (God Class risk)",
+      "file": "admin.js",
+      "line": 1719,
+      "code": "SIZE_LIMIT"
+    },
+    {
+      "severity": "Medium",
+      "category": "Structure",
+      "message": "File exceeds 800 lines (God Class risk)",
+      "file": "chatbot.js",
+      "line": 1057,
+      "code": "SIZE_LIMIT"
+    }
+  ],
+  "importantFiles": [
+    {
+      "path": "package.json",
+      "summary": "Node.js Package | deps:  | devDeps: \n\n--- CODE SNIPPET ---\n{\n  \"name\": \"quiz-app-frontend\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Frontend for Quiz Application\",\n  \"main\": \"index.html\",\n  \"scripts\": {\n    \"build\": \"echo 'Static build - no compilation needed'\",\n    \"start\": \"echo 'Frontend served by Vercel'\"\n  },\n  \"dependencies\": {},\n  \"devDependencies\": {}\n}\n",
+      "type": "dependency"
+    },
+    {
+      "path": "admin-auth.js",
+      "summary": "JS/TS Module | 208 lines | ~13 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\n// API_BASE is loaded from config.js\n\ndocument.getElementById('adminLoginForm')?.addEventListener('submit', async (e) => {\n    e.preventDefault();\n\n    const username = document.getElementById('adminUsername').value.trim();\n    const password = document.getElementById('adminPassword').value;\n    const messageDiv = document.getElementById('adminMessage');\n\n    // Clear previous messages\n    messageDiv.className = 'message hidden';\n    messageDiv.textContent = '';\n\n    // Validate input\n    if (!username || !password) {\n        showMessage('Please enter both username and password', 'error');\n        return;\n    }\n\n    try {\n        // Show loading state\n        const submitBtn = e.target.querySelector('button[type=\"submit\"]');\n        const originalText = submitBtn.innerHTML;\n        submitBtn.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i> Logging in...';\n        submitBtn.disabled = true;\n\n        const response = await fetch(`${API_BASE}/admin/auth/login`, {\n            method: 'POST',\n            headers: {\n                'Content-Type': 'application/json'\n            },\n            body: JSON.stringify({ username, password })\n        });\n\n        const data = await response.json();\n\n        if (data.success) {\n            // Store admin token and info\n            sessionStorage.setItem('adminToken', data.token);\n            sessionStorage.setItem('adminData', JSON.stringify(data.admin));\n\n            showMessage('Admin login successful! Redirecting...', 'success');\n\n            // Redirect to admin panel after 1.5 seconds\n            setTimeout(() => {\n                window.location.href = '/admin.html'; // Fixed path\n            }, 1500);\n\n        } else {\n            showMessage(data.message || 'Invalid credentials', 'error');\n            submitBtn.innerHTML = originalText;\n            submitBtn.disabled = false;\n        }\n\n    } catch (error) {\n        showMessage('Connection failed. Please check if server is running.', 'error');\n        console.error('Admin login error:', error);\n\n        const submitBtn = e.target.querySelector('button[type=\"submit\"]');\n        submitBtn.innerHTML = '<i class=\"fas fa-sign-in-alt\"></i> Login as Admin';\n        submitBtn.disabled = false;\n    }\n\n    function showMessage(text, type) {\n        messageDiv.textContent = text;\n        messageDiv.className = `message ${type}`;\n        messageDiv.classList.remove('hidden');\n\n        // Auto-hide success messages\n        if (type === 'success') {\n            setTimeout(() => {\n                messageDiv.classList.add('hidden');\n            }, 3000);\n        }\n    }\n});\n\n// Check if admin is already logged in\nfunction checkAdminAuth() {\n    const token = sessionStorage.getItem('adminToken');\n    const adminData = sessionStorage.getItem('adminData');\n\n    if (token && adminData) {\n        try {\n            const admin = JSON.parse(adminData);\n            const currentPage = window.location.pathname;\n\n            // If on admin login page, redirect to admin pane\n... [truncated]",
+      "type": "source_code"
+    },
+    {
+      "path": "admin-panel.js",
+      "summary": "JS/TS Module | 309 lines | ~12 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\nconst API_BASE = '/api'; // Changed to relative path\nlet currentQuestionId = null;\nlet questions = [];\nlet categories = [];\n\n// Get auth headers\nfunction getAuthHeaders() {\n    const token = localStorage.getItem('adminToken');\n    return {\n        'Authorization': `Bearer ${token}`,\n        'Content-Type': 'application/json'\n    };\n}\n\n// Admin Panel Functions\ndocument.addEventListener('DOMContentLoaded', async function() {\n    // Check admin authentication\n    const adminData = checkAdminAuth();\n    if (!adminData) {\n        window.location.href = 'admin-login.html';\n        return;\n    }\n    \n    // Show admin info\n    document.getElementById('adminName').textContent = adminData.username;\n    document.getElementById('adminRole').textContent = adminData.role === 'superadmin' ? 'Super Admin' : 'Admin';\n    \n    // Load initial data\n    try {\n        await Promise.all([\n            loadDashboardStats(),\n            loadCategories(),\n            loadQuestions(),\n            loadUsers()\n        ]);\n    } catch (error) {\n        console.error('Initial data loading failed:', error);\n        showNotification('Failed to load initial data', 'error');\n    }\n    \n    // Setup tabs\n    setupTabs();\n    \n    // Setup event listeners\n    setupAdminEventListeners();\n});\n\n// Load dashboard statistics - FIXED ENDPOINT\nasync function loadDashboardStats() {\n    try {\n        const response = await fetch(`${API_BASE}/admin/stats`, {\n            headers: getAuthHeaders()\n        });\n        \n        const data = await response.json();\n        \n        if (data.success) {\n            updateStatsDisplay(data.stats);\n        } else if (response.status === 401) {\n            adminLogout();\n        }\n    } catch (error) {\n        console.error('Failed to load stats:', error);\n        // Don't show error on initial load to avoid spam\n    }\n}\n\n// Load categories - FIXED ENDPOINT\nasync function loadCategories() {\n    try {\n        const response = await fetch(`${API_BASE}/quiz/categories`);\n        \n        const data = await response.json();\n        \n        if (data.success) {\n            categories = data.categories;\n            updateCategoryFilters();\n        }\n    } catch (error) {\n        console.error('Failed to load categories:', error);\n    }\n}\n\n// Load questions - FIXED ENDPOINT\nasync function loadQuestions() {\n    try {\n        const category = document.getElementById('filterCategory')?.value || '';\n        const difficulty = document.getElementById('filterDifficulty')?.value || '';\n        \n        let url = `${API_BASE}/admin/questions`;\n        const params = new URLSearchParams();\n        if (category) params.append('category', category);\n        if (difficulty) params.append('difficulty', difficulty);\n        if (params.toString()) url += `?${params.toString()}`;\n        \n        const response = await fetch(url, {\n            headers: getAuthHeaders()\n        });\n        \n        const data = await response.json();\n        \n        if (data.success) {\n     \n... [truncated]",
+      "type": "source_code"
+    },
+    {
+      "path": "admin.js",
+      "summary": "JS/TS Module | 1719 lines | ~110 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\n// API_BASE is already declared in admin-auth.js\n\n// configuration loaded globally\n\n// Global State\nlet currentQuizId = null;\nlet subjects = [];\nlet quizzes = [];\nlet currentUserRole = '';\n\n// Auth Headers\nfunction getAuthHeaders() {\n    const token = sessionStorage.getItem('adminToken');\n    return {\n        'Authorization': `Bearer ${token}`,\n        'Content-Type': 'application/json'\n    };\n}\n\n// Init\ndocument.addEventListener('DOMContentLoaded', async function () {\n    const adminData = checkAdminAuth();\n    if (!adminData) return;\n\n    currentUserRole = adminData.role;\n\n    document.getElementById('adminName').textContent = adminData.username;\n    document.getElementById('adminRole').textContent = adminData.role === 'superadmin' ? 'Super Admin' : 'Admin';\n    if (adminData.role === 'superadmin') {\n        document.getElementById('adminTabBtn').style.display = 'flex';\n    }\n\n    if (adminData.lastLogin) {\n        document.getElementById('lastLogin').textContent = `Last login: ${new Date(adminData.lastLogin).toLocaleString()}`;\n    }\n\n    // Initial Load\n    await loadSubjects();\n    await loadDashboardStats();\n\n    // Default tab\n    switchTab('dashboard');\n});\n\n// --- TABS ---\nfunction switchTab(tabName) {\n    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));\n    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));\n\n    // Find button and activate\n    const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.onclick.toString().includes(tabName));\n    if (btn) btn.classList.add('active');\n\n    document.getElementById(tabName).classList.add('active');\n\n    if (tabName === 'subjects') loadSubjects();\n    if (tabName === 'quizzes') loadQuizzes();\n    if (tabName === 'questions') loadAllQuestions();\n    if (tabName === 'branches') loadBranches();\n    if (tabName === 'users') loadUsers();\n    if (tabName === 'admins') loadAdmins();\n    if (tabName === 'settings') loadSettingsBranches();\n}\n\n// --- DASHBOARD ---\nasync function loadDashboardStats() {\n    try {\n        const response = await fetch(`${API_BASE}/admin/stats`, { headers: getAuthHeaders() });\n        const data = await response.json();\n        if (data.success) {\n            document.getElementById('totalSubjects').textContent = data.stats.totalSubjects;\n            document.getElementById('totalQuizzes').textContent = data.stats.totalQuizzes;\n            document.getElementById('totalUsers').textContent = data.stats.totalUsers;\n            document.getElementById('pendingUsers').textContent = data.stats.pendingUsers;\n        }\n    } catch (e) { console.error(e); }\n}\n\n// --- SUBJECTS ---\n// --- BRANCH DASHBOARD LOGIC ---\nlet selectedBranchId = null; // Filter state\n\n// Overwrite loadSubjects to support Branch Filter\nasync function loadSubjects() {\n    const container = document.getElementById('subjectsTableBody');\n    const headerParams = document.getElementById('subjects').querySelector('.fil\n... [truncated]",
+      "type": "source_code"
+    },
+    {
+      "path": "chatbot.js",
+      "summary": "JS/TS Module | 1057 lines | ~21 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\n// Chatbot functionality using Groq API\nclass QuizChatbot {\n    constructor() {\n        this.apiKey = localStorage.getItem('groq_api_key') || '';\n        this.isOpen = false;\n        this.messages = [];\n        this.init();\n    }\n\n    init() {\n        this.createChatbotUI();\n        this.bindEvents();\n        this.loadChatHistory();\n    }\n\n    createChatbotUI() {\n        // Create chatbot container\n        const chatbotHTML = `\n            <div id=\"quizChatbot\" class=\"chatbot-container\">\n                <div class=\"chatbot-header\">\n                    <div class=\"chatbot-title\">\n                        <i class=\"fas fa-robot\"></i>\n                        <div>\n                            <div>Quiz Assistant</div>\n                            <div class=\"chatbot-status\">\n                                <div class=\"status-dot\"></div>\n                                <span>Online</span>\n                            </div>\n                        </div>\n                    </div>\n                    <button class=\"chatbot-toggle\" id=\"chatbotToggle\">\n                        <i class=\"fas fa-times\"></i>\n                    </button>\n                </div>\n                \n                <div class=\"chatbot-messages\" id=\"chatbotMessages\">\n                    <div class=\"message bot-message\">\n                        <div class=\"message-content\">\n                            <p>👋 Hi! I'm your AI Quiz Assistant! I'm here to help you succeed.</p>\n                            <p>I can assist you with:</p>\n                            <ul>\n                                <li>📚 Personalized quiz recommendations</li>\n                                <li>📖 Subject explanations and concepts</li>\n                                <li>💡 Study strategies and tips</li>\n                                <li>🔍 Technical questions and doubts</li>\n                                <li>📊 Progress tracking insights</li>\n                            </ul>\n                            <p>What would you like to explore today? 🚀</p>\n                        </div>\n                        <div class=\"message-time\">${this.getCurrentTime()}</div>\n                    </div>\n                </div>\n                \n                <div class=\"chatbot-input-container\">\n                    <div class=\"chatbot-suggestions\">\n                        <button class=\"suggestion-btn\" data-message=\"What quizzes are available for me?\">\n                            📝 Available Quizzes\n                        </button>\n                        <button class=\"suggestion-btn\" data-message=\"Help me study Java\">\n                            ☕ Java Help\n                        </button>\n                        <button class=\"suggestion-btn\" data-message=\"Study tips for quizzes\">\n                            💡 Study Tips\n                        </button>\n                        <button class=\"suggestion-btn\" data-message=\"Track my progress\">\n                            📊 My Progress\n                        </button>\n   \n... [truncated]",
+      "type": "source_code"
+    },
+    {
+      "path": "config.js",
+      "summary": "JS/TS Module | 28 lines | ~0 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\nconst config = {\n    // Development URL (Localhost)\n    development: 'http://localhost:3000/api',\n\n    // Production URL (Vercel Backend)\n    production: '/api'\n};\n\n// Determine environment\nconst isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';\n\n// Set API Base\nwindow.API_BASE = isLocal ? config.development : config.production;\n\n// Check for file:// protocol\nif (window.location.protocol === 'file:') {\n    const msg = \"⚠️ Warning: You are opening this file directly. Features requiring the backend will not work.\\n\" +\n        \"Please open via http://localhost:3000 if running locally.\";\n    console.warn(msg);\n    // Optional: Alert user once\n    if (!sessionStorage.getItem('fileProtocolWarned')) {\n        alert(msg);\n        sessionStorage.setItem('fileProtocolWarned', 'true');\n    }\n} else {\n    console.log(`🚀 App Configuration Loaded: ${isLocal ? 'Development' : 'Production'} Mode`);\n    console.log(`🔗 API Base: ${window.API_BASE}`);\n}\n",
+      "type": "configuration"
+    },
+    {
+      "path": "quiz.js",
+      "summary": "JS/TS Module | 620 lines | ~43 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\n// const API_BASE = 'http://localhost:3000/api'; // Defined in user-auth.js\n\n// Quiz Variables\nlet timeLeft = 0;\nlet timer;\nlet questions = [];\nlet currentQuestion = 0;\nlet score = 0;\nlet currentQuizId = null;\nlet currentSubjectId = null;\nlet userAnswers = [];\n\n// DOM Elements\nconst subjectBox = document.getElementById(\"subjectBox\");\nconst quizListBox = document.getElementById(\"quizListBox\");\nconst historyBox = document.getElementById(\"historyBox\");\n\nconst quizContent = document.getElementById(\"quizContent\");\nconst resultBox = document.getElementById(\"resultBox\");\n\nconst questionText = document.getElementById(\"questionText\");\nconst progressText = document.getElementById(\"progressText\");\nconst scoreText = document.getElementById(\"scoreDisplay\") || document.getElementById(\"scoreText\");\nconst choicesBox = document.getElementById(\"choicesBox\");\nconst timerText = document.getElementById(\"timerText\");\nconst prevBtn = document.getElementById(\"prevBtn\");\nconst nextBtn = document.getElementById(\"nextBtn\");\nconst subjectButtons = document.getElementById(\"subjectButtons\");\nconst quizListButtons = document.getElementById(\"quizListButtons\");\nconst historyList = document.getElementById(\"historyList\");\n\n\n// Auth Headers\nfunction getAuthHeaders() {\n    const token = localStorage.getItem('userToken');\n    return {\n        'Authorization': `Bearer ${token}`,\n        'Content-Type': 'application/json'\n    };\n}\n\n// Initialize\ndocument.addEventListener(\"DOMContentLoaded\", async function () {\n    console.log(\"🎯 Quiz App Initialized (New Architecture)\");\n\n    const token = localStorage.getItem('userToken');\n    const userData = JSON.parse(localStorage.getItem('userData') || '{}');\n\n    if (!token || !userData.username) {\n        showLoginPrompt();\n        return;\n    }\n\n    // Show user info\n    const userInfo = document.getElementById('userInfo');\n    if (userInfo) userInfo.classList.remove('hidden');\n\n    const usernameDisplay = document.getElementById('usernameDisplay');\n    if (usernameDisplay) usernameDisplay.textContent = `Welcome, ${userData.username}!`;\n\n    const historyBtn = document.getElementById('historyBtn');\n    if (historyBtn) historyBtn.classList.remove('hidden');\n\n    await loadSubjects();\n\n    // Event Listeners\n    if (prevBtn) prevBtn.addEventListener(\"click\", previousQuestion);\n    if (nextBtn) nextBtn.addEventListener(\"click\", nextQuestion);\n\n    // Check if Admin Logged In\n    if (sessionStorage.getItem('adminToken')) {\n        const adminBtn = document.querySelector('button[onclick*=\"admin-login.html\"]');\n        if (adminBtn) {\n            adminBtn.innerHTML = '<i class=\"fas fa-tools\"></i> Admin Panel';\n            adminBtn.style.background = 'rgba(6, 182, 212, 0.2)';\n            adminBtn.style.color = '#06b6d4';\n        }\n    }\n});\n\nfunction showLoginPrompt() {\n    subjectBox.innerHTML = `\n        <div style=\"text-align: center; padding: 40px;\">\n            <i class=\"fas fa-lock\" style=\"font-size: 64px; color: #667eea; margin-bottom: 20px;\"><\n... [truncated]",
+      "type": "source_code"
+    },
+    {
+      "path": "register.js",
+      "summary": "JS/TS Module | 332 lines | ~15 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\n// API_BASE is already declared in user-auth.js\n\ndocument.getElementById('registerForm')?.addEventListener('submit', async (e) => {\n    e.preventDefault();\n\n    const fullName = document.getElementById('fullName').value.trim();\n    const username = document.getElementById('username').value.trim();\n    const email = document.getElementById('email').value.trim();\n    const branch = document.getElementById('branch').value;\n    const password = document.getElementById('password').value;\n    const confirmPassword = document.getElementById('confirmPassword').value;\n    const messageDiv = document.getElementById('message');\n\n    // Clear previous messages\n    messageDiv.className = 'message hidden';\n    messageDiv.textContent = '';\n\n    // Validation\n    if (!fullName || !username || !email || !password || !confirmPassword || !branch) {\n        showMessage('All fields are required', 'error');\n        return;\n    }\n\n    if (password !== confirmPassword) {\n        showMessage('Passwords do not match', 'error');\n        return;\n    }\n\n    if (password.length < 6) {\n        showMessage('Password must be at least 6 characters', 'error');\n        return;\n    }\n\n    if (username.length < 3) {\n        showMessage('Username must be at least 3 characters', 'error');\n        return;\n    }\n\n    // Email validation\n    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n    if (!emailRegex.test(email)) {\n        showMessage('Please enter a valid email address', 'error');\n        return;\n    }\n\n    // Username validation (alphanumeric and underscores)\n    const usernameRegex = /^[a-zA-Z0-9_]+$/;\n    if (!usernameRegex.test(username)) {\n        showMessage('Username can only contain letters, numbers, and underscores', 'error');\n        return;\n    }\n\n    try {\n        // Show loading state\n        const submitBtn = e.target.querySelector('button[type=\"submit\"]');\n        const originalText = submitBtn.innerHTML;\n        submitBtn.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i> Creating Account...';\n        submitBtn.disabled = true;\n\n        const response = await fetch(`${API_BASE}/auth/register`, {\n            method: 'POST',\n            headers: {\n                'Content-Type': 'application/json'\n            },\n            body: JSON.stringify({\n                fullName,\n                username,\n                email,\n                branch,\n                password\n            })\n        });\n\n        const data = await response.json();\n\n        if (data.success) {\n            showMessage(data.message || 'Registration successful! Awaiting admin approval.', 'success');\n\n            // Reset form\n            document.getElementById('registerForm').reset();\n\n            // Show additional info\n            messageDiv.innerHTML += `\n                <br><br>\n                <div style=\"background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 10px;\">\n                    <strong><i class=\"fas fa-clock\"></i> What happens next?</strong>\n                    <p s\n... [truncated]",
+      "type": "source_code"
+    },
+    {
+      "path": "user-auth.js",
+      "summary": "JS/TS Module | 247 lines | ~14 functions/arrows | 0 imports | 0 exports\n\n--- CODE SNIPPET ---\n// API_BASE is loaded from config.js\n\ndocument.getElementById('loginForm')?.addEventListener('submit', async (e) => {\n    e.preventDefault();\n\n    const username = document.getElementById('username').value.trim();\n    const password = document.getElementById('password').value;\n    const rememberMe = document.getElementById('rememberMe')?.checked;\n    const messageDiv = document.getElementById('message');\n\n    // Clear previous messages\n    messageDiv.className = 'message hidden';\n    messageDiv.textContent = '';\n\n    // Validation\n    if (!username || !password) {\n        showMessage('Please enter both username/email and password', 'error');\n        return;\n    }\n\n    try {\n        // Show loading state\n        const submitBtn = e.target.querySelector('button[type=\"submit\"]');\n        const originalText = submitBtn.innerHTML;\n        submitBtn.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i> Logging in...';\n        submitBtn.disabled = true;\n\n        const response = await fetch(`${API_BASE}/auth/login`, {\n            method: 'POST',\n            headers: {\n                'Content-Type': 'application/json'\n            },\n            body: JSON.stringify({ username, password })\n        });\n\n        const data = await response.json();\n\n        if (data.success) {\n            // Store token and user info\n            localStorage.setItem('userToken', data.token);\n            localStorage.setItem('userData', JSON.stringify(data.user));\n\n            if (rememberMe) {\n                localStorage.setItem('rememberMe', 'true');\n            }\n\n            showMessage('Login successful! Redirecting...', 'success');\n\n            // Redirect to quiz after 1.5 seconds\n            setTimeout(() => {\n                window.location.href = 'index.html';\n            }, 1500);\n\n        } else {\n            showMessage(data.message || 'Invalid credentials', 'error');\n            submitBtn.innerHTML = originalText;\n            submitBtn.disabled = false;\n        }\n\n    } catch (error) {\n        showMessage('Login failed. Please check your connection.', 'error');\n        console.error('Login error:', error);\n\n        const submitBtn = e.target.querySelector('button[type=\"submit\"]');\n        submitBtn.innerHTML = '<i class=\"fas fa-sign-in-alt\"></i> Login';\n        submitBtn.disabled = false;\n    }\n\n    function showMessage(text, type) {\n        messageDiv.textContent = text;\n        messageDiv.className = `message ${type}`;\n        messageDiv.classList.remove('hidden');\n\n        // Auto-hide success messages\n        if (type === 'success') {\n            setTimeout(() => {\n                messageDiv.classList.add('hidden');\n            }, 3000);\n        }\n    }\n});\n\n// Check if user is already logged in\nfunction checkUserAuth() {\n    const token = localStorage.getItem('userToken');\n    const userData = localStorage.getItem('userData');\n\n    if (token && userData) {\n        try {\n            const user = JSON.parse(userData);\n            const currentPage = window.lo\n... [truncated]",
+      "type": "source_code"
+    }
+  ],
+  "status": "completed",
+  "aiEvaluation": {
+    "projectId": "019ebf2c-c79a-473a-ada0-128e4de26449",
+    "summary": "AI analysis completed with fallback response",
+    "overview": {
+      "description": "Project analysis completed with limited AI processing",
+      "keyFeatures": [],
+      "recommendations": []
+    },
+    "architecture": {
+      "patterns": [],
+      "assessment": "Architecture analysis completed"
+    },
+    "complexity": {
+      "assessment": "Complexity analysis completed",
+      "factors": []
+    },
+    "security": {
+      "assessment": "Security analysis completed",
+      "vulnerabilities": []
+    },
+    "aiDetection": {
+      "level": "medium",
+      "score": 5,
+      "confidence": 0.5,
+      "reasoning": "Fallback AI detection analysis",
+      "signals": {
+        "ai_phrases": "Limited analysis available",
+        "naming_issues": "Limited analysis available",
+        "structure_patterns": "Limited analysis available",
+        "comment_analysis": "Limited analysis available",
+        "complexity_analysis": "Limited analysis available"
+      }
+    },
+    "innovation": {
+      "level": "low",
+      "score": 1,
+      "projectDescription": "Project analysis unavailable due to fallback",
+      "assessment": "Innovation assessment completed with fallback",
+      "novelFeatures": [],
+      "marketImpact": "Analysis unavailable",
+      "uniqueness": "Analysis unavailable"
+    },
+    "projectFlow": {
+      "projectName": "019ebf2c-c79a-473a-ada0-128e4de26449",
+      "whatItDoes": "Fallback project flow analysis due to AI timeout",
+      "completeWorkflow": [],
+      "userFlow": {
+        "onVisit": {
+          "file": "N/A",
+          "process": "N/A",
+          "response": "N/A"
+        },
+        "onAction": {
+          "action": "N/A",
+          "file": "N/A",
+          "process": "N/A",
+          "response": "N/A"
+        }
+      },
+      "dataFlow": "Analysis unavailable",
+      "apiEndpoints": [],
+      "databaseSchema": {
+        "collections": []
+      },
+      "techStack": {
+        "frontend": [],
+        "backend": [],
+        "database": "N/A",
+        "tools": []
+      }
+    },
+    "realWorldReadiness": "Analysis completed - readiness assessment available",
+    "strengths": {
+      "technical": [
+        "Analysis completed with fallback"
+      ],
+      "architectural": [
+        "Basic structure identified"
+      ],
+      "performance": [
+        "Performance metrics generated"
+      ]
+    },
+    "weaknesses": {
+      "technical": [
+        "Limited AI analysis due to service issues"
+      ],
+      "architectural": [
+        "Architecture analysis limited"
+      ],
+      "performance": [
+        "Performance analysis limited"
+      ]
+    },
+    "suggestions": [
+      "Consider improving AI service connectivity"
+    ]
+  },
+  "aiDetection": {
+    "level": "low",
+    "score": 0,
+    "confidence": 0,
+    "reasoning": "Analysis failed: Error code: 404 - {'error': {'message': 'The model `llama-3.1-8b-instant` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}",
+    "signals": {
+      "ai_phrases": [],
+      "naming_issues": [],
+      "structure_patterns": [],
+      "comment_analysis": "No unusual patterns detected",
+      "complexity_analysis": "Normal complexity"
+    }
+  },
+  "sandbox": {
+    "status": "error",
+    "detected_project_type": "nodejs",
+    "framework": "generic",
+    "language": "javascript",
+    "entry_file": "index.html",
+    "executed_command": "npm install && npm start",
+    "execution_status": "failed",
+    "logs": "ERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.\n\nCommand failed: docker build -t sandbox-846ae78a-e64e-48dc-8203-d99d3f8de2b9 .\nERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.",
+    "flow": [
+      {
+        "step": "Project Upload",
+        "status": "success",
+        "detail": "Received NODEJS project files"
+      },
+      {
+        "step": "Project Detection",
+        "status": "success",
+        "detail": "Detected: NODEJS"
+      },
+      {
+        "step": "Framework Identification",
+        "status": "success",
+        "detail": "Framework: generic"
+      },
+      {
+        "step": "Entry Point Found",
+        "status": "success",
+        "detail": "Entry file: index.html"
+      },
+      {
+        "step": "Installing Dependencies",
+        "status": "success",
+        "detail": "npm install"
+      },
+      {
+        "step": "Starting Application",
+        "status": "error",
+        "detail": "Command: npm install && npm start"
+      },
+      {
+        "step": "Application Output",
+        "status": "success",
+        "detail": "Logs: ERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified...."
+      },
+      {
+        "step": "Execution Complete",
+        "status": "error",
+        "detail": "NODEJS project execution failed in 0ms"
+      }
+    ],
+    "filtering": {
+      "processedFiles": 18,
+      "skippedFiles": 0,
+      "cleanedItems": 0,
+      "removedItems": []
+    },
+    "project_structure": {
+      "folders": {},
+      "files": [
+        {
+          "name": "admin-auth.js",
+          "path": "admin-auth.js",
+          "size": 7180,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "admin-login.html",
+          "path": "admin-login.html",
+          "size": 10751,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "admin-panel.js",
+          "path": "admin-panel.js",
+          "size": 10263,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "admin.html",
+          "path": "admin.html",
+          "size": 50011,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "admin.js",
+          "path": "admin.js",
+          "size": 69712,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "chatbot.js",
+          "path": "chatbot.js",
+          "size": 41104,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "config.js",
+          "path": "config.js",
+          "size": 1073,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "index.html",
+          "path": "index.html",
+          "size": 23124,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "login.html",
+          "path": "login.html",
+          "size": 10272,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "modern-ui.css",
+          "path": "modern-ui.css",
+          "size": 26042,
+          "extension": ".css",
+          "type": "style"
+        },
+        {
+          "name": "package.json",
+          "path": "package.json",
+          "size": 305,
+          "extension": ".json",
+          "type": "config"
+        },
+        {
+          "name": "quiz.js",
+          "path": "quiz.js",
+          "size": 25202,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "register.html",
+          "path": "register.html",
+          "size": 13501,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "register.js",
+          "path": "register.js",
+          "size": 11270,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "style.css",
+          "path": "style.css",
+          "size": 9896,
+          "extension": ".css",
+          "type": "style"
+        },
+        {
+          "name": "test-quiz-data.js",
+          "path": "test-quiz-data.js",
+          "size": 4427,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "user-auth.js",
+          "path": "user-auth.js",
+          "size": 8387,
+          "extension": ".js",
+          "type": "script"
+        },
+        {
+          "name": "vercel.json",
+          "path": "vercel.json",
+          "size": 27,
+          "extension": ".json",
+          "type": "other"
+        }
+      ],
+      "uiFiles": [
+        {
+          "name": "admin-login.html",
+          "path": "admin-login.html",
+          "size": 10751,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "admin.html",
+          "path": "admin.html",
+          "size": 50011,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "index.html",
+          "path": "index.html",
+          "size": 23124,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "login.html",
+          "path": "login.html",
+          "size": 10272,
+          "extension": ".html",
+          "type": "ui"
+        },
+        {
+          "name": "register.html",
+          "path": "register.html",
+          "size": 13501,
+          "extension": ".html",
+          "type": "ui"
+        }
+      ],
+      "totalFiles": 18,
+      "totalFolders": 0,
+      "frameworks": [],
+      "languages": [
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "JSON"
+      ],
+      "fileTypes": [
+        ".js",
+        ".html",
+        ".css",
+        ".json"
+      ],
+      "framework": "None"
+    }
+  }
+}

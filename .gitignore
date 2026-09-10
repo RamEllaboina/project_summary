@@ -2,3 +2,5 @@
 node_modules/
 venv/
 __pycache__/
+sand_box_project/uploads/
+fastapi_backend/storage/

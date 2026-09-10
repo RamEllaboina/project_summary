@@ -1,0 +1,151 @@
+﻿Complex Project Analysis Result:
+{
+  "status": "success",
+  "detected_project_type": "nodejs",
+  "framework": "react",
+  "language": "javascript",
+  "entry_file": "server.js",
+  "executed_command": "npm install && npm start",
+  "execution_status": "success",
+  "logs": "Execution timed out after 10000ms",
+  "execution_time": 10030,
+  "flow": [
+    {
+      "step": "Project Upload",
+      "status": "success",
+      "detail": "Received NODEJS project files"
+    },
+    {
+      "step": "Project Detection",
+      "status": "success",
+      "detail": "Detected: NODEJS"
+    },
+    {
+      "step": "Framework Identification",
+      "status": "success",
+      "detail": "Framework: react"
+    },
+    {
+      "step": "Entry Point Found",
+      "status": "success",
+      "detail": "Entry file: server.js"
+    },
+    {
+      "step": "Installing Dependencies",
+      "status": "success",
+      "detail": "npm install"
+    },
+    {
+      "step": "Starting Application",
+      "status": "success",
+      "detail": "Command: npm install && npm start"
+    },
+    {
+      "step": "Application Output",
+      "status": "success",
+      "detail": "Logs: Execution timed out after 10000ms"
+    },
+    {
+      "step": "Execution Complete",
+      "status": "success",
+      "detail": "NODEJS project executed successfully in 10030ms"
+    }
+  ],
+  "filtering": {
+    "processedFiles": 6,
+    "skippedFiles": 0,
+    "cleanedItems": 0,
+    "removedItems": []
+  },
+  "project_structure": {
+    "folders": {},
+    "files": [
+      {
+        "name": "Header.jsx",
+        "path": "Header.jsx",
+        "size": 442,
+        "extension": ".jsx",
+        "type": "ui"
+      },
+      {
+        "name": "database.json",
+        "path": "database.json",
+        "size": 151,
+        "extension": ".json",
+        "type": "other"
+      },
+      {
+        "name": "index.html",
+        "path": "index.html",
+        "size": 632,
+        "extension": ".html",
+        "type": "ui"
+      },
+      {
+        "name": "package.json",
+        "path": "package.json",
+        "size": 175,
+        "extension": ".json",
+        "type": "config"
+      },
+      {
+        "name": "server.js",
+        "path": "server.js",
+        "size": 312,
+        "extension": ".js",
+        "type": "script"
+      },
+      {
+        "name": "style.css",
+        "path": "style.css",
+        "size": 651,
+        "extension": ".css",
+        "type": "style"
+      }
+    ],
+    "uiFiles": [
+      {
+        "name": "Header.jsx",
+        "path": "Header.jsx",
+        "size": 442,
+        "extension": ".jsx",
+        "type": "ui"
+      },
+      {
+        "name": "index.html",
+        "path": "index.html",
+        "size": 632,
+        "extension": ".html",
+        "type": "ui"
+      }
+    ],
+    "totalFiles": 6,
+    "totalFolders": 0,
+    "frameworks": [
+      "React"
+    ],
+    "languages": [
+      "React",
+      "JSON",
+      "HTML",
+      "JavaScript",
+      "CSS"
+    ],
+    "fileTypes": [
+      ".jsx",
+      ".json",
+      ".html",
+      ".js",
+      ".css"
+    ],
+    "framework": "React"
+  }
+}
+
+=== PROJECT STRUCTURE ANALYSIS ===
+Total Files: 6
+Total Folders: 0
+UI Files: 2
+Frameworks: [ 'React' ]
+Languages: [ 'React', 'JSON', 'HTML', 'JavaScript', 'CSS' ]
+File Types: [ '.jsx', '.json', '.html', '.js', '.css' ]

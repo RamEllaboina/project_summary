@@ -1,5 +1,5 @@
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 class ImportantFile(BaseModel):
     path: str
@@ -119,6 +119,13 @@ class TechStack(BaseModel):
     backend: List[str]
     database: str
     tools: List[str]
+    
+    @field_validator("database", mode="before")
+    @classmethod
+    def convert_database_to_string(cls, v):
+        if isinstance(v, list):
+            return str(v[0]) if len(v) > 0 else "Unknown"
+        return str(v)
 
 class ProjectFlow(BaseModel):
     projectName: str = ""

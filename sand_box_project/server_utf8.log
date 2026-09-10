@@ -1,0 +1,40 @@
+﻿[dotenv@17.3.1] injecting env (0) from .env -- tip: ΓÜÖ∩╕Å  write to custom object with { processEnv: myObject }
+≡ƒÜÇ Code Sandbox running on http://localhost:4002
+≡ƒîÉ Also accessible at http://0.0.0.0:4002
+node : Error: Unexpected end of 
+form
+At line:1 char:1
++ node server.js > server.log 
+2>&1
++ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : N 
+   otSpecified: (Error: Unexpe  
+  cted end of form:String) []   
+ , RemoteException
+    + FullyQualifiedErrorId : N 
+   ativeCommandError
+ 
+    at Multipart._final (C:\User
+s\RAM\OneDrive\Documents\Desktop
+\bvrit_hack\sand_box_project\nod
+e_modules\busboy\lib\types\multi
+part.js:588:17)
+    at prefinish (node:internal/
+streams/writable:916:14)
+    at finishMaybe (node:interna
+l/streams/writable:930:5)
+    at Writable.end (node:intern
+al/streams/writable:845:5)
+    at IncomingMessage.onend (no
+de:internal/streams/readable:948
+:10)
+    at Object.onceWrapper 
+(node:events:633:28)
+    at IncomingMessage.emit 
+(node:events:519:28)
+    at endReadableNT (node:inter
+nal/streams/readable:1698:12)
+    at process.processTicksAndRe
+jections (node:internal/process/
+task_queues:90:21)

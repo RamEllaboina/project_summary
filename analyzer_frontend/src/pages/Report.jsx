@@ -379,11 +379,11 @@ export default function Report() {
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="flow">Project Flow</TabsTrigger>
                     <TabsTrigger value="architecture">Complexity</TabsTrigger>
-                    <TabsTrigger value="quality">Quality</TabsTrigger>
-                    <TabsTrigger value="security">Security</TabsTrigger>
-                    <TabsTrigger value="ai">AI Detection</TabsTrigger>
-                    <TabsTrigger value="impact">Innovation</TabsTrigger>
-                    <TabsTrigger value="sandbox">Sandbox</TabsTrigger>
+                    <TabsTrigger value="quality">Code Quality</TabsTrigger>
+                    <TabsTrigger value="security">Security Health</TabsTrigger>
+                    <TabsTrigger value="ai">AI Probability</TabsTrigger>
+                    <TabsTrigger value="impact">AI Summary</TabsTrigger>
+                    <TabsTrigger value="sandbox">Execution Result</TabsTrigger>
                 </TabsList>
 
 
