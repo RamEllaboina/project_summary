@@ -6,24 +6,20 @@ from typing import Dict, Any, List
 from collections import Counter
 
 from config import Config
-from llm_provider.groq_provider import GroqProvider
+from llm_provider import get_llm_provider
 
 logger = logging.getLogger(__name__)
 
 class AIDetectionService:
     """
-    Dedicated AI detection service using Groq API.
+    Dedicated AI detection service using configured LLM provider.
     Provides enhanced AI generation detection for code analysis.
     """
     
     def __init__(self):
-        # Use Groq API key
-        api_key = Config.GROQ_API_KEY
-        if not api_key:
-            raise ValueError("GROQ_API_KEY not set. Please add it to .env file")
-        
-        self.provider = GroqProvider(api_key, Config.MODEL_NAME)
-        logger.info(f"AI Detection Service initialized with Groq API")
+        # Use configured LLM provider for AI detection instead of hardcoded Groq
+        self.provider = get_llm_provider()
+        logger.info(f"AI Detection Service initialized with configured provider: {Config.LLM_PROVIDER}")
     
     async def analyze_code_for_ai_signals(self, files: List[Dict], project_id: str) -> Dict[str, Any]:
         """
@@ -48,7 +44,7 @@ class AIDetectionService:
             
         except Exception as e:
             logger.error(f"AI detection failed: {str(e)}")
-            return self._get_fallback_detection_result(project_id, str(e))
+            raise e
     
     def _prepare_code_content(self, files: List[Dict]) -> str:
         """Prepare code content for AI analysis."""

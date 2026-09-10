@@ -30,21 +30,8 @@ def format_evaluation_prompt(data: EvaluationInput) -> str:
     issues = metrics.get('topIssues', [])
     issues_list = "\n".join(f"- {issue}" for issue in issues) if issues else "No critical issues detected."
     
-    graph_metrics = metrics.get('graphrag', {})
-    total_nodes = graph_metrics.get('totalNodes', 'N/A')
-    total_edges = graph_metrics.get('totalEdges', 'N/A')
-    hub_files = graph_metrics.get('hubFiles', 'N/A')
-    isolated_count = graph_metrics.get('isolatedCount', 'N/A')
-    
-    coupling_score = graph_metrics.get('couplingScore', 'N/A')
-    cohesion_score = graph_metrics.get('cohesionScore', 'N/A')
-    max_depth = graph_metrics.get('maxDepth', 'N/A')
-    circular_count = graph_metrics.get('circularCount', 'N/A')
-    
     duplicate_percentage = metrics.get('duplicatePercentage', 'N/A')
     duplicate_blocks = metrics.get('duplicateBlocks', 'N/A')
-    critical_files = graph_metrics.get('criticalFiles', 'N/A')
-    patterns_detected = graph_metrics.get('patternsDetected', 'N/A')
     
     file_summaries = ""
     for file in data.importantFiles[:3]:
@@ -52,7 +39,7 @@ def format_evaluation_prompt(data: EvaluationInput) -> str:
         path = file.path if hasattr(file, 'path') else file.get('path', 'unknown')
         file_summaries += f"\nFile: {path}\nContent:\n{content}\n"
 
-    prompt = f"""You are a senior software architect evaluating a software project. Analyze the following project summary and GraphRAG insights to provide a comprehensive evaluation.
+    prompt = f"""You are a senior software architect evaluating a software project. Analyze the following project summary to provide a comprehensive evaluation.
 
 ---
 
@@ -81,24 +68,8 @@ def format_evaluation_prompt(data: EvaluationInput) -> str:
 
 ---
 
-## 🕸️ GRAPHRAG INSIGHTS (Code Structure Analysis)
-
-### Dependency Graph
-- **Total Nodes:** {total_nodes} (Files + Functions + Classes)
-- **Total Dependencies:** {total_edges} relationships
-- **Hub Files (Most Connected):** {hub_files}
-- **Isolated Files:** {isolated_count} files with no dependencies
-
-### Architecture Health
-- **Coupling Score:** {coupling_score}/10 (Lower = Better, means less interconnected)
-- **Cohesion Score:** {cohesion_score}/10 (Higher = Better, means focused modules)
-- **Maximum Dependency Depth:** {max_depth} levels
-- **Circular Dependencies:** {circular_count} detected
-
 ### Code Quality Indicators
 - **Duplicate Code:** {duplicate_percentage}% duplication across {duplicate_blocks} blocks
-- **Critical Files:** {critical_files} (Changing these affects many others)
-- **Design Patterns Detected:** {patterns_detected}
 
 ---
 
@@ -110,7 +81,7 @@ def format_evaluation_prompt(data: EvaluationInput) -> str:
 
 ## 📝 TASK: Provide a Complete Project Evaluation
 
-Based on the metrics and GraphRAG insights above, generate a JSON response with:
+Based on the metrics above, generate a JSON response with:
 
 ### 1. Executive Summary (2-3 paragraphs)
 - What this project does
@@ -181,13 +152,11 @@ Based on the metrics and GraphRAG insights above, generate a JSON response with:
 
 2. **BE CONCISE** - 2-3 items per category, not 5-10
 
-3. **USE THE GRAPHRAG DATA** - Your analysis should reference the graph insights (coupling, cohesion, dependencies)
+3. **PROJECT DESCRIPTION MUST BE HUMAN-READABLE** - Never copy the project ID
 
-4. **PROJECT DESCRIPTION MUST BE HUMAN-READABLE** - Never copy the project ID
+4. **INNOVATION ASSESSMENT MUST BE DETAILED** - Explain WHY it's innovative, not just "it's innovative"
 
-5. **INNOVATION ASSESSMENT MUST BE DETAILED** - Explain WHY it's innovative, not just "it's innovative"
-
-6. **ALL FIELDS MUST BE PRESENT** - No empty arrays or null values
+5. **ALL FIELDS MUST BE PRESENT** - No empty arrays or null values
 
 ---
 

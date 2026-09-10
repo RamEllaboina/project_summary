@@ -57,17 +57,7 @@ class AIAnalysisService:
             
         except Exception as e:
             logger.error(f"AI generation analysis failed: {str(e)}")
-            return {
-                "projectId": input_data.projectId,
-                "error": str(e),
-                "aiDetection": {
-                    "level": "low",
-                    "score": 0,
-                    "confidence": 0,
-                    "reasoning": f"Analysis failed: {str(e)}",
-                    "signals": {}
-                }
-            }
+            raise e
 
     async def evaluate_project(self, input_data: EvaluationInput) -> EvaluationOutput:
         """
@@ -84,8 +74,8 @@ class AIAnalysisService:
         logger.info(f"Estimated tokens: {estimated_tokens} for project {input_data.projectId}")
 
         try:
-            logger.info("Using single-pass processing (GraphRAG enabled)")
-            response_data = await self._process_single_chunk(input_data)
+            logger.info("Using chunk-based processing")
+            response_data = await self._process_chunks(input_data)
 
             # Ensure response is dict
             response_data = self._safe_parse_response(response_data)
@@ -135,7 +125,7 @@ class AIAnalysisService:
 
         except Exception as e:
             logger.error(f"Evaluation failed: {str(e)}")
-            return self._get_fallback_response(input_data.projectId, str(e))
+            raise e
 
     def _get_default_innovation(self, input_data: EvaluationInput) -> Dict:
         """Generate default innovation data when AI doesn't provide it."""
@@ -336,9 +326,15 @@ class AIAnalysisService:
                     data['strengths'][category] = [str(s) for s in data['strengths'][category] if s and len(str(s)) > 3][:3]
                 else:
                     data['strengths'][category] = []
+        elif 'strengths' in data and isinstance(data['strengths'], list):
+            data['strengths'] = {
+                'technical': [str(s) for s in data['strengths'] if s and len(str(s)) > 3][:3],
+                'architectural': [],
+                'performance': []
+            }
         else:
             data['strengths'] = {
-                'technical': [],
+                'technical': ['No specific technical strengths highlighted.'],
                 'architectural': [],
                 'performance': []
             }
@@ -350,9 +346,15 @@ class AIAnalysisService:
                     data['weaknesses'][category] = [str(w) for w in data['weaknesses'][category] if w and len(str(w)) > 3][:3]
                 else:
                     data['weaknesses'][category] = []
+        elif 'weaknesses' in data and isinstance(data['weaknesses'], list):
+            data['weaknesses'] = {
+                'technical': [str(w) for w in data['weaknesses'] if w and len(str(w)) > 3][:3],
+                'architectural': [],
+                'performance': []
+            }
         else:
             data['weaknesses'] = {
-                'technical': [],
+                'technical': ['No specific technical weaknesses highlighted.'],
                 'architectural': [],
                 'performance': []
             }
@@ -364,11 +366,42 @@ class AIAnalysisService:
                     data['suggestions'][category] = [str(s) for s in data['suggestions'][category] if s and len(str(s)) > 3][:3]
                 else:
                     data['suggestions'][category] = []
-        else:
+        elif 'suggestions' in data and isinstance(data['suggestions'], list):
             data['suggestions'] = {
-                'technical': [],
+                'technical': [str(s) for s in data['suggestions'] if s and len(str(s)) > 3][:3],
                 'architectural': [],
                 'performance': []
+            }
+        else:
+            data['suggestions'] = {
+                'technical': ['Review code complexity and structure.'],
+                'architectural': [],
+                'performance': []
+            }
+            
+        # Fix projectFlow structure
+        if 'projectFlow' not in data or not isinstance(data['projectFlow'], dict):
+            data['projectFlow'] = {
+                "projectName": data.get("projectId", "Unknown Project"),
+                "whatItDoes": data.get("overview", "Project documentation unavailable.")[:100],
+                "completeWorkflow": [
+                    {"step": 1, "file": "System", "action": "Initialize", "output": "Running"}
+                ],
+                "userFlow": {
+                    "onVisit": {"file": "index", "process": "Load", "response": "Ready"},
+                    "onAction": {"action": "Interact", "file": "app", "process": "Process", "response": "Complete"}
+                },
+                "dataFlow": "Client -> Server -> Database -> Client",
+                "apiEndpoints": [],
+                "databaseSchema": {
+                    "collections": []
+                },
+                "techStack": {
+                    "frontend": ["Unknown"],
+                    "backend": ["Unknown"],
+                    "database": "Unknown",
+                    "tools": ["Unknown"]
+                }
             }
 
         return data
@@ -485,36 +518,35 @@ class AIAnalysisService:
         chunks = self._create_chunks(input_data.importantFiles)
         logger.info(f"Created {len(chunks)} chunks for processing")
         
-        chunk_results = []
+        chunk_tasks = []
         for i, chunk in enumerate(chunks):
-            try:
-                logger.info(f"Processing chunk {i+1}/{len(chunks)} with {len(chunk)} files")
-                
-                if i > 0:
-                    delay = 3
-                    logger.info(f"Waiting {delay} seconds to avoid rate limiting...")
-                    await asyncio.sleep(delay)
-                
-                chunk_input = EvaluationInput(
-                    projectId=f"{input_data.projectId}_chunk_{i+1}",
-                    language=input_data.language,
-                    metrics=input_data.metrics,
-                    importantFiles=chunk,
-                    readme=input_data.readme[:1000] if input_data.readme else ""
-                )
-                
-                chunk_result = await self._process_single_chunk(chunk_input)
-                
-                if isinstance(chunk_result, str):
-                    chunk_result = json.loads(chunk_result)
-                
-                chunk_results.append(chunk_result)
-                logger.info(f"Chunk {i+1} processed successfully")
-                
-            except Exception as e:
-                logger.warning(f"Chunk {i+1} failed: {str(e)}")
-                continue
+            logger.info(f"Preparing chunk {i+1}/{len(chunks)} with {len(chunk)} files")
+            chunk_input = EvaluationInput(
+                projectId=f"{input_data.projectId}_chunk_{i+1}",
+                language=input_data.language,
+                metrics=input_data.metrics,
+                importantFiles=chunk,
+                readme=input_data.readme[:1000] if input_data.readme else ""
+            )
+            chunk_tasks.append(self._process_single_chunk(chunk_input))
+            
+        logger.info(f"Processing {len(chunk_tasks)} chunks concurrently...")
+        raw_results = await asyncio.gather(*chunk_tasks, return_exceptions=True)
         
+        chunk_results = []
+        for i, chunk_result in enumerate(raw_results):
+            if isinstance(chunk_result, Exception):
+                logger.warning(f"Chunk {i+1} failed: {str(chunk_result)}")
+                continue
+            if isinstance(chunk_result, str):
+                try:
+                    chunk_result = json.loads(chunk_result)
+                except Exception as e:
+                    logger.warning(f"Chunk {i+1} failed to parse JSON: {e}")
+                    continue
+            chunk_results.append(chunk_result)
+            logger.info(f"Chunk {i+1} processed successfully")
+            
         if not chunk_results:
             raise Exception("All chunks failed to process")
         
@@ -524,13 +556,13 @@ class AIAnalysisService:
     def _create_chunks(self, important_files: List[Dict]) -> List[List[Dict]]:
         """Split important files into chunks that stay within token limits."""
         if not important_files:
-            return []
+            return [[]]
         
         chunks = []
         current_chunk = []
         current_tokens = 0
-        MAX_TOKENS_PER_CHUNK = 2000
-        MAX_FILES_PER_CHUNK = 2
+        MAX_TOKENS_PER_CHUNK = 8192
+        MAX_FILES_PER_CHUNK = 15
         
         for file in important_files:
             file_tokens = 0

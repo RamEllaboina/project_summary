@@ -635,3 +635,109 @@
 2026-08-09T17:08:02.518Z: Analyzer done. Calling AI Engine for 91307856-eb5d-46e1-bc8c-14cd6039b46d
 2026-08-09T17:08:22.131Z: Calling Sandbox for 91307856-eb5d-46e1-bc8c-14cd6039b46d
 2026-08-09T17:08:22.164Z: Job COMPLETED successfully for 91307856-eb5d-46e1-bc8c-14cd6039b46d
+2026-08-14T15:10:54.343Z: Starting processing job for project: 64ab21e0-f2b2-4ba5-a4e0-501fd93509c1
+2026-08-14T15:10:54.380Z: Cleaning project at storage\projects\64ab21e0-f2b2-4ba5-a4e0-501fd93509c1\quiz_app
+2026-08-14T15:10:54.408Z: Calling analyzer for 64ab21e0-f2b2-4ba5-a4e0-501fd93509c1 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\64ab21e0-f2b2-4ba5-a4e0-501fd93509c1\quiz_app
+2026-08-14T15:10:54.983Z: Analyzer done. Calling AI Engine for 64ab21e0-f2b2-4ba5-a4e0-501fd93509c1
+2026-08-14T15:11:40.026Z: Calling Sandbox for 64ab21e0-f2b2-4ba5-a4e0-501fd93509c1
+2026-08-14T15:11:40.094Z: Job COMPLETED successfully for 64ab21e0-f2b2-4ba5-a4e0-501fd93509c1
+2026-08-14T15:17:05.076Z: Starting processing job for project: 0d9e7b2b-abfc-47fb-9e1f-8300a7d9e8e4
+2026-08-14T15:17:05.084Z: Cleaning project at storage\projects\0d9e7b2b-abfc-47fb-9e1f-8300a7d9e8e4\frontend
+2026-08-14T15:17:05.104Z: Calling analyzer for 0d9e7b2b-abfc-47fb-9e1f-8300a7d9e8e4 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\0d9e7b2b-abfc-47fb-9e1f-8300a7d9e8e4\frontend
+2026-08-14T15:17:05.415Z: Analyzer done. Calling AI Engine for 0d9e7b2b-abfc-47fb-9e1f-8300a7d9e8e4
+2026-08-14T15:17:50.457Z: Calling Sandbox for 0d9e7b2b-abfc-47fb-9e1f-8300a7d9e8e4
+2026-08-14T15:17:50.492Z: Job COMPLETED successfully for 0d9e7b2b-abfc-47fb-9e1f-8300a7d9e8e4
+2026-08-25T04:47:21.939Z: Starting processing job for project: f5bb49d5-ef43-4947-a315-1628a062513e
+2026-08-25T04:47:21.987Z: Cleaning project at storage\projects\f5bb49d5-ef43-4947-a315-1628a062513e\quiz_app
+2026-08-25T04:47:22.016Z: Calling analyzer for f5bb49d5-ef43-4947-a315-1628a062513e at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\f5bb49d5-ef43-4947-a315-1628a062513e\quiz_app
+2026-08-25T04:47:22.664Z: Analyzer done. Calling AI Engine for f5bb49d5-ef43-4947-a315-1628a062513e
+2026-08-25T04:48:07.731Z: Calling Sandbox for f5bb49d5-ef43-4947-a315-1628a062513e
+2026-08-25T04:48:07.864Z: Job COMPLETED successfully for f5bb49d5-ef43-4947-a315-1628a062513e
+2026-08-25T05:04:05.792Z: Starting processing job for project: 27649d01-0b91-45e4-a92c-5a3dc5e853a5
+2026-08-25T05:04:05.818Z: Cleaning project at storage\projects\27649d01-0b91-45e4-a92c-5a3dc5e853a5\frontend
+2026-08-25T05:04:05.830Z: Calling analyzer for 27649d01-0b91-45e4-a92c-5a3dc5e853a5 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\27649d01-0b91-45e4-a92c-5a3dc5e853a5\frontend
+2026-08-25T05:04:06.205Z: Analyzer done. Calling AI Engine for 27649d01-0b91-45e4-a92c-5a3dc5e853a5
+2026-08-25T05:10:12.416Z: Starting processing job for project: 6f1216aa-b70a-41b8-8101-c8b638671cfa
+2026-08-25T05:10:12.446Z: Cleaning project at storage\projects\6f1216aa-b70a-41b8-8101-c8b638671cfa\frontend
+2026-08-25T05:10:12.472Z: Calling analyzer for 6f1216aa-b70a-41b8-8101-c8b638671cfa at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\6f1216aa-b70a-41b8-8101-c8b638671cfa\frontend
+2026-08-25T05:10:12.807Z: Analyzer done. Calling AI Engine for 6f1216aa-b70a-41b8-8101-c8b638671cfa
+2026-08-25T05:15:51.577Z: Starting processing job for project: 9f2a46d3-369f-479b-91a6-bef2c3737dd8
+2026-08-25T05:15:51.602Z: Cleaning project at storage\projects\9f2a46d3-369f-479b-91a6-bef2c3737dd8\frontend
+2026-08-25T05:15:51.613Z: Calling analyzer for 9f2a46d3-369f-479b-91a6-bef2c3737dd8 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\9f2a46d3-369f-479b-91a6-bef2c3737dd8\frontend
+2026-08-25T05:15:51.905Z: Analyzer done. Calling AI Engine for 9f2a46d3-369f-479b-91a6-bef2c3737dd8
+2026-08-25T05:21:56.389Z: Calling Sandbox for 9f2a46d3-369f-479b-91a6-bef2c3737dd8
+2026-08-25T05:21:56.435Z: Job COMPLETED successfully for 9f2a46d3-369f-479b-91a6-bef2c3737dd8
+2026-08-25T05:54:28.505Z: Starting processing job for project: 06f90c08-a6aa-488e-ab4d-3ca644396c4e
+2026-08-25T05:54:28.528Z: Cleaning project at storage\projects\06f90c08-a6aa-488e-ab4d-3ca644396c4e\frontend
+2026-08-25T05:54:28.538Z: Calling analyzer for 06f90c08-a6aa-488e-ab4d-3ca644396c4e at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\06f90c08-a6aa-488e-ab4d-3ca644396c4e\frontend
+2026-08-25T05:54:28.853Z: Analyzer done. Calling AI Engine for 06f90c08-a6aa-488e-ab4d-3ca644396c4e
+2026-08-25T05:57:30.258Z: Starting processing job for project: 3d2cf3a3-8b48-4976-9b07-b1246da87874
+2026-08-25T05:57:30.286Z: Cleaning project at storage\projects\3d2cf3a3-8b48-4976-9b07-b1246da87874\frontend
+2026-08-25T05:57:30.302Z: Calling analyzer for 3d2cf3a3-8b48-4976-9b07-b1246da87874 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\3d2cf3a3-8b48-4976-9b07-b1246da87874\frontend
+2026-08-25T05:57:30.598Z: Analyzer done. Calling AI Engine for 3d2cf3a3-8b48-4976-9b07-b1246da87874
+2026-08-25T06:03:45.316Z: Calling Sandbox for 3d2cf3a3-8b48-4976-9b07-b1246da87874
+2026-08-25T06:03:45.366Z: Job COMPLETED successfully for 3d2cf3a3-8b48-4976-9b07-b1246da87874
+2026-08-25T06:03:59.610Z: Starting processing job for project: 817b08a1-cf01-475d-920a-6471fa1a0e5b
+2026-08-25T06:03:59.618Z: Cleaning project at storage\projects\817b08a1-cf01-475d-920a-6471fa1a0e5b\frontend
+2026-08-25T06:03:59.630Z: Calling analyzer for 817b08a1-cf01-475d-920a-6471fa1a0e5b at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\817b08a1-cf01-475d-920a-6471fa1a0e5b\frontend
+2026-08-25T06:03:59.897Z: Analyzer done. Calling AI Engine for 817b08a1-cf01-475d-920a-6471fa1a0e5b
+2026-08-25T06:27:30.598Z: Starting processing job for project: 69feb6ca-e956-4d27-99af-5bfc030d4aa7
+2026-08-25T06:27:30.623Z: Cleaning project at storage\projects\69feb6ca-e956-4d27-99af-5bfc030d4aa7\frontend
+2026-08-25T06:27:30.632Z: Calling analyzer for 69feb6ca-e956-4d27-99af-5bfc030d4aa7 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\69feb6ca-e956-4d27-99af-5bfc030d4aa7\frontend
+2026-08-25T06:27:30.914Z: Analyzer done. Calling AI Engine for 69feb6ca-e956-4d27-99af-5bfc030d4aa7
+2026-08-25T06:27:38.775Z: Calling Sandbox for 69feb6ca-e956-4d27-99af-5bfc030d4aa7
+2026-08-25T06:27:38.815Z: Job COMPLETED successfully for 69feb6ca-e956-4d27-99af-5bfc030d4aa7
+2026-08-25T06:30:02.692Z: Starting processing job for project: 2d2091a9-028a-4ba3-aa3b-97e07fccc3cf
+2026-08-25T06:30:02.704Z: Cleaning project at storage\projects\2d2091a9-028a-4ba3-aa3b-97e07fccc3cf\frontend
+2026-08-25T06:30:02.718Z: Calling analyzer for 2d2091a9-028a-4ba3-aa3b-97e07fccc3cf at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\2d2091a9-028a-4ba3-aa3b-97e07fccc3cf\frontend
+2026-08-25T06:30:02.988Z: Analyzer done. Calling AI Engine for 2d2091a9-028a-4ba3-aa3b-97e07fccc3cf
+2026-08-25T06:30:05.055Z: Calling Sandbox for 2d2091a9-028a-4ba3-aa3b-97e07fccc3cf
+2026-08-25T06:30:05.103Z: Job COMPLETED successfully for 2d2091a9-028a-4ba3-aa3b-97e07fccc3cf
+2026-09-03T11:18:56.103Z: Starting processing job for project: 71aedae7-761a-4638-97da-254296f3c7ad
+2026-09-03T11:18:56.148Z: Cleaning project at storage\projects\71aedae7-761a-4638-97da-254296f3c7ad\frontend
+2026-09-03T11:18:56.169Z: Calling analyzer for 71aedae7-761a-4638-97da-254296f3c7ad at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\71aedae7-761a-4638-97da-254296f3c7ad\frontend
+2026-09-03T11:18:56.502Z: Analyzer done. Calling AI Engine for 71aedae7-761a-4638-97da-254296f3c7ad
+2026-09-03T11:19:01.533Z: Calling Sandbox for 71aedae7-761a-4638-97da-254296f3c7ad
+2026-09-03T11:19:01.572Z: Job COMPLETED successfully for 71aedae7-761a-4638-97da-254296f3c7ad
+2026-09-03T11:19:52.478Z: Starting processing job for project: 29f6b22f-9e9a-4235-a846-a65cd8f4d5bf
+2026-09-03T11:19:52.495Z: Cleaning project at storage\projects\29f6b22f-9e9a-4235-a846-a65cd8f4d5bf
+2026-09-03T11:19:52.501Z: Calling analyzer for 29f6b22f-9e9a-4235-a846-a65cd8f4d5bf at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\29f6b22f-9e9a-4235-a846-a65cd8f4d5bf
+2026-09-03T11:19:52.533Z: Analyzer done. Calling AI Engine for 29f6b22f-9e9a-4235-a846-a65cd8f4d5bf
+2026-09-03T11:19:52.868Z: Calling Sandbox for 29f6b22f-9e9a-4235-a846-a65cd8f4d5bf
+2026-09-03T11:19:54.161Z: Job COMPLETED successfully for 29f6b22f-9e9a-4235-a846-a65cd8f4d5bf
+2026-09-03T11:21:50.268Z: Starting processing job for project: b2e7a5b1-6933-431a-bf4e-a17ff5015a9b
+2026-09-03T11:21:50.288Z: Cleaning project at storage\projects\b2e7a5b1-6933-431a-bf4e-a17ff5015a9b\frontend
+2026-09-03T11:21:50.302Z: Calling analyzer for b2e7a5b1-6933-431a-bf4e-a17ff5015a9b at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\b2e7a5b1-6933-431a-bf4e-a17ff5015a9b\frontend
+2026-09-03T11:21:50.677Z: Analyzer done. Calling AI Engine for b2e7a5b1-6933-431a-bf4e-a17ff5015a9b
+2026-09-03T11:21:50.979Z: Calling Sandbox for b2e7a5b1-6933-431a-bf4e-a17ff5015a9b
+2026-09-03T11:21:51.769Z: Job COMPLETED successfully for b2e7a5b1-6933-431a-bf4e-a17ff5015a9b
+2026-09-03T11:28:10.003Z: Starting processing job for project: 7fe02f23-fc25-4427-b015-08c740503fee
+2026-09-03T11:28:10.023Z: Cleaning project at storage\projects\7fe02f23-fc25-4427-b015-08c740503fee\frontend
+2026-09-03T11:28:10.035Z: Calling analyzer for 7fe02f23-fc25-4427-b015-08c740503fee at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\7fe02f23-fc25-4427-b015-08c740503fee\frontend
+2026-09-03T11:28:10.302Z: Analyzer done. Calling AI Engine for 7fe02f23-fc25-4427-b015-08c740503fee
+2026-09-03T11:28:16.823Z: Calling Sandbox for 7fe02f23-fc25-4427-b015-08c740503fee
+2026-09-03T11:28:17.491Z: Job COMPLETED successfully for 7fe02f23-fc25-4427-b015-08c740503fee
+2026-09-03T11:36:42.420Z: Starting processing job for project: 019ebf2c-c79a-473a-ada0-128e4de26449
+2026-09-03T11:36:42.429Z: Cleaning project at storage\projects\019ebf2c-c79a-473a-ada0-128e4de26449\frontend
+2026-09-03T11:36:42.441Z: Calling analyzer for 019ebf2c-c79a-473a-ada0-128e4de26449 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\019ebf2c-c79a-473a-ada0-128e4de26449\frontend
+2026-09-03T11:36:42.687Z: Analyzer done. Calling AI Engine for 019ebf2c-c79a-473a-ada0-128e4de26449
+2026-09-03T11:37:18.289Z: Calling Sandbox for 019ebf2c-c79a-473a-ada0-128e4de26449
+2026-09-03T11:37:19.026Z: Job COMPLETED successfully for 019ebf2c-c79a-473a-ada0-128e4de26449
+2026-09-03T11:48:21.383Z: Starting processing job for project: 03007081-678a-446c-a24a-34ba951e563b
+2026-09-03T11:48:21.405Z: Cleaning project at storage\projects\03007081-678a-446c-a24a-34ba951e563b\frontend
+2026-09-03T11:48:21.417Z: Calling analyzer for 03007081-678a-446c-a24a-34ba951e563b at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\03007081-678a-446c-a24a-34ba951e563b\frontend
+2026-09-03T11:48:21.675Z: Analyzer done. Calling AI Engine for 03007081-678a-446c-a24a-34ba951e563b
+2026-09-03T11:48:56.611Z: Calling Sandbox for 03007081-678a-446c-a24a-34ba951e563b
+2026-09-03T11:48:57.304Z: Job COMPLETED successfully for 03007081-678a-446c-a24a-34ba951e563b
+2026-09-03T11:54:17.918Z: Starting processing job for project: c2a060f0-5eff-4d69-b0b7-d07f65afc188
+2026-09-03T11:54:17.944Z: Cleaning project at storage\projects\c2a060f0-5eff-4d69-b0b7-d07f65afc188\frontend
+2026-09-03T11:54:17.956Z: Calling analyzer for c2a060f0-5eff-4d69-b0b7-d07f65afc188 at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\c2a060f0-5eff-4d69-b0b7-d07f65afc188\frontend
+2026-09-03T11:54:18.217Z: Analyzer done. Calling AI Engine for c2a060f0-5eff-4d69-b0b7-d07f65afc188
+2026-09-03T11:54:53.146Z: Calling Sandbox for c2a060f0-5eff-4d69-b0b7-d07f65afc188
+2026-09-03T11:54:53.849Z: Job COMPLETED successfully for c2a060f0-5eff-4d69-b0b7-d07f65afc188
+2026-09-10T13:20:37.040Z: Starting processing job for project: c5ea8ed1-8e24-43d2-8878-3ec2da74f75d
+2026-09-10T13:20:37.070Z: Cleaning project at storage\projects\c5ea8ed1-8e24-43d2-8878-3ec2da74f75d\frontend
+2026-09-10T13:20:37.082Z: Calling analyzer for c5ea8ed1-8e24-43d2-8878-3ec2da74f75d at C:\Users\RAM\OneDrive\Documents\Desktop\bvrit_hack\backend\storage\projects\c5ea8ed1-8e24-43d2-8878-3ec2da74f75d\frontend
+2026-09-10T13:20:37.216Z: Analyzer done. Calling AI Engine for c5ea8ed1-8e24-43d2-8878-3ec2da74f75d
+2026-09-10T13:21:55.195Z: Calling Sandbox for c5ea8ed1-8e24-43d2-8878-3ec2da74f75d
+2026-09-10T13:21:55.227Z: Job COMPLETED successfully for c5ea8ed1-8e24-43d2-8878-3ec2da74f75d

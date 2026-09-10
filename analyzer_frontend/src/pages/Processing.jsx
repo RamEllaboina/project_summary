@@ -9,12 +9,12 @@ import { api } from '@/services/api';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const steps = [
-    { id: 1, label: "Uploading Files",              icon: CheckCircle,  duration: 2000 },
-    { id: 2, label: "Cleaning Project Structure",   icon: Search,       duration: 1500 },
-    { id: 3, label: "Analyzing Code & Patterns",    icon: Code,         duration: 2500 },
-    { id: 4, label: "AI Evaluation & Detection",    icon: BrainCircuit, duration: 3000 },
-    { id: 5, label: "Sandbox Execution",            icon: BrainCircuit, duration: 2000 },
-    { id: 6, label: "Generating Final Report",      icon: FileText,     duration: 1500 },
+    { id: 1, label: "Uploading Files", icon: CheckCircle, duration: 2000 },
+    { id: 2, label: "Cleaning Project Structure", icon: Search, duration: 1500 },
+    { id: 3, label: "Analyzing Code & Patterns", icon: Code, duration: 2500 },
+    { id: 4, label: "AI Evaluation & Detection", icon: BrainCircuit, duration: 3000 },
+    { id: 5, label: "Sandbox Execution", icon: BrainCircuit, duration: 2000 },
+    { id: 6, label: "Generating Final Report", icon: FileText, duration: 1500 },
 ];
 
 const messages = [
@@ -51,14 +51,14 @@ export default function Processing() {
             try {
                 setAttemptCount(prev => prev + 1);
                 console.log(`📊 Status check #${attemptCount + 1} for ${currentProjectId}`);
-                
+
                 const statusData = await api.getProjectStatus(currentProjectId);
                 console.log('📦 Full status response:', statusData);
 
                 // Handle different response formats
                 const currentStatus = statusData.status || statusData.data?.status;
                 const progressData = statusData.progress || statusData.data?.progress || {};
-                
+
                 console.log(`📌 Current status: ${currentStatus}`);
                 console.log(`📌 Progress:`, progressData);
 
@@ -87,14 +87,14 @@ export default function Processing() {
                     console.log('✅ Analysis completed! Fetching report...');
                     clearInterval(pollingInterval);
                     clearTimeout(timeoutId);
-                    
+
                     try {
                         const reportData = await api.getProjectReport(currentProjectId);
                         console.log('📄 Raw report response:', reportData);
-                        
+
                         // Handle different response formats
                         let report = null;
-                        
+
                         if (reportData && typeof reportData === 'object') {
                             // Check if report is in data.report, report, or directly in data
                             if (reportData.data && reportData.data.report) {
@@ -107,9 +107,9 @@ export default function Processing() {
                                 report = reportData;
                             }
                         }
-                        
+
                         console.log('📄 Extracted report:', report);
-                        
+
                         if (report && typeof report === 'object') {
                             setAnalysisResults(report);
                             console.log('✅ Report set in context, navigating to /report');
@@ -154,7 +154,7 @@ export default function Processing() {
             api.getProjectReport(currentProjectId)
                 .then(reportData => {
                     console.log('📄 Timeout report fetch:', reportData);
-                    
+
                     let report = null;
                     if (reportData && typeof reportData === 'object') {
                         if (reportData.data && reportData.data.report) {
@@ -167,7 +167,7 @@ export default function Processing() {
                             report = reportData;
                         }
                     }
-                    
+
                     if (report && typeof report === 'object') {
                         setAnalysisResults(report);
                         navigate('/report');
@@ -179,7 +179,7 @@ export default function Processing() {
                     console.error('⏰ Timeout error:', err);
                     setError('Analysis is taking longer than expected. Please try again.');
                 });
-        }, 120000);
+        }, 600000); // 10 minutes timeout instead of 120 seconds
 
         return () => {
             clearInterval(pollingInterval);

@@ -11,16 +11,16 @@ exports.evaluateProject = async (projectId, analysisReport) => {
         // analysisReport contains → full payload prepared in processJob.js
         // including projectId, language, metrics, importantFiles, readme
         const response = await axios.post(AI_ENGINE_URL, analysisReport, {
-            timeout: 30000 // 30 seconds timeout to fail faster
+            timeout: 300000 // 5 minutes timeout to allow local Ollama to finish
         });
 
         if (response.data) {
             console.log(`[AI Engine] Successfully analyzed ${projectId}`);
             console.log(`[AI Engine] Response keys:`, Object.keys(response.data));
-            
+
             // Ensure the response has the expected structure
             const result = response.data;
-            
+
             // Verify required fields exist
             if (!result.strengths) {
                 console.warn('[AI Engine] Missing strengths field, adding default');
@@ -30,7 +30,7 @@ exports.evaluateProject = async (projectId, analysisReport) => {
                     performance: []
                 };
             }
-            
+
             if (!result.weaknesses) {
                 console.warn('[AI Engine] Missing weaknesses field, adding default');
                 result.weaknesses = {
@@ -39,12 +39,12 @@ exports.evaluateProject = async (projectId, analysisReport) => {
                     performance: []
                 };
             }
-            
+
             if (!result.realWorldReadiness) {
                 console.warn('[AI Engine] Missing realWorldReadiness field, adding default');
                 result.realWorldReadiness = 'Analysis completed - readiness assessment available';
             }
-            
+
             if (!result.innovation) {
                 console.warn('[AI Engine] Missing innovation field, adding default');
                 result.innovation = {
@@ -52,7 +52,7 @@ exports.evaluateProject = async (projectId, analysisReport) => {
                     assessment: 'Innovation assessment completed'
                 };
             }
-            
+
             return result;
         } else {
             throw new Error('Invalid response format from AI Engine');
@@ -64,7 +64,7 @@ exports.evaluateProject = async (projectId, analysisReport) => {
         } else if (error.code === 'ECONNABORTED') {
             console.error('[AI Engine] Request timed out after 30 seconds');
         }
-        
+
         // Return a fallback response instead of throwing to avoid complete failure
         console.log('[AI Engine] Returning fallback response');
         return {
@@ -101,8 +101,26 @@ exports.evaluateProject = async (projectId, analysisReport) => {
                 }
             },
             innovation: {
-                score: 50,
-                assessment: 'Innovation assessment completed with fallback'
+                level: 'low',
+                score: 1,
+                projectDescription: 'Project analysis unavailable due to fallback',
+                assessment: 'Innovation assessment completed with fallback',
+                novelFeatures: [],
+                marketImpact: 'Analysis unavailable',
+                uniqueness: 'Analysis unavailable'
+            },
+            projectFlow: {
+                projectName: projectId,
+                whatItDoes: 'Fallback project flow analysis due to AI timeout',
+                completeWorkflow: [],
+                userFlow: {
+                    onVisit: { file: 'N/A', process: 'N/A', response: 'N/A' },
+                    onAction: { action: 'N/A', file: 'N/A', process: 'N/A', response: 'N/A' }
+                },
+                dataFlow: 'Analysis unavailable',
+                apiEndpoints: [],
+                databaseSchema: { collections: [] },
+                techStack: { frontend: [], backend: [], database: 'N/A', tools: [] }
             },
             realWorldReadiness: 'Analysis completed - readiness assessment available',
             strengths: {

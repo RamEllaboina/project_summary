@@ -13,30 +13,30 @@ const MAX_FILES = Infinity; // No limit - support unlimited files
 
 // Intelligent filtering configuration
 const IGNORED_DIRECTORIES = [
-    'node_modules', 'venv', '.venv', '__pycache__', '.git', 'dist', 'build', 
-    '.next', 'out', 'target', 'coverage', '.vscode', '.idea', 'vendor', 
-    '.nyc_output', '.pytest_cache', '.mypy_cache', '.tox', 'site-packages', 
+    'node_modules', 'venv', '.venv', '__pycache__', '.git', 'dist', 'build',
+    '.next', 'out', 'target', 'coverage', '.vscode', '.idea', 'vendor',
+    '.nyc_output', '.pytest_cache', '.mypy_cache', '.tox', 'site-packages',
     'bower_components', '.npm', '.cache', 'tmp', 'temp'
 ];
 
 const IGNORED_EXTENSIONS = [
-    '.log', '.tmp', '.lock', '.cache', '.DS_Store', '.env', '.env.local', 
-    '.env.development', '.env.test', '.env.production', '.pid', '.seed', 
-    '.pid.lock', '.swp', '.swo', '.bak', '.backup', '.old', '.orig', 
-    '.rej', '~', '.lprof', '.pyc', '.pyo', '.pyd', '.pyi', '.jar', 
-    '.war', '.ear', '.zip', '.tar', '.tar.gz', '.tgz', '.rar', '.7z', 
+    '.log', '.tmp', '.lock', '.cache', '.DS_Store', '.env', '.env.local',
+    '.env.development', '.env.test', '.env.production', '.pid', '.seed',
+    '.pid.lock', '.swp', '.swo', '.bak', '.backup', '.old', '.orig',
+    '.rej', '~', '.lprof', '.pyc', '.pyo', '.pyd', '.pyi', '.jar',
+    '.war', '.ear', '.zip', '.tar', '.tar.gz', '.tgz', '.rar', '.7z',
     '.exe', '.dll', '.so', '.dylib', '.bin', '.dat', '.db', '.sqlite', '.sqlite3'
 ];
 
 const ALLOWED_EXTENSIONS = [
     '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.py', '.pyx', '.pyi',
-    '.java', '.kt', '.scala', '.groovy', '.cpp', '.c', '.h', '.hpp', 
-    '.cc', '.cxx', '.cs', '.vb', '.php', '.phtml', '.rb', '.rbw', '.go', 
-    '.mod', '.sum', '.rs', '.swift', '.m', '.mm', '.dart', '.lua', 
-    '.r', '.R', '.sql', '.sh', '.bash', '.zsh', '.fish', '.html', 
-    '.htm', '.xhtml', '.css', '.scss', '.sass', '.less', '.json', 
-    '.jsonc', '.json5', '.xml', '.yaml', '.yml', '.toml', '.ini', 
-    '.md', '.mdx', '.txt', '.rst', '.dockerfile', '.graphql', '.gql', 
+    '.java', '.kt', '.scala', '.groovy', '.cpp', '.c', '.h', '.hpp',
+    '.cc', '.cxx', '.cs', '.vb', '.php', '.phtml', '.rb', '.rbw', '.go',
+    '.mod', '.sum', '.rs', '.swift', '.m', '.mm', '.dart', '.lua',
+    '.r', '.R', '.sql', '.sh', '.bash', '.zsh', '.fish', '.html',
+    '.htm', '.xhtml', '.css', '.scss', '.sass', '.less', '.json',
+    '.jsonc', '.json5', '.xml', '.yaml', '.yml', '.toml', '.ini',
+    '.md', '.mdx', '.txt', '.rst', '.dockerfile', '.graphql', '.gql',
     '.proto', '.vue', '.svelte'
 ];
 
@@ -48,25 +48,25 @@ const shouldIgnoreFile = (filePath, fileName) => {
             return { ignored: true, reason: 'ignored_directory' };
         }
     }
-    
+
     // Check ignored file extensions
     const ext = fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
     if (IGNORED_EXTENSIONS.includes(ext)) {
         return { ignored: true, reason: 'ignored_file_type' };
     }
-    
+
     // Check hidden files (starting with .)
     if (fileName.startsWith('.') && !fileName.startsWith('.env') && fileName !== '.gitignore') {
         return { ignored: true, reason: 'hidden_file' };
     }
-    
+
     // Check lock files
-    if (fileName.toLowerCase().includes('package-lock') || 
-        fileName.toLowerCase().includes('yarn.lock') || 
+    if (fileName.toLowerCase().includes('package-lock') ||
+        fileName.toLowerCase().includes('yarn.lock') ||
         fileName.toLowerCase().includes('pipfile.lock')) {
         return { ignored: true, reason: 'lock_file' };
     }
-    
+
     return { ignored: false, reason: null };
 };
 
@@ -127,12 +127,12 @@ export default function ProjectDropzone({ onUploadComplete }) {
                 const CHUNK_SIZE = 100;
                 for (let i = 0; i < acceptedFiles.length; i += CHUNK_SIZE) {
                     const chunk = acceptedFiles.slice(i, i + CHUNK_SIZE);
-                    
+
                     // Apply intelligent filtering
                     chunk.forEach(file => {
                         const path = file.path || file.webkitRelativePath || file.name;
                         const filterResult = shouldIgnoreFile(path, file.name);
-                        
+
                         if (filterResult.ignored) {
                             ignoredCount++;
                             reasons[filterResult.reason] = (reasons[filterResult.reason] || 0) + 1;
@@ -141,17 +141,17 @@ export default function ProjectDropzone({ onUploadComplete }) {
 
                         // Add to filtered files array for individual upload
                         filteredFiles.push(file);
-                        
+
                         // Also add to zip for backup
                         zip.file(path, file);
                         fileCount++;
                     });
-                    
+
                     // Update progress for each chunk
                     const progress = 5 + (i / acceptedFiles.length) * 10;
                     setScanProgress(progress);
                     setScanStatus(`Analyzing files... ${Math.min(i + CHUNK_SIZE, acceptedFiles.length)}/${acceptedFiles.length}`);
-                    
+
                     // Allow UI to update
                     await new Promise(resolve => setTimeout(resolve, 0));
                 }
@@ -166,12 +166,13 @@ export default function ProjectDropzone({ onUploadComplete }) {
                 setScanStatus(`Preparing ${fileCount} source files for upload...`);
                 setScanProgress(15);
 
-                // Create zip as backup but upload individual files
+                // Zip files for significantly faster upload
                 const blob = await zip.generateAsync({ type: "blob" });
                 zipFileToUpload = new File([blob], "project_bundle.zip", { type: "application/zip" });
-                
-                // Set files to the filtered files for individual upload
-                filesToUpload = filteredFiles;
+
+                // Send single zip file instead of individual files
+                filesToUpload = [zipFileToUpload];
+                // Update UI state with original filtered files so the user sees individual files in UI
                 setUploadedFiles(filteredFiles);
                 setFiles(filteredFiles);
             }
@@ -189,14 +190,14 @@ export default function ProjectDropzone({ onUploadComplete }) {
 
             // Extract project ID from response
             const projectIdFromResponse = response.projectId || response.data?.projectId;
-            
+
             if (!projectIdFromResponse) {
                 throw new Error('No project ID returned from server');
             }
 
             setProjectId(projectIdFromResponse);
             setCurrentProjectId(projectIdFromResponse);
-            
+
             setScanProgress(100);
             setScanStatus("Upload complete!");
             setUploadComplete(true);
@@ -207,7 +208,7 @@ export default function ProjectDropzone({ onUploadComplete }) {
                 const ext = file.name.split('.').pop().toLowerCase();
                 if (ext) extensions.add(ext);
             });
-            
+
             let stack = "Unknown";
             if (extensions.has('js') || extensions.has('jsx') || extensions.has('ts') || extensions.has('tsx')) {
                 stack = "JavaScript/TypeScript";
@@ -220,7 +221,7 @@ export default function ProjectDropzone({ onUploadComplete }) {
             } else if (extensions.has('html')) {
                 stack = "HTML/CSS";
             }
-            
+
             setDetectedStack(stack);
 
             setProjectMetadata({
@@ -267,9 +268,9 @@ export default function ProjectDropzone({ onUploadComplete }) {
         `}
             >
                 {/* Enhanced input to support both files and folders */}
-                <input 
-                    {...getInputProps()} 
-                    webkitdirectory="" 
+                <input
+                    {...getInputProps()}
+                    webkitdirectory=""
                     directory=""
                     multiple
                 />
@@ -311,9 +312,9 @@ export default function ProjectDropzone({ onUploadComplete }) {
                         >
                             <div className="flex items-center justify-between text-sm font-medium">
                                 <span className="flex items-center gap-2">
-                                    {scanning ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : 
-                                     uploadComplete ? <CheckCircle2 className="w-4 h-4 text-green-500" /> :
-                                     <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                                    {scanning ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> :
+                                        uploadComplete ? <CheckCircle2 className="w-4 h-4 text-green-500" /> :
+                                            <CheckCircle2 className="w-4 h-4 text-green-500" />}
                                     {scanStatus}
                                 </span>
                                 <span>{Math.round(scanProgress)}%</span>

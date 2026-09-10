@@ -12,7 +12,6 @@ from app.services.security_service import SecurityService
 from app.services.complexity_service import ComplexityService
 from app.services.structure_service import StructureService
 from app.services.project_summarizer import ProjectSummarizer
-from app.services.graphrag_service import GraphRagService
 from app.models.schemas import AnalysisResult, Metrics, ComplexityMetrics, Issue
 
 
@@ -23,7 +22,6 @@ class AnalysisService:
         self.complexity_service = ComplexityService()
         self.structure_service = StructureService()
         self.project_summarizer = ProjectSummarizer()
-        self.graphrag_service = GraphRagService()
         self.executor = ThreadPoolExecutor(max_workers=5)
 
     async def analyze_project(self, project_id: str, path: str) -> AnalysisResult:
@@ -81,14 +79,6 @@ class AnalysisService:
                 valid_files
             )
             tasks.append(summarizer_task)
-            
-            # GraphRAG (sync - run in thread)
-            graphrag_task = loop.run_in_executor(
-                self.executor,
-                self.graphrag_service.analyze,
-                valid_files
-            )
-            tasks.append(graphrag_task)
 
             # Wait for all tasks with timeout
             results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -99,7 +89,6 @@ class AnalysisService:
             complexity_metrics = self._get_result(results[2], ComplexityMetrics())
             structure_result = self._get_result(results[3], (0.0, []))
             summaries = self._get_result(results[4], [])
-            graphrag_data = self._get_result(results[5], {})
 
             # Unpack results
             quality_score, quality_issues = quality_result
@@ -117,7 +106,7 @@ class AnalysisService:
                 structureScore=structure_score,
                 securityScore=security_score,
                 complexity=complexity_metrics,
-                graphrag=graphrag_data
+                graphrag={}
             )
 
             return AnalysisResult(

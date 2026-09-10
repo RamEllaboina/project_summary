@@ -46,28 +46,57 @@ exports.uploadProject = catchAsync(async (req, res, next) => {
             console.log(`📦 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allFiles.length / BATCH_SIZE)} (${batch.length} files)`);
 
             await Promise.all(batch.map(async (file) => {
-                // file.originalname carries the relative path (e.g. "src/App.jsx")
-                // Strip any leading path traversal attempts
                 const safePath = path.normalize(file.originalname).replace(/^(\.\.[\\/])+/, '');
                 const destPath = path.join(projectDir, safePath);
 
-                // Apply intelligent filtering
-                if (shouldIgnore(file.originalname, false)) {
-                    console.log(`🚫 Ignoring: ${file.originalname}`);
-                    filesIgnored++;
-                    return;
-                }
+                if (safePath.toLowerCase().endsWith('.zip')) {
+                    console.log(`📦 Extracting zip file: ${safePath}`);
+                    try {
+                        const zip = await JSZip.loadAsync(file.buffer);
+                        const zipEntries = Object.values(zip.files);
 
-                // Write the file
-                await fs.outputFile(destPath, file.buffer);
-                totalFilesUploaded++;
+                        await Promise.all(zipEntries.map(async (zipEntry) => {
+                            if (zipEntry.dir) return; // Skip directories
+                            const safeEntryPath = path.normalize(zipEntry.name).replace(/^(\.\.[\\/])+/, '');
+                            const entryDestPath = path.resolve(projectDir, safeEntryPath);
 
-                // Check if it's a source code file
-                if (isSourceCodeFile(file.originalname)) {
-                    sourceCodeFiles++;
-                    console.log(`📄 Source code: ${file.originalname}`);
+                            if (!entryDestPath.startsWith(path.resolve(projectDir))) {
+                                console.warn(`Path traversal detected: ${zipEntry.name}`);
+                                return;
+                            }
+
+                            if (shouldIgnore(zipEntry.name, false)) {
+                                filesIgnored++;
+                                return;
+                            }
+
+                            const content = await zipEntry.async("nodebuffer");
+                            await fs.outputFile(entryDestPath, content);
+                            totalFilesUploaded++;
+
+                            if (isSourceCodeFile(zipEntry.name)) {
+                                sourceCodeFiles++;
+                            }
+                        }));
+                    } catch (zipErr) {
+                        console.error('Error extracting zip:', zipErr.message);
+                    }
                 } else {
-                    console.log(`📄 Other file: ${file.originalname}`);
+                    // Apply intelligent filtering
+                    if (shouldIgnore(file.originalname, false)) {
+                        console.log(`🚫 Ignoring: ${file.originalname}`);
+                        filesIgnored++;
+                        return;
+                    }
+
+                    // Write the file
+                    await fs.outputFile(destPath, file.buffer);
+                    totalFilesUploaded++;
+
+                    // Check if it's a source code file
+                    if (isSourceCodeFile(file.originalname)) {
+                        sourceCodeFiles++;
+                    }
                 }
             }));
         }

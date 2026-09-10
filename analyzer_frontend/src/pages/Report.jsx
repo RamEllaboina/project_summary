@@ -91,15 +91,12 @@ export default function Report() {
 
     // Calculate overall score from correct locations
 
-    const overallScore = (data.qualityScore && data.structureScore && data.securityScore)
-
-        ? Math.round((data.qualityScore + data.structureScore + data.securityScore) / 3)
-
-        : data.metrics?.qualityScore
-
-            ? Math.round((data.metrics.qualityScore + data.metrics.structureScore + data.metrics.securityScore) / 3)
-
-            : 0;
+    let overallScore = 0;
+    if (data?.metrics && typeof data.metrics.qualityScore !== 'undefined') {
+        overallScore = Math.round((data.metrics.qualityScore + data.metrics.structureScore + data.metrics.securityScore) / 3);
+    } else if (typeof data?.qualityScore !== 'undefined') {
+        overallScore = Math.round((data.qualityScore + data.structureScore + data.securityScore) / 3);
+    }
 
 
 
@@ -1247,8 +1244,7 @@ export default function Report() {
                                                 </span>
                                             </div>
                                             <Progress
-                                                value={aiEvaluation?.innovation?.level === 'high' ? 85 :
-                                                    aiEvaluation?.innovation?.level === 'medium' ? 60 : 30}
+                                                value={aiEvaluation?.innovation?.score ? (aiEvaluation.innovation.score * 10) : (aiEvaluation?.innovation?.level === 'high' ? 85 : aiEvaluation?.innovation?.level === 'medium' ? 60 : 30)}
                                                 className="h-2"
                                             />
                                         </div>
@@ -1262,8 +1258,7 @@ export default function Report() {
                                         <div className="grid grid-cols-2 gap-3 mt-3">
                                             <div className="text-center p-2 bg-amber-100 dark:bg-amber-900/30 rounded">
                                                 <div className="text-lg font-bold text-amber-800 dark:text-amber-300">
-                                                    {aiEvaluation?.innovation?.level === 'high' ? '85%' :
-                                                        aiEvaluation?.innovation?.level === 'medium' ? '60%' : '30%'}
+                                                    {aiEvaluation?.innovation?.score ? `${aiEvaluation.innovation.score * 10}%` : (aiEvaluation?.innovation?.level === 'high' ? '85%' : aiEvaluation?.innovation?.level === 'medium' ? '60%' : '30%')}
                                                 </div>
                                                 <div className="text-xs text-amber-600 dark:text-amber-400">Ready</div>
                                             </div>

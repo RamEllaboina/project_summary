@@ -11,28 +11,75 @@ class LocalProvider(BaseLLMProvider):
 
     async def evaluate_project(self, prompt: str) -> Dict[str, Any]:
         try:
-            # Some local models don't support response_format={"type": "json_object"}
-            # We rely on prompt engineering for JSON output.
+            # Enforce JSON output for Ollama
             response = await self.client.chat.completions.create(
                 model=self.model,
                 messages=[
-                    {"role": "system", "content": "You are a senior AI systems engineer evaluating software projects. You output strictly JSON."},
+                    {"role": "system", "content": "You are a senior software architect evaluating a project. Always respond with a single, valid JSON object containing your evaluation."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.2, # Low temp for deterministic output
+                temperature=0.3,
+                max_tokens=4000
             )
             content = response.choices[0].message.content
-            # Clean up potential markdown blocks if local model includes them
-            clean_content = content.replace("```json", "").replace("```", "").strip()
-            return json.loads(clean_content)
+            
+            import re
+            
+            # Robust JSON extraction
+            match = re.search(r'\{[\s\S]*\}', content)
+            if match:
+                json_str = match.group(0)
+                return json.loads(json_str)
+            else:
+                raise ValueError("No JSON object found in response.")
         except Exception as e:
             print(f"Error calling Local LLM: {e}")
-            return {
-                "error": str(e),
-                "aiProbability": 0,
-                "innovationLevel": "low",
-                "realWorldUse": "Error during evaluation",
-                "strengths": [],
-                "weaknesses": [],
-                "suggestions": []
+            return self._get_fallback_response(str(e))
+
+    def _get_fallback_response(self, error_message: str) -> Dict[str, Any]:
+        """Return a valid response when Local LLM fails."""
+        return {
+            "projectId": "error",
+            "overview": f"Local LLM API error: {error_message}",
+            "summary": "Analysis failed due to API error. Please try again.",
+            "architecture": "Analysis failed due to API error",
+            "complexity": "Analysis failed due to API error",
+            "security": "Analysis failed due to API error",
+            "projectFlow": {
+                "overallWorkflow": "Analysis unavailable",
+                "components": [],
+                "dataFlow": "Analysis unavailable"
+            },
+            "aiDetection": {
+                "level": "low",
+                "score": 0,
+                "confidence": 0,
+                "reasoning": "Analysis unavailable",
+                "signals": {}
+            },
+            "innovation": {
+                "level": "low",
+                "score": 1,
+                "projectDescription": "Project analysis unavailable",
+                "assessment": "Analysis unavailable",
+                "novelFeatures": [],
+                "marketImpact": "Analysis unavailable",
+                "uniqueness": "Analysis unavailable"
+            },
+            "realWorldReadiness": "Analysis failed due to API error",
+            "strengths": {
+                "technical": ["Analysis incomplete due to API error"],
+                "architectural": [],
+                "performance": []
+            },
+            "weaknesses": {
+                "technical": ["API error prevented analysis"],
+                "architectural": [],
+                "performance": []
+            },
+            "suggestions": {
+                "technical": ["Check API configuration and retry text generation"],
+                "architectural": [],
+                "performance": []
             }
+        }

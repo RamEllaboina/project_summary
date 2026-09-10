@@ -21,16 +21,16 @@ exports.detectAIGeneration = async (projectId, analysisReport) => {
         };
 
         const response = await axios.post(AI_DETECTION_URL, detectionPayload, {
-            timeout: 15000 // 15 seconds timeout to fail faster
+            timeout: 300000 // 5 minutes timeout to allow local processing to finish
         });
 
         if (response.data) {
             console.log(`[AI Detection] Successfully analyzed ${projectId}`);
             console.log(`[AI Detection] Response keys:`, Object.keys(response.data));
-            
+
             // Ensure the response has the expected structure
             const result = response.data;
-            
+
             // Verify required fields exist
             if (!result.aiDetection) {
                 console.warn('[AI Detection] Missing aiDetection field, adding default');
@@ -48,7 +48,7 @@ exports.detectAIGeneration = async (projectId, analysisReport) => {
                     }
                 };
             }
-            
+
             return result;
         } else {
             throw new Error('Invalid response format from AI Detection Service');
@@ -60,7 +60,7 @@ exports.detectAIGeneration = async (projectId, analysisReport) => {
         } else if (error.code === 'ECONNABORTED') {
             console.error('[AI Detection] Request timed out after 15 seconds');
         }
-        
+
         // Return a fallback response instead of throwing to avoid complete failure
         console.log('[AI Detection] Returning fallback response');
         return {
