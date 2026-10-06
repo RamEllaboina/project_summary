@@ -79,6 +79,9 @@ uvicorn main:app --host 0.0.0.0 --port 8005 --reload
 *Runs on `http://localhost:8005`*
 
 ---
+## Terminal 1 - Backend
+cd backend
+npm run dev
 
 ### Terminal 6: Secure Sandbox Project
 Provides the secure environment where uploaded code is safely evaluated.

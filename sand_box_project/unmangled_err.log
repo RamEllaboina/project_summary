@@ -1,0 +1,54 @@
+﻿node : node:fs:441
+At line:1 char:1
++ node server.js 2>&1 | 
+Out-File -Encoding utf8 
+unmangled_err.log
++ ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (node:fs  
+  :441:String) [], RemoteE   
+ xception
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+    return 
+binding.readFileUtf8(path, 
+stringToFlags(options.flag));
+                   ^
+
+Error: UNKNOWN: unknown 
+error, read
+    at Object.readFileSync 
+(node:fs:441:20)
+    at defaultLoadImpl (node:
+internal/modules/cjs/loader:1
+105:17)
+    at loadSource (node:inter
+nal/modules/cjs/loader:1733:2
+0)
+    at Object..js (node:inter
+nal/modules/cjs/loader:1832:4
+4)
+    at Module.load (node:inte
+rnal/modules/cjs/loader:1441:
+32)
+    at Function._load (node:i
+nternal/modules/cjs/loader:12
+63:12)
+    at 
+TracingChannel.traceSync (nod
+e:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:i
+nternal/modules/cjs/loader:23
+7:24)
+    at Module.require (node:i
+nternal/modules/cjs/loader:14
+63:12)
+    at require (node:internal
+/modules/helpers:147:16) {
+  errno: -4094,
+  code: 'UNKNOWN',
+  syscall: 'read'
+}
+
+Node.js v22.20.0

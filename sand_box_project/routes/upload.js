@@ -13,8 +13,17 @@ const fileFilter = require('../services/fileFilter');
 const projectStructureAnalyzer = require('../services/projectStructureAnalyzer');
 
 const upload = multer({ storage: multer.memoryStorage() });
+const uploadMiddleware = upload.array('files');
 
-router.post('/', upload.array('files'), async (req, res) => {
+router.post('/', (req, res, next) => {
+    uploadMiddleware(req, res, (err) => {
+        if (err) {
+            console.error('Multer upload error:', err);
+            return res.status(400).json({ status: 'error', message: err.message || 'Error occurred during file upload' });
+        }
+        next();
+    });
+}, async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ status: 'error', message: 'No files uploaded.' });
@@ -30,7 +39,7 @@ router.post('/', upload.array('files'), async (req, res) => {
         for (const file of req.files) {
             // file.originalname may contain relative path (e.g. "project/src/main.py")
             const safePath = path.normalize(file.originalname).replace(/^(\.\.[\/\\])+/, '');
-            
+
             // Filter out excluded directories and files
             if (!fileFilter.shouldProcessFile(safePath)) {
                 skippedFiles++;
@@ -108,12 +117,12 @@ router.get('/containers', async (req, res) => {
         const { exec } = require('child_process');
         const util = require('util');
         const execPromise = util.promisify(exec);
-        
+
         // Get running sandbox containers with port info
         const { stdout: runningContainers } = await execPromise(
             `docker ps --filter "name=sandbox-" --format "{{.Names}}:{{.Ports}}"`
         );
-        
+
         const containers = [];
         if (runningContainers.trim()) {
             const lines = runningContainers.trim().split('\n');
@@ -129,13 +138,13 @@ router.get('/containers', async (req, res) => {
                 }
             }
         }
-        
+
         res.json({
             containers,
             count: containers.length,
             timestamp: new Date().toISOString()
         });
-        
+
     } catch (error) {
         res.json({ error: error.message, containers: [] });
     }

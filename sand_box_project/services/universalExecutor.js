@@ -7,7 +7,7 @@ const execPromise = util.promisify(exec);
 
 class UniversalExecutor {
     constructor() {
-        this.executionTimeout = 10000; // 10 seconds
+        this.executionTimeout = 180000; // 3 minutes
         this.memoryLimit = '512m';
         this.cpuLimit = '1';
     }

@@ -5,11 +5,11 @@ const path = require('path');
 
 async function testUpload() {
     const formData = new FormData();
-    const testFilePath = path.join('C:', 'Users', 'RAM', 'OneDrive', 'Documents', 'Desktop', 'test_project', 'index.js');
+    const testFilePath = path.join(__dirname, 'package.json');
 
     // We append the file. The key 'files' must match what the server expects.
     formData.append('files', fs.createReadStream(testFilePath), {
-        filepath: 'index.js' // simulate relative path
+        filepath: 'package.json' // simulate relative path
     });
 
     try {

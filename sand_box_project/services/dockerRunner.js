@@ -95,7 +95,7 @@ CMD ["node", "${linuxEntryFile}"]
         const runCmd = `docker run --rm --memory=200m --cpus=1 --network none ${imageName}`;
 
         // Timeout execution to 10 seconds to avoid infinite loops
-        const { stdout, stderr } = await execPromise(runCmd, { timeout: 10000 });
+        const { stdout, stderr } = await execPromise(runCmd, { timeout: 180000 });
 
         // Cleanup image to avoid disk exhaustion
         execPromise(`docker rmi -f ${imageName}`).catch(() => { });
